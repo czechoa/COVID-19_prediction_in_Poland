@@ -32,7 +32,7 @@ def make_model(numberOfInput_dim):
 
 # %%
 def train_model(train, target):
-    checkpoint_name = 'outModel/Weights-{epoch:03d}--{val_loss:.5f}.hdf5'
+    checkpoint_name = 'outModel/Weights.hdf5'
     checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
     callbacks_list = [checkpoint]
 
@@ -41,9 +41,9 @@ def train_model(train, target):
 
 # %%
 def compline_model():
-    wights_file = 'outModel/Weights-478--18340.19141.hdf5'
-    print("Weights-478--18340.19141.hdf5")
+    wights_file = 'outModel/Weights.hdf5'
     NN_model.load_weights(wights_file)  # load it
+    print(wights_file)
     NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
 
 
