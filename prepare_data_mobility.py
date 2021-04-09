@@ -1,35 +1,21 @@
 import pandas as pd
 import numpy as np
 # %%
-from preparingData import get_combined_data, get_cols_with_no_nans
+
 
 train_data_path = 'data/2020_PL_Region_Mobility_Report.csv'
 i = list(range(8, 15))
 i.append(2)
+i.append(5)
+
 print(i)
 # %%
 data = pd.read_csv(train_data_path, usecols=i)
+# %%
 print(data.columns.values)
 # %%
-# data = data.drop(['metro_area', 'census_fips_code'], axis=1)
-# print(data.shape)
-# print(data.columns.values)
-# %%
-print("before dropna ", data.shape)
-data = data.dropna()
-print("after dropna ", data.shape)
-# %%
-
-# num_cols = get_cols_with_no_nans(data, 'num')
-# cat_cols = get_cols_with_no_nans(data, 'no_num')
-# print ('Number of numerical columns with no nan values :',len(num_cols))
-# print ('Number of nun-numerical columns with no nan values :',len(cat_cols))
-# print(combined.shape)
-# combined = combined[num_cols + cat_cols]
-# %%
-print("before mean by regions ", data.shape)
-data = data.groupby(by=['sub_region_1', 'date']).mean().reset_index()
-print("before mean by regions ", data.shape)
+data = data[data['iso_3166_2_code'].notna()]
+print(data['iso_3166_2_code'].unique())
 # %%
 data_day_week = data.copy()
 # %% check number of day is the same of all regions (
@@ -48,14 +34,40 @@ for region in data_day_week['sub_region_1'].unique():
     tmp = region + " " + str(size[0])
     regions_with_no_all_day.append(tmp)
 print(data_day_week.shape)
+# %%
+data_isna = data[data.isna().any(axis=1)]
+data = data.drop(columns='parks_percent_change_from_baseline')
+# %% without_park because many nan value
+data_isna  = data[data.isna().any(axis=1)]
+# %%
+data = data.interpolate()
+# %%
+data_isna  = data[data.isna().any(axis=1)]
 # %% add colum day_of_the_week (  2020-02-15 was a Tuesday so start from 2)
+
 day_of_the_week = [x % 7 + 1 for x in range(1, size[0] + 1)]
 print(len(day_of_the_week))
 print(len(data_day_week['sub_region_1'].unique()))
-day_of_the_week_all = np.repeat(day_of_the_week, len(data_day_week['sub_region_1'].unique()))
+day_of_the_week_all = np.tile(day_of_the_week, len(data_day_week['sub_region_1'].unique()))
+data['day of the week'] = day_of_the_week_all
+
 # %%
-data_day_week_region_1: pd.DataFrame = data_day_week[data_day_week['sub_region_1'] == 'Greater Poland Voivodeship']
-data_day_week_region_1 = data_day_week_region_1.sort_values(by='date')
-# %%
-len(day_of_the_week_all)
-data_day_week.shape[0]
+data['day of the week'] = day_of_the_week_all
+# %% all in two function
+def prepare_date_mobility():
+    train_data_path = 'data/2020_PL_Region_Mobility_Report.csv'
+    i = list(range(8, 15))
+    i.append(2)
+    i.append(5)
+    data = pd.read_csv(train_data_path, usecols=i)
+    data = data.drop(columns='parks_percent_change_from_baseline')
+    data = data.drop(columns='parks_percent_change_from_baseline')
+    data = data.interpolate()
+    data = day_of_the_week_for_all_regions(data)
+    return data
+
+def day_of_the_week_for_all_regions(Data:pd.DataFrame):
+    day_of_the_week = [x % 7 + 1 for x in range(1, size[0] + 1)]
+    day_of_the_week_all = np.tile(day_of_the_week, len(data_day_week['sub_region_1'].unique()))
+    data['day of the week'] = day_of_the_week_all
+    return data
