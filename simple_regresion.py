@@ -48,14 +48,14 @@ def compline_model():
 
 
 # %%
-def make_submission_cvs(train, target, sub_name):
+def make_submission_cvs( train:pd.DataFrame, target, sub_name):
     prediction = NN_model.predict(train)
-    my_submission = pd.DataFrame({'Id': train.iloc[:, 0]
+    my_submission = pd.DataFrame({'Id': train.index[:].to_list()
                                      , 'Target': target,
                                   'Prediction': prediction[:, 0]})
-    print(my_submission)
+    # my_submission.index[:] = train.index[:]
     my_submission.to_csv('{}.csv'.format(sub_name), index=False)
-    print('A submission file has been made')
+    print('A submission file has been made ',sub_name)
 
 
 # %%
