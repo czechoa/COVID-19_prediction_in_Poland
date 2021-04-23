@@ -38,16 +38,18 @@ number_of_days = len(data_merge.loc[:, 'date'].unique())
 # %%
 data_merge_with_history = pd.DataFrame()
 days_history = 14
-number_of_day_of_prediction = 7
-n = days_history + number_of_day_of_prediction
+day_to_predict = 7
+n = days_history + day_to_predict
 while n < data_merge.shape[0]:
     if n % number_of_days == 0:
-        n += days_history + number_of_day_of_prediction
+        n += days_history + day_to_predict
     else:
         data_merge_stack: pd.Series = data_merge.iloc[
-                                      (n - days_history - number_of_day_of_prediction):n - number_of_day_of_prediction,
+                                      (n - days_history - day_to_predict):n - day_to_predict,
                                       3:].stack()
-        data_merge_stack = pd.concat([data_merge.iloc[n, :3], data_merge_stack]).reset_index(drop=True)
+        data_merge_stack = pd.concat([data_merge.iloc[n, :3], data_merge_stack]).reset_index(
+            drop=True)
+        data_merge_stack['target'] = data_merge.iloc[n,-1]
         data_merge_with_history = data_merge_with_history.append(data_merge_stack, ignore_index=True)
         n += 1
 # %%
@@ -59,5 +61,5 @@ target = target.astype(float)
 # %%
 from simple_regresion import *
 
-make_all(train, target, 'test1')
+make_all(train, target, 'results/prediction_7')
 # %%
