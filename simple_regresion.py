@@ -36,7 +36,7 @@ def train_model(train, target):
     checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
     callbacks_list = [checkpoint]
 
-    NN_model.fit(train, target, epochs=500, batch_size=32, validation_split=0.2, callbacks=callbacks_list, verbose=0)
+    NN_model.fit(train, target, epochs=100, batch_size=32, validation_split=0.2, callbacks=callbacks_list, verbose=0)
 
 
 # %%
@@ -48,14 +48,34 @@ def compline_model():
 
 
 # %%
-def make_submission_cvs( train:pd.DataFrame, target, sub_name):
+def make_submission_cvs(train: pd.DataFrame, target, sub_name):
     prediction = NN_model.predict(train)
     my_submission = pd.DataFrame({'Id': train.index[:].to_list()
                                      , 'Target': target,
                                   'Prediction': prediction[:, 0]})
     # my_submission.index[:] = train.index[:]
     my_submission.to_csv('{}.csv'.format(sub_name), index=False)
-    print('A submission file has been made ',sub_name)
+    print('A submission file has been made ', sub_name)
+
+
+# %%
+def make_submission(test: pd.DataFrame, days_ahead):
+    prediction = NN_model.predict(test)
+    name = 'prediction ' + str(days_ahead) + ' ahead'
+    my_submission = pd.DataFrame({'Id': test.index[:].to_list(),
+                                  name: prediction[:, 0]})
+    return my_submission
+
+
+def add_prediction_to_submission(test: pd.DataFrame, my_submission: pd.DataFrame, day_ahead):
+    prediction = NN_model.predict(test)
+    my_submission['predition ' + str(day_ahead) + ' ahead'] = prediction[:, 0]
+    return my_submission
+
+
+def submission_to_cvs(my_submission: pd.DataFrame, sub_name):
+    my_submission.to_csv('{}.csv'.format(sub_name), index=False)
+    print('A submission file has been made ', sub_name)
 
 
 # %%
@@ -63,4 +83,4 @@ def make_all(train, target, sub_name):
     make_model(train.shape[1])
     train_model(train, target)
     compline_model()
-    make_submission_cvs(train, target, sub_name)
+    # make_submission_cvs(train, target, sub_name)
