@@ -1,9 +1,8 @@
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation, Flatten
+from tensorflow.keras.layers import Dense
 
 import pandas as pd
-import numpy as np
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -33,11 +32,10 @@ def make_model(numberOfInput_dim):
 # %%
 def train_model(train, target):
     checkpoint_name = 'outModel/Weights.hdf5'
-    checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
+    checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_loss', verbose=0, save_best_only=True, mode='auto')
     callbacks_list = [checkpoint]
 
-    NN_model.fit(train, target, epochs=100, batch_size=32, validation_split=0.2, callbacks=callbacks_list, verbose=0)
-
+    NN_model.fit(train, target, epochs=15, batch_size=32, validation_split=0.2, callbacks=callbacks_list, verbose=0)
 
 # %%
 def compline_model():

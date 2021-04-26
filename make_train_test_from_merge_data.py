@@ -22,7 +22,7 @@ def reshape_data_merge_to_get_rows_with_n_days_history_and_target(data_merge: pd
         else:
             data_merge_stack: pd.Series = data_merge.iloc[
                                           (
-                                                      n - number_of_days_in_one_rows - number_day_ahead_to_predition):n - number_day_ahead_to_predition,
+                                                  n - number_of_days_in_one_rows - number_day_ahead_to_predition):n - number_day_ahead_to_predition,
                                           3:].stack()
             data_merge_stack = pd.concat([data_merge.iloc[n, :3], data_merge_stack]).reset_index(
                 drop=True)
@@ -51,8 +51,7 @@ def make_test(data_merge_with_history_without_target: pd.DataFrame):
 
 
 # %%
-def get_train_target_test(data_merge:pd.DataFrame, number_of_days_in_one_rows=14, number_day_ahead_to_prediction=7):
-
+def get_train_target_test(data_merge: pd.DataFrame, number_of_days_in_one_rows=14, number_day_ahead_to_prediction=7):
     data_merge_with_history, data_merge_with_history_without_target = reshape_data_merge_to_get_rows_with_n_days_history_and_target(
         data_merge, number_of_days_in_one_rows, number_day_ahead_to_prediction)
 
@@ -62,14 +61,16 @@ def get_train_target_test(data_merge:pd.DataFrame, number_of_days_in_one_rows=14
 
 
 # %%
-data_merge = get_merge_data()
-train, target, test = get_train_target_test(data_merge,1,1)
+from simple_regresion import *
 
-# make_all(train, target, 'results/prediction_7')
-#
-# # %%
-# test = make_test(data_merge_with_history_without_target)
-# submission = make_submission(test, 7)
-#
-# submission = add_prediction_to_submission(test, submission, 7)
-# submission_to_cvs(submission, 'results/test_7')
+data_merge = get_merge_data()
+
+train, target, test = get_train_target_test(data_merge, 14, 1)
+make_all(train, target, 'results/prediction_7')
+submission = make_submission(test, 7)
+for i in range(2, 31):
+    train, target, test = get_train_target_test(data_merge, 14, i)
+    make_all(train, target, 'results/prediction_7')
+    submission = add_prediction_to_submission(test, submission, i)
+
+submission_to_cvs(submission, 'results/test_7')
