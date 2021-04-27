@@ -1,3 +1,4 @@
+# %%
 from merge_data_mobility_epidemic_situation import get_merge_data
 import pandas as pd
 
@@ -67,10 +68,11 @@ data_merge = get_merge_data()
 
 train, target, test = get_train_target_test(data_merge, 14, 1)
 make_all(train, target, 'results/prediction_7')
-submission = make_submission(test, 7)
-for i in range(2, 31):
+submission = make_submission(test, 1)
+for i in range(2, 14):
+    clear_model()
     train, target, test = get_train_target_test(data_merge, 14, i)
     make_all(train, target, 'results/prediction_7')
     submission = add_prediction_to_submission(test, submission, i)
-
-submission_to_cvs(submission, 'results/test_7')
+    clear_model()
+submission_to_cvs(submission, 'results/preparation_two_week_ahead')
