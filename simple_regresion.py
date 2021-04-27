@@ -1,14 +1,13 @@
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+from tensorflow.keras.backend import clear_session
 
 import pandas as pd
 import warnings
 
 warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', category=DeprecationWarning)
-
-NN_model = Sequential()
 
 
 # %%
@@ -36,6 +35,7 @@ def train_model(train, target):
     callbacks_list = [checkpoint]
 
     NN_model.fit(train, target, epochs=15, batch_size=32, validation_split=0.2, callbacks=callbacks_list, verbose=0)
+
 
 # %%
 def compline_model():
@@ -77,8 +77,16 @@ def submission_to_cvs(my_submission: pd.DataFrame, sub_name):
 
 
 # %%
+def clear_model():
+    clear_session()
+
+
+# %%
 def make_all(train, target, sub_name):
+    global NN_model
+    NN_model = Sequential()
+
     make_model(train.shape[1])
     train_model(train, target)
     compline_model()
-    # make_submission_cvs(train, target, sub_name)
+    # make_submission_cvs(train, target, sub_name, )
