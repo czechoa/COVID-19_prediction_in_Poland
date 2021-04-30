@@ -30,7 +30,7 @@ def make_model(numberOfInput_dim):
 
 # %%
 def train_model(train, target):
-    checkpoint_name = 'outModel/Weights.hdf5'
+    checkpoint_name = 'outModel/Weights.82.91931hdf5'
     checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_loss', verbose=0, save_best_only=True, mode='auto')
     callbacks_list = [checkpoint]
 
