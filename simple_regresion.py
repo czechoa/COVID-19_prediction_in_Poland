@@ -2,12 +2,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
 from tensorflow.keras.backend import clear_session
-from tensorflow.keras.wrappers.scikit_learn import KerasRegressor
 from tensorflow.keras.layers.experimental import preprocessing
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import KFold
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
 import pandas as pd
 import warnings
 import numpy as np
@@ -37,6 +32,7 @@ def make_model(norm, numberOfInput_dim):
     NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
     NN_model.summary()
 
+
 def make_model_from_audio(norm, numberOfInput_dim):
     NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu'))
     NN_model.add(layers.Dense(64, activation='swish'))
@@ -47,19 +43,6 @@ def make_model_from_audio(norm, numberOfInput_dim):
     NN_model.add(layers.Dense(1))
     NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
     NN_model.summary()
-
-
-def evaluate_model_with_standardized_dataset(train, target):
-    print('hello world ')
-    NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
-    estimators = []
-    estimators.append(('standardize', StandardScaler()))
-    estimators.append(('mlp', KerasRegressor(build_fn=NN_model, epochs=50, batch_size=5, verbose=1)))
-    pipeline = Pipeline(estimators)
-    kfold = KFold(n_splits=10)
-    results = cross_val_score(pipeline, train, target, cv=kfold)
-    print("Larger: %.2f (%.2f) MSE" % (results.mean(), results.std()))
-    print('koniec')
 
 
 def train_model(train, target):
@@ -114,39 +97,10 @@ def make_all(train, target):
     norm = preprocessing.Normalization()
     norm.adapt(np.array(train))
 
-    make_model(norm,train.shape[1])
+    make_model_from_audio(norm, train.shape[1])
     train_model(train, target)
     compline_model()
     # make_submission_cvs(train, target, sub_name, )
-
-
-def make_all_with_standardized(train, target):
-    global NN_model
-    NN_model = Sequential()
-    make_model(train.shape[1])
-    # train_model(train, target)
-    # compline_model()
-    evaluate_model_with_standardized_dataset(train, target)
-
-
-# %%
-def model_regression_from_tensorFlow(train, target):
-    norm = preprocessing.Normalization()
-    norm.adapt(np.array(train))
-
-    NN_model = Sequential([
-        norm,
-        layers.Dense(64, activation='relu'),
-        layers.Dense(64, activation='relu'),
-        layers.Dense(1)
-    ])
-
-    NN_model.compile(loss='mean_absolute_error',
-                     optimizer='adam')
-    NN_model.summary()
-    NN_model.fit(train, target,
-                 validation_split=0.2,
-                 verbose=1, epochs=100)
 
 
 # %%
@@ -158,11 +112,10 @@ import time
 from prepare_data_epidemic_situation_in_regions import *
 
 start_time = time.time()
-make_all(train,target)
+make_all(train, target)
 submission = make_submission(test, 7)
 print("--- %s seconds ---" % (time.time() - start_time))
 clear_model()
-
 
 submission = submission.reset_index()
 test_ahead: pd.DataFrame = get_test_respiration()
