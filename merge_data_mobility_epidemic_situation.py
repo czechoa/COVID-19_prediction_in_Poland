@@ -47,7 +47,7 @@ def get_merge_data():
     data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
     return data_merge
 # %%
-merge  = get_merge_data()
-merge.to_csv('{}.csv'.format('results/data_merge'), index=False)
-
+# merge  = get_merge_data()
+# merge.to_csv('{}.csv'.format('results/data_merge'), index=False)
+#
 

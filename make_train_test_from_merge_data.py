@@ -76,26 +76,26 @@ def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
     return train, test, target
 
 # %%
-from simple_regresion import *
+# from simple_regresion import *
 
-period_of_time = 14
-data_merge = get_merge_data()
-train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time)
-# %%
-train_all.to_csv('{}.csv'.format('results/train all'), index=False)
-
-# %%
-train, test, target = get_train_test_target(data_merge, train_all, period_of_time, 1)
-make_all(train, target, 'results/prediction_7')
-submission = make_submission(test, 1)
-for i in range(2, 31):
-    clear_model()
-    train, test, target = get_train_test_target(data_merge, train_all, period_of_time, i)
+def one_mounTH_prediction():
+    period_of_time = 14
+    data_merge = get_merge_data()
+    train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time)
+    train, test, target = get_train_test_target(data_merge, train_all, period_of_time, 1)
     make_all(train, target, 'results/prediction_7')
-    submission = add_prediction_to_submission(test, submission, i)
-submission_to_cvs(submission, 'results/preparation_one_month_ahead_1')
-
+    submission = make_submission(test, 1)
+    for i in range(2, 31):
+        clear_model()
+        train, test, target = get_train_test_target(data_merge, train_all, period_of_time, i)
+        make_all(train, target, 'results/prediction_7')
+        submission = add_prediction_to_submission(test, submission, i)
+    submission_to_cvs(submission, 'results/preparation_one_month_ahead_1')
 # %%
-train, test, target = get_train_test_target(data_merge, train_all, period_of_time, 7)
-make_all(train, target, 'results/prediction_7')
-submission = add_prediction_to_submission(test, submission, i)
+def get_all_train_test_target():
+    period_of_time = 14
+    data_merge = get_merge_data()
+    train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time)
+    train, test, target = get_train_test_target(data_merge, train_all, period_of_time, 7)
+    return train, test, target
+

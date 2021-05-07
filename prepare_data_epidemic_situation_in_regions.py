@@ -14,8 +14,9 @@ import pandas as pd
 
 
 # %%
-def prepare_data_epidemic_situation_in_regions():
-    train_data_path = 'data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach.csv'
+def prepare_data_epidemic_situation_in_regions(
+        path='data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach.csv'):
+    train_data_path = path
     data = pd.read_csv(train_data_path, header=1)
     data = split_data_that_region_was_attribute(data)
     data = format_date(data)
@@ -56,17 +57,18 @@ def format_date(data: pd.DataFrame):
         new_formats.append(new_format)
     data.loc[:, 'data'] = new_formats
     data = data.rename(columns={"data": "date"})
-    data.iloc[:, -1] = reformed_percent(data.iloc[:,-1])
+    data.iloc[:, -1] = reformed_percent(data.iloc[:, -1])
     data.iloc[:, -5] = reformed_percent(data.iloc[:, -5])
     return data
 
 
 # %%
-def reformed_percent(col:pd.Series):
-    col = [float(w[:-1].replace(',', '.'))/100 for w in col]
+def reformed_percent(col: pd.Series):
+    col = [float(w[:-1].replace(',', '.')) / 100 for w in col]
     return col
 
-def drop_columns(data:pd.DataFrame):
+
+def drop_columns(data: pd.DataFrame):
     cols = data.columns.tolist()
     finale_cols = cols[:3]
     finale_cols.append(cols[-3])
@@ -74,8 +76,11 @@ def drop_columns(data:pd.DataFrame):
 
     return data
 
+
 # %%
-finale_data = prepare_data_epidemic_situation_in_regions()
-finale_data = drop_columns(finale_data)
-
-
+def get_test_respiration(date='2021-04-11'):
+    finale_data = prepare_data_epidemic_situation_in_regions(
+        'data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv')
+    finale_data = finale_data.drop(columns=[finale_data.columns[-2]])
+    finale_day = finale_data[finale_data['date'] == date]
+    return finale_day
