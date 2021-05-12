@@ -4,18 +4,18 @@ import pandas as pd
 
 
 # %%
-def reshape_data_merge_to_get_train_with_two_week_history(data_merge: pd.DataFrame, number_of_days_in_one_rows,
+def reshape_data_merge_to_get_train_with_two_week_history(data_merge: pd.DataFrame, number_of_days_in_one_row,
                                                           first_n_attribute_dsc_region):
     train_all = pd.DataFrame()
-    n = number_of_days_in_one_rows
+    n = number_of_days_in_one_row
     number_of_days = len(data_merge.loc[:, 'date'].unique())
     while n < data_merge.shape[0]:
         if n % number_of_days == 0:  # new region
-            n += number_of_days_in_one_rows
+            n += number_of_days_in_one_row
         else:
             data_merge_stack: pd.Series = data_merge.iloc[
                                           (
-                                                  n - number_of_days_in_one_rows):n,
+                                                  n - number_of_days_in_one_row):n,
                                           first_n_attribute_dsc_region:].stack()
             data_merge_stack = pd.concat(
                 [data_merge.iloc[n, :first_n_attribute_dsc_region], data_merge_stack]).reset_index(
@@ -96,15 +96,14 @@ def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 #
 
 # %%
-def get_all_train_test_target():
-    period_of_time = 14
-    first_n_attribute_dsc_region = 4
+def get_all_train_test_target(period_of_time=14, day_ahead=7
+                              , first_n_attribute_dsc_region=4):
     data_merge = get_merge_data()
     train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time,
                                                                       first_n_attribute_dsc_region)
-    train, test, target = get_train_test_target(data_merge, train_all, period_of_time, 7, first_n_attribute_dsc_region)
+    train, test, target = get_train_test_target(data_merge, train_all, period_of_time, day_ahead,
+                                                first_n_attribute_dsc_region)
     return train, test, target
 
-
 # %%
-train, test, target = get_all_train_test_target()
+# train, test, target = get_all_train_test_target()
