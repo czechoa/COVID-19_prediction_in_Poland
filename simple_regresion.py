@@ -1,40 +1,46 @@
+from tensorflow import keras
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
 from tensorflow.keras.backend import clear_session
-from tensorflow.keras.layers.experimental import preprocessing
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import warnings
 import numpy as np
+from tensorflow.python.keras.optimizer_v2.adam import Adam
 
 np.set_printoptions(precision=3, suppress=True)
 warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', category=DeprecationWarning)
 
 
-# %%
 def make_model(numberOfInput_dim, layers_n):
     # The Input Layer :
+    # rekurucyjne, konwolucyjne
+
+    # LST -
+    # predykcje
     # NN_model.add(norm)
     print(numberOfInput_dim)
     # NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu'))
     # print(numberOfInput_dim)
-    NN_model.add(layers.Dense(numberOfInput_dim, kernel_initializer='normal',input_dim=numberOfInput_dim,  activation='relu'))
+    l2 = keras.regularizers.l2(l2=0.01)
+    NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu', kernel_regularizer=l2))
     # The Hidden Layers :
-    # two hidden layer because repression all not function
+    # two hidden layer because repression all not functionras.re
     for i in range(layers_n):
-        NN_model.add(layers.Dense(512, kernel_initializer='normal', activation='relu'))
+        NN_model.add(layers.Dense(256, kernel_initializer='normal', activation='relu', kernel_regularizer=l2))
+
     # NN_model.add(Dropout(0.2))
     # The Output Layer :
     NN_model.add(layers.Dense(1, kernel_initializer='normal', activation='linear'))
     # Compile the network :
-    NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
+    NN_model.compile(loss='mean_absolute_error', optimizer=Adam(learning_rate=0.001), metrics=['mean_absolute_error'])
     NN_model.summary()
 
 
-def make_model_from_audio( numberOfInput_dim,layers_n):
+def make_model_from_audio(numberOfInput_dim, layers_n):
     NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu'))
     NN_model.add(layers.Dense(64, activation='swish'))
     NN_model.add(layers.Dense(64, activation='relu'))
@@ -104,7 +110,7 @@ def standardScaler(train, test, input_scaler=StandardScaler()):
     return trainX, testX
 
 
-def make_all(train, target, layers_n = 2):
+def make_all(train, target, layers_n=2):
     global NN_model
     NN_model = Sequential()
     # norm = preprocessing.Normalization()
@@ -116,38 +122,60 @@ def make_all(train, target, layers_n = 2):
     # make_submission_cvs(train, target, sub_name, )
 
 
-# %%
-from make_train_test_from_merge_data import get_all_train_test_target
 
-train, test, target = get_all_train_test_target(period_of_time=21)
-# %%
-train_sc, test_sc = standardScaler(train, test, input_scaler=MinMaxScaler())
 # %%
 # import time
 from prepare_data_epidemic_situation_in_regions import *
 
-layer_err_mean = list()
-for layers_n in range(2,3):
-    layer_err_sum = 0
-    for i in range(5):
-        # start_time = time.time()
-        make_all(train_sc, target, layers_n)
-        submission = make_submission(test_sc, 7)
-        # print("--- %s seconds ---" % (time.time() - start_time))
-        clear_model()
+def the_best_number_hidden_layers():
+    layer_err_mean = list()
+    for layers_n in range(5):
+        layer_err_sum = 0
+        for i in range(5):
+            # start_time = time.time()
+            make_all(train_sc, target, layers_n)
+            submission = make_submission(test_sc, 7)
+            # print("--- %s seconds ---" % (time.time() - start_time))
+            clear_model()
 
-        submission = submission.reset_index()
-        test_ahead: pd.DataFrame = get_test_respiration()
-        submission.rename(columns={submission.columns[0]: test_ahead.columns[1], submission.columns[2]: 'prediction'},
-                          inplace=True)
+            submission = submission.reset_index()
+            test_ahead: pd.DataFrame = get_test_respiration()
+            submission.rename(columns={submission.columns[0]: test_ahead.columns[1], submission.columns[2]: 'prediction'},
+                              inplace=True)
 
-        result = pd.merge(test_ahead, submission.drop(columns=submission.columns[1]), on=test_ahead.columns[1])
-        result_err = result.iloc[:, :2]
-        result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)
-        result_err['relative error in %'] = abs(result_err.loc[:, 'subtract']/result.iloc[:, -1].astype(float))*100
-        norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
-        layer_err_sum = layer_err_sum + norm_2
-    layer_err_mean.append( layer_err_sum/10)
-print(layer_err_mean)
+            result = pd.merge(test_ahead, submission.drop(columns=submission.columns[1]), on=test_ahead.columns[1])
+            result_err = result.iloc[:, :2]
+            result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)
+            result_err['relative error in %'] = abs(result_err.loc[:, 'subtract'] / result.iloc[:, -1].astype(float)) * 100
+            norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
+            layer_err_sum = layer_err_sum + norm_2
+        layer_err_mean.append(layer_err_sum / 10)
+    print(layer_err_mean)
+    hiden_layers_result = pd.DataFrame({'layer': range(5), 'mean_norm_2_result': layer_err_mean})
+    return  hiden_layers_result
+
 # %%
-hiden_layers_result = pd.DataFrame({'layer':range(5),'mean_norm_2_result':layer_err_mean})
+from make_train_test_from_merge_data import get_all_train_test_target
+
+train, test, target = get_all_train_test_target(period_of_time=21)
+train_sc, test_sc = standardScaler(train, test, input_scaler=MinMaxScaler())
+# %%
+hiden_layers_result = the_best_number_hidden_layers()
+# %%
+layers_n = 2
+make_all(train_sc, target, layers_n)
+submission = make_submission(test_sc, 7)
+# print("--- %s seconds ---" % (time.time() - start_time))
+clear_model()
+
+submission = submission.reset_index()
+test_ahead: pd.DataFrame = get_test_respiration()
+submission.rename(columns={submission.columns[0]: test_ahead.columns[1], submission.columns[2]: 'prediction'},
+                  inplace=True)
+
+result = pd.merge(test_ahead, submission.drop(columns=submission.columns[1]), on=test_ahead.columns[1])
+result_err = result.iloc[:, :2]
+result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)
+result_err['relative error in %'] = abs(result_err.loc[:, 'subtract'] / result.iloc[:, -1].astype(float)) * 100
+norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
+print(norm_2)

@@ -53,7 +53,7 @@ def get_merge_data():
 
 
 # %%
-# merge  = get_merge_data()
+merge  = get_merge_data()
 # merge.to_csv('{}.csv'.format('results/data_merge'), index=False)
 #
 # region_n = np.repeat(range(1, 17), 365)
