@@ -125,57 +125,30 @@ def make_all(train, target, layers_n=2):
 
 # %%
 # import time
-from prepare_data_epidemic_situation_in_regions import *
+# def the_best_number_hidden_layers(train_sc, target,test_sc ):
+#     layer_err_mean = list()
+#     for layers_n in range(5):
+#         layer_err_sum = 0
+#         for i in range(5):
+#             # start_time = time.time()
+#             make_all(train_sc, target, layers_n)
+#             submission = make_submission(test_sc, 7)
+#             # print("--- %s seconds ---" % (time.time() - start_time))
+#             clear_model()
+#
+#             submission = submission.reset_index()
+#             # test_ahead: pd.DataFrame = get_test_respiration()
+#             # submission.rename(columns={submission.columns[0]: test_ahead.columns[1], submission.columns[2]: 'prediction'},
+#             #                   inplace=True)
+#
+#             # result = pd.merge(test_ahead, submission.drop(columns=submission.columns[1]), on=test_ahead.columns[1])
+#             result_err = result.iloc[:, :2]
+#             result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)
+#             result_err['relative error in %'] = abs(result_err.loc[:, 'subtract'] / result.iloc[:, -1].astype(float)) * 100
+#             norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
+#             layer_err_sum = layer_err_sum + norm_2
+#         layer_err_mean.append(layer_err_sum / 10)
+#     print(layer_err_mean)
+#     hiden_layers_result = pd.DataFrame({'layer': range(5), 'mean_norm_2_result': layer_err_mean})
+#     return  hiden_layers_result
 
-def the_best_number_hidden_layers():
-    layer_err_mean = list()
-    for layers_n in range(5):
-        layer_err_sum = 0
-        for i in range(5):
-            # start_time = time.time()
-            make_all(train_sc, target, layers_n)
-            submission = make_submission(test_sc, 7)
-            # print("--- %s seconds ---" % (time.time() - start_time))
-            clear_model()
-
-            submission = submission.reset_index()
-            test_ahead: pd.DataFrame = get_test_respiration()
-            submission.rename(columns={submission.columns[0]: test_ahead.columns[1], submission.columns[2]: 'prediction'},
-                              inplace=True)
-
-            result = pd.merge(test_ahead, submission.drop(columns=submission.columns[1]), on=test_ahead.columns[1])
-            result_err = result.iloc[:, :2]
-            result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)
-            result_err['relative error in %'] = abs(result_err.loc[:, 'subtract'] / result.iloc[:, -1].astype(float)) * 100
-            norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
-            layer_err_sum = layer_err_sum + norm_2
-        layer_err_mean.append(layer_err_sum / 10)
-    print(layer_err_mean)
-    hiden_layers_result = pd.DataFrame({'layer': range(5), 'mean_norm_2_result': layer_err_mean})
-    return  hiden_layers_result
-
-# %%
-from make_train_test_from_merge_data import get_all_train_test_target
-
-train, test, target = get_all_train_test_target(period_of_time=21)
-train_sc, test_sc = standardScaler(train, test, input_scaler=MinMaxScaler())
-# %%
-hiden_layers_result = the_best_number_hidden_layers()
-# %%
-layers_n = 2
-make_all(train_sc, target, layers_n)
-submission = make_submission(test_sc, 7)
-# print("--- %s seconds ---" % (time.time() - start_time))
-clear_model()
-
-submission = submission.reset_index()
-test_ahead: pd.DataFrame = get_test_respiration()
-submission.rename(columns={submission.columns[0]: test_ahead.columns[1], submission.columns[2]: 'prediction'},
-                  inplace=True)
-
-result = pd.merge(test_ahead, submission.drop(columns=submission.columns[1]), on=test_ahead.columns[1])
-result_err = result.iloc[:, :2]
-result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)
-result_err['relative error in %'] = abs(result_err.loc[:, 'subtract'] / result.iloc[:, -1].astype(float)) * 100
-norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
-print(norm_2)

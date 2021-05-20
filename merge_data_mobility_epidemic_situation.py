@@ -4,14 +4,12 @@ import pandas as pd
 import numpy as np
 
 
-# %%
 def get_data_mobility_data_epidemic_situation_in_regions():
     data_mobility = get_prepared_data_mobility()
     data_epidemic_situation_in_regions = prepare_data_epidemic_situation_in_regions()
     return data_mobility, data_epidemic_situation_in_regions
 
 
-# %%
 def change_to_polish_name_regions_in_mobility_data(data_mobility: pd.DataFrame,
                                                    data_epidemic_situation_in_regions: pd.DataFrame):
     data_epidemic_situation_in_regions.sort_values(by='region')
@@ -35,7 +33,6 @@ def change_to_polish_name_regions_in_mobility_data(data_mobility: pd.DataFrame,
     return data_mobility, data_epidemic_situation_in_regions
 
 
-# %%
 def merge_data_mobility_covid_19_situation(data_mobility: pd.DataFrame,
                                            data_epidemic_situation_in_regions: pd.DataFrame):
     data_merge = data_mobility.merge(data_epidemic_situation_in_regions, how='inner', on=['region', 'date'])
@@ -43,13 +40,14 @@ def merge_data_mobility_covid_19_situation(data_mobility: pd.DataFrame,
     return data_merge
 
 
-# %%
 def get_merge_data():
     data_mobility, data_epidemic_situation_in_regions = get_data_mobility_data_epidemic_situation_in_regions()
     data_mobility, data_epidemic_situation_in_regions = change_to_polish_name_regions_in_mobility_data(data_mobility,
                                                                                                        data_epidemic_situation_in_regions)
     data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
     return data_merge
+
+
 
 
 # %%
