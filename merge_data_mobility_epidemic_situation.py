@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from prepare_data_mobility import get_prepared_data_mobility
 from prepare_data_epidemic_situation_in_regions import prepare_data_epidemic_situation_in_regions
 import pandas as pd
@@ -46,12 +48,20 @@ def get_merge_data():
                                                                                                        data_epidemic_situation_in_regions)
     data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
     return data_merge
-
-
-
+def get_merge_data_to_last_day(last_day:str = '2021-03-03'):
+    merge = get_merge_data()
+    days = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
+    merge['date'] = days
+    merge_last_day = merge.loc[merge['date'] < datetime.strptime(last_day, "%Y-%m-%d").date()]
+    return merge_last_day
 
 # %%
-merge  = get_merge_data()
+# merge  = get_merge_data()
+# # merge = merge.sort_values(by='date').reindex()
+# days = pd.to_datetime(merge.loc[:,'date'], format='%Y-%m-%d').dt.date
+# merge['date'] = days
+# merge_last_day = merge.loc[ merge['date'] < datetime.strptime('2021-03-03', "%Y-%m-%d").date()]
+# %%
 # merge.to_csv('{}.csv'.format('results/data_merge'), index=False)
 #
 # region_n = np.repeat(range(1, 17), 365)
