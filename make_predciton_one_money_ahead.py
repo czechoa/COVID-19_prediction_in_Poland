@@ -1,4 +1,4 @@
-# %%
+
 import matplotlib.pyplot as plt
 from make_train_test_from_merge_data import *
 from simple_regresion import *
@@ -14,26 +14,31 @@ def next_day(date: str):
 
 
 # %%
-last_day_train = '2021-03-16'
+last_day_train = '2021-03-01'
 
 layers_n = 2
-day = last_day_train
+
 result_all = pd.DataFrame(columns=['date', 'region', 'Liczba zajętych respiratorów (stan ciężki)',
                                    'prediction'])
 result_all_err = pd.DataFrame()
-period_of_time = 21
-data_merge = get_merge_data()
-train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time)
-# %%
+period_of_time = 14
 
+data_merge = get_merge_data_to_last_day(last_day_train)
 
-for day_ahead_to_predict in range(1, 21):
+# train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time)  # day is one day ahead
+train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
+test_to_predict = make_date_to_prediction(train_all)
+
+day = last_day_train
+for day_ahead_to_predict in range(1, 18):
+    train, target = get_train_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
+    # test_to_predict = make_date_to_prediction(train_all)
+
+    # train_sc, test_sc = standardScaler(train, test, input_scaler=MinMaxScaler())
+    make_all(train, target)
+    submission = make_submission(test_to_predict, day_ahead_to_predict)
     clear_model()
 
-    train, test, target = get_train_test_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
-    train_sc, test_sc = standardScaler(train, test, input_scaler=MinMaxScaler())
-    make_all(train_sc, target)
-    submission = make_submission(test_sc, day_ahead_to_predict)
     # submission = add_prediction_to_submission(test_sc, submission, day_ahead_to_predict)
 
     day = next_day(day)
@@ -54,19 +59,27 @@ for day_ahead_to_predict in range(1, 21):
 
 # %%
 regions = result.loc[:, 'region'].unique()
+data_merge_from_to = get_merge_data_from_to('2021-02-15','2021-04-04' )
+zachodnie = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
+days_from_to = pd.to_datetime(zachodnie.loc[:, 'date'].values, format='%Y-%m-%d')
+
 for i in range(len(regions)):
     fig, ax = plt.subplots()
 
     region_prd: pd.DataFrame = result_all.loc[result_all['region'] == regions[i]]
+    region_merge = data_merge_from_to.loc[data_merge_from_to['region'] == regions[i]]
+
+    y = region_merge.iloc[:, -1].astype(float)
+    plt.plot(days_from_to, y)
 
     days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
 
     x = days
     y = region_prd.loc[:, 'prediction'].astype(float).values
     plt.plot(x, y, label='prediction')
-    y = region_prd.iloc[:, -2].astype(float).values
-    plt.plot(x, y, label="reality")
-    # plt.plot(merge_data.loc[:, 'date'], merge_data.iloc[:, -1].astype(float), 'reality')
+    # y = region_prd.iloc[:, -2].astype(float).values
+    # plt.plot(x, y, label="reality")
+    # x = list(days_from_to)
     # Define the d03ate format
     ax.set(xlabel="Date",
            ylabel="engaged respiration",
@@ -77,9 +90,4 @@ for i in range(len(regions)):
     plt.legend(loc='lower left')
     plt.show()
 # %%
-days_from_to = pd.to_datetime(merge_data.loc[:, 'date'].values, format='%Y-%m-%d')
-plt.plot(days_from_to, merge_data.iloc[:, -1].astype(float), 'reality')
-plt.show()
-# %%
-data_merge_from_to = get_merge_data_from_to('2021-03-17', '2021-04--04')
-zachodnie = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
+result_all_err = result_all_err.sort_values(by=['region','date'])

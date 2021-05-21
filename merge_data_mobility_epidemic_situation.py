@@ -48,6 +48,7 @@ def get_merge_data():
                                                                                                        data_epidemic_situation_in_regions)
     data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
     return data_merge
+
 def get_merge_data_to_last_day(last_day:str = '2021-03-03'):
     merge = get_merge_data()
     days = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
