@@ -55,6 +55,15 @@ def get_merge_data_to_last_day(last_day:str = '2021-03-03'):
     merge_last_day = merge.loc[merge['date'] < datetime.strptime(last_day, "%Y-%m-%d").date()]
     return merge_last_day
 
+def get_merge_data_from_to(first_day:str = '2021-03-03', last_day ='2021-04-04' ):
+    merge = get_merge_data()
+    days = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
+    merge['date'] = days
+    merge = merge.loc[merge['date'] >= datetime.strptime(first_day, "%Y-%m-%d").date()]
+    merge_from_to = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
+
+    return merge_from_to
+
 # %%
 # merge  = get_merge_data()
 # # merge = merge.sort_values(by='date').reindex()

@@ -1,11 +1,11 @@
 # %%
-from merge_data_mobility_epidemic_situation import get_merge_data
+from merge_data_mobility_epidemic_situation import get_merge_data, get_merge_data_to_last_day
 import pandas as pd
 
 
 # %%
 def reshape_data_merge_to_get_train_with_two_week_history(data_merge: pd.DataFrame, number_of_days_in_one_row,
-                                                          first_n_attribute_dsc_region):
+                                                          first_n_attribute_dsc_region = 4):
     train_all = pd.DataFrame()
     n = number_of_days_in_one_row
     number_of_days = len(data_merge.loc[:, 'date'].unique())
@@ -66,7 +66,7 @@ def get_train_only_with_preparation_n_days_ahead(train_all: pd.DataFrame,
 
 
 def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
-                          number_of_days_in_one_rows, number_day_ahead_to_predition, first_n_attribute_dsc_region):
+                          number_of_days_in_one_rows, number_day_ahead_to_predition, first_n_attribute_dsc_region =4):
     train = get_train_only_with_preparation_n_days_ahead(train_all, number_day_ahead_to_predition)
 
     test = make_test(data_merge, number_of_days_in_one_rows, number_day_ahead_to_predition,
@@ -79,7 +79,7 @@ def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 
 # %%
 # from simple_regresion import *
-#
+# #
 # def one_mounTH_prediction():
 #     period_of_time = 14
 #     data_merge = get_merge_data()
@@ -95,10 +95,10 @@ def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 #     submission_to_cvs(submission, 'results/preparation_one_month_ahead_1')
 #
 
-# %%
 def get_all_train_test_target(period_of_time=14, day_ahead=7
-                              , first_n_attribute_dsc_region=4):
-    data_merge = get_merge_data()
+                              , first_n_attribute_dsc_region=4, last_day_train = "2021-04-04"):
+    # data_merge = get_merge_data()
+    data_merge = get_merge_data_to_last_day(last_day_train)
     train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time,
                                                                       first_n_attribute_dsc_region)
     train, test, target = get_train_test_target(data_merge, train_all, period_of_time, day_ahead,
