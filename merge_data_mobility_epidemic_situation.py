@@ -66,7 +66,7 @@ def get_merge_data_from_to(first_day:str = '2021-03-03', last_day ='2021-04-04' 
     return merge_from_to
 
 # %%
-# merge  = get_merge_data()
+merge  = get_merge_data()
 # # merge = merge.sort_values(by='date').reindex()
 # days = pd.to_datetime(merge.loc[:,'date'], format='%Y-%m-%d').dt.date
 # merge['date'] = days

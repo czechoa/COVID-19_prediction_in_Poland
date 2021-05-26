@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 from make_train_test_from_merge_data import *
 from simple_regresion import *
@@ -7,14 +6,18 @@ from prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
 
 
+#  3 dniowa srednia
+#  dane dla polski i suma predykcji (  na jednym wykresie )
+# wyslac wykresy
+#   SSTM - LTFTM
+#
 def next_day(date: str):
     date = datetime.strptime(date, "%Y-%m-%d")
     modified_date = date + timedelta(days=1)
     return datetime.strftime(modified_date, "%Y-%m-%d")
 
 
-# %%
-last_day_train = '2021-03-01'
+last_day_train = '2021-03-20'
 
 layers_n = 2
 
@@ -25,16 +28,16 @@ period_of_time = 14
 
 data_merge = get_merge_data_to_last_day(last_day_train)
 
-# train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time)  # day is one day ahead
 train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
 test_to_predict = make_date_to_prediction(train_all)
 
 day = last_day_train
-for day_ahead_to_predict in range(1, 18):
+for day_ahead_to_predict in range(1, 30):
     train, target = get_train_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
     # test_to_predict = make_date_to_prediction(train_all)
 
     # train_sc, test_sc = standardScaler(train, test, input_scaler=MinMaxScaler())
+    train = avarage_train_from_n_days(train, 3)
     make_all(train, target)
     submission = make_submission(test_to_predict, day_ahead_to_predict)
     clear_model()
@@ -57,9 +60,8 @@ for day_ahead_to_predict in range(1, 18):
     # norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
     # print(norm_2)
 
-# %%
 regions = result.loc[:, 'region'].unique()
-data_merge_from_to = get_merge_data_from_to('2021-02-15','2021-04-04' )
+data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
 zachodnie = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
 days_from_to = pd.to_datetime(zachodnie.loc[:, 'date'].values, format='%Y-%m-%d')
 
@@ -70,7 +72,7 @@ for i in range(len(regions)):
     region_merge = data_merge_from_to.loc[data_merge_from_to['region'] == regions[i]]
 
     y = region_merge.iloc[:, -1].astype(float)
-    plt.plot(days_from_to, y)
+    plt.plot(days_from_to, y, label="reality")
 
     days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
 
@@ -89,5 +91,7 @@ for i in range(len(regions)):
     plt.grid()
     plt.legend(loc='lower left')
     plt.show()
+
+result_all_err = result_all_err.sort_values(by=['region', 'date'])
 # %%
-result_all_err = result_all_err.sort_values(by=['region','date'])
+# train_av = avarage_train_from_n_days(train, 3)

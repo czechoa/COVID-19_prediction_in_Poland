@@ -15,7 +15,7 @@ import pandas as pd
 
 # %%
 def prepare_data_epidemic_situation_in_regions(
-        path='data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach.csv'):
+        path='data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv'):
     train_data_path = path
     data = pd.read_csv(train_data_path, header=1)
     data = split_data_that_region_was_attribute(data)
