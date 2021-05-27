@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
 from make_train_test_from_merge_data import *
 from simple_regresion import *
-from merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from merge_data_mobility_epidemic_situation import get_merge_data_from_to, get_merge_data_to_last_day, get_merge_data
 from prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
-
 
 #  3 dniowa srednia
 #  dane dla polski i suma predykcji (  na jednym wykresie )
@@ -18,10 +17,6 @@ def next_day(date: str):
 
 
 last_day_train = '2021-03-20'
-# y = region_prd.iloc[:, -2].astype(float).values
-# plt.plot(x, y, label="reality")
-# x = list(days_from_to)
-# Define the d03ate format
 layers_n = 2
 
 result_all = pd.DataFrame(columns=['date', 'region', 'Liczba zajętych respiratorów (stan ciężki)',
@@ -29,9 +24,9 @@ result_all = pd.DataFrame(columns=['date', 'region', 'Liczba zajętych respirato
 result_all_err = pd.DataFrame()
 period_of_time = 14
 
-data_merge = get_merge_data_to_last_day(last_day_train)
+data_merge = get_merge_data_from_to(last_day = last_day_train)
 data_merge = data_merge[data_merge["region"] != 'POLSKA']
-
+# %%
 train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
 test_to_predict = make_date_to_prediction(train_all)
 day = last_day_train
@@ -138,4 +133,3 @@ def plot_prediction_to_Poland():
 data_merge = data_merge[data_merge["region"] != 'POLSKA' ]
 
 
-data_Poland_from_prediction = re

@@ -1,5 +1,5 @@
 # %%
-from merge_data_mobility_epidemic_situation import get_merge_data, get_merge_data_to_last_day
+# from merge_data_mobility_epidemic_situation import get_merge_data, get_merge_data_to_last_day
 import pandas as pd
 
 
@@ -129,15 +129,15 @@ def get_train_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
     return train, target
 
 
-def get_all_train_test_target(period_of_time=14, day_ahead=7
-                              , first_n_attribute_dsc_region=4, last_day_train="2021-04-01"):
-    # data_merge = get_merge_data()
-    data_merge = get_merge_data_to_last_day(last_day_train)
-    train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time,
-                                                                      first_n_attribute_dsc_region)
-    train, test, target = get_train_test_target(data_merge, train_all, period_of_time, day_ahead,
-                                                first_n_attribute_dsc_region)
-    return train, test, target
+# def get_all_train_test_target(period_of_time=14, day_ahead=7
+#                               , first_n_attribute_dsc_region=4, last_day_train="2021-04-01"):
+#     # data_merge = get_merge_data()
+#     data_merge = get_merge_data_to_last_day(last_day_train)
+#     train_all = reshape_data_merge_to_get_train_with_two_week_history(data_merge, period_of_time,
+#                                                                       first_n_attribute_dsc_region)
+#     train, test, target = get_train_test_target(data_merge, train_all, period_of_time, day_ahead,
+#                                                 first_n_attribute_dsc_region)
+#     return train, test, target
 
 # %%
 

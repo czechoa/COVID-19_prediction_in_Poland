@@ -37,11 +37,11 @@ def change_to_polish_name_regions_in_mobility_data(data_mobility: pd.DataFrame,
     region_repeat = np.repeat(region, number_date)
     data_mobility.insert(1, 'region', region_repeat)
 
-    region_n = np.repeat(range(1, len(region) + 1), number_date)
-    data_mobility.insert(3, 'region_n', region_n)
-    # data_mobility = insert_culumn_number_of_region_to_data(data_mobility,region,number_date)
+    # region_n = np.repeat(range(1, len(region) + 1), number_date)
+    # data_mobility.insert(3, 'region_n', region_n)
+    data_mobility = insert_culumn_number_of_region_to_data(data_mobility,region,number_date)
 
-    return data_mobility, data_epidemic_situation_in_regions, region_df
+    return data_mobility, data_epidemic_situation_in_regions
 
 def insert_culumn_number_of_region_to_data(data:pd.DataFrame, region, number_date):
     region_n = np.repeat(range(1, len(region) + 1), number_date)
@@ -60,6 +60,7 @@ def get_merge_data():
     data_mobility, data_epidemic_situation_in_regions = change_to_polish_name_regions_in_mobility_data(data_mobility,
                                                                                                        data_epidemic_situation_in_regions)
     data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
+
     return data_merge
 
 def get_merge_data_to_last_day(last_day:str = '2021-03-03'):
@@ -69,13 +70,16 @@ def get_merge_data_to_last_day(last_day:str = '2021-03-03'):
     merge_last_day = merge.loc[merge['date'] < datetime.strptime(last_day, "%Y-%m-%d").date()]
     return merge_last_day
 
-def get_merge_data_from_to(first_day:str = '2021-03-03', last_day ='2021-04-04' ):
+def get_merge_data_from_to(first_day:str = None, last_day ='2021-04-04' ):
     merge = get_merge_data()
     days = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
     merge['date'] = days
-    merge = merge.loc[merge['date'] >= datetime.strptime(first_day, "%Y-%m-%d").date()]
-    merge_from_to = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
+    if(first_day != None):
+        merge = merge.loc[merge['date'] >= datetime.strptime(first_day, "%Y-%m-%d").date()]
 
+    merge_from_to:pd.DataFrame = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
+
+    merge_from_to = merge_from_to.sort_values(by= ['region_n','date'])
     return merge_from_to
 
 # %%
@@ -89,3 +93,5 @@ def get_merge_data_from_to(first_day:str = '2021-03-03', last_day ='2021-04-04' 
 # region_n = np.repeat(range(1, 17), 365)
 
 # data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
+# %%
+data_merge = get_merge_data_from_to()
