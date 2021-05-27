@@ -23,7 +23,9 @@ def change_to_polish_name_regions_in_mobility_data(data_mobility: pd.DataFrame,
     region_df = pd.DataFrame()
     region_df['mobility'] = region_mobility
     region_df['region_epidemic_situation'] = region
-    myorder = [14, 1, 5, 0, 2, 3, 6, 7, 8, 9, 10, 11, 13, 15, 4, 12]
+    # myorder = [14, 1, 5, 0, 2, 3, 6, 7, 8, 9, 10, 11, 13, 15, 4, 12]
+    myorder = [12, 1, 5, 0, 2, 3, 4, 6, 7, 8, 9, 10, 15, 11, 13, 14, 16]
+
     region = [region[i] for i in myorder]
     region_df['region_epidemic_situation'] = region
     number_date = data_mobility.shape[0] / len(region_mobility)
@@ -66,7 +68,7 @@ def get_merge_data_from_to(first_day:str = '2021-03-03', last_day ='2021-04-04' 
     return merge_from_to
 
 # %%
-merge  = get_merge_data()
+# merge  = get_merge_data()
 # # merge = merge.sort_values(by='date').reindex()
 # days = pd.to_datetime(merge.loc[:,'date'], format='%Y-%m-%d').dt.date
 # merge['date'] = days
@@ -75,3 +77,4 @@ merge  = get_merge_data()
 # merge.to_csv('{}.csv'.format('results/data_merge'), index=False)
 #
 # region_n = np.repeat(range(1, 17), 365)
+
