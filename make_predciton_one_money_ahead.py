@@ -30,17 +30,18 @@ result_all_err = pd.DataFrame()
 period_of_time = 14
 
 data_merge = get_merge_data_to_last_day(last_day_train)
-# data_merge = data_merge[data_merge["region"] != 'POLSKA']
+data_merge = data_merge[data_merge["region"] != 'POLSKA']
 
 train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
 test_to_predict = make_date_to_prediction(train_all)
 day = last_day_train
-for day_ahead_to_predict in range(1,2):
+# %%
+for day_ahead_to_predict in range(1,3):
     train, target = get_train_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
     # test_to_predict = make_date_to_prediction(train_all)
 
     # train_sc, test_sc = standardScaler(train, test, input_scaler=MinMaxScaler())
-    train = avarage_train_from_n_days(train, 3)
+    # train = avarage_train_from_n_days(train, 3)
     make_all(train, target)
     submission = make_submission(test_to_predict, day_ahead_to_predict)
     clear_model()
