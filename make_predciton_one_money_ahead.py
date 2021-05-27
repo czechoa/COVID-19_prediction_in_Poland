@@ -64,34 +64,41 @@ regions = result.loc[:, 'region'].unique()
 data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
 zachodnie = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
 days_from_to = pd.to_datetime(zachodnie.loc[:, 'date'].values, format='%Y-%m-%d')
+# %%
 
+fig, ax = plt.subplots(8,2 , figsize=(60, 30))
+fig.subplots_adjust(hspace = .5, wspace=.001)
+
+axs = ax.ravel()
 for i in range(len(regions)):
-    fig, ax = plt.subplots()
+
 
     region_prd: pd.DataFrame = result_all.loc[result_all['region'] == regions[i]]
     region_merge = data_merge_from_to.loc[data_merge_from_to['region'] == regions[i]]
 
     y = region_merge.iloc[:, -1].astype(float)
-    plt.plot(days_from_to, y, label="reality")
+    axs[i].plot(days_from_to, y, label="reality")
 
     days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
 
     x = days
     y = region_prd.loc[:, 'prediction'].astype(float).values
-    plt.plot(x, y, label='prediction')
+    axs[i].plot(x, y, label='prediction')
     # y = region_prd.iloc[:, -2].astype(float).values
     # plt.plot(x, y, label="reality")
     # x = list(days_from_to)
     # Define the d03ate format
-    ax.set(xlabel="Date",
+    axs[i].set(xlabel="Date",
            ylabel="engaged respiration",
            title=regions[i]
            )
-    plt.gcf().autofmt_xdate()
-    plt.grid()
-    plt.legend(loc='lower left')
-    plt.show()
+    # axs[i].gcf().autofmt_xdate()
+    axs[i].grid()
+    axs[i].legend(loc='lower left')
+plt.show()
+
 
 result_all_err = result_all_err.sort_values(by=['region', 'date'])
+fig.savefig('results/test_plot')
 # %%
 # train_av = avarage_train_from_n_days(train, 3)
