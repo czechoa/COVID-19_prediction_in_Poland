@@ -59,17 +59,31 @@ def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFr
 
 def make_target(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day_ahead_to_predition):
     # index = number_of_days_in_one_rows + number_day_ahead_to_predition 
-    index = number_of_days_in_one_rows + number_day_ahead_to_predition - 1
+    first_index = number_of_days_in_one_rows + number_day_ahead_to_predition - 1
 
     # target = [data_merge.loc[data_merge['region'] == region].iloc[index:, -1] for region in
     #           data_merge.loc[:, 'region']]
-    target_f = pd.Series()
+    target_f = pd.DataFrame()
     for region in data_merge.loc[:, 'region'].unique():
-        target_f = target_f.append(data_merge.loc[data_merge['region'] == region].iloc[index:, -1])
+        one_region_target :pd.DataFrame = data_merge[data_merge['region'] == region].iloc[first_index:,[0,1,-1]]
+        one_region_target = one_region_target.set_index([one_region_target.columns[0], one_region_target.columns[1]])
+        target_f = target_f.append(one_region_target)
 
     target_f = target_f.astype(float)
     return target_f
 
+def make_target_from_train_all(train_all_f :  pd.DataFrame, day_target,  number_day_ahead_to_predition):
+    # index = number_of_days_in_one_rows + number_day_ahead_to_predition
+
+    # target = [data_merge.loc[data_merge['region'] == region].iloc[index:, -1] for region in
+    #           data_merge.loc[:, 'region']]
+    target_f = pd.Series()
+    for region_name in train_all_f.loc[:, 'region'].unique():
+        region_df = train_all_f[train_all_f['region'] == region_name]
+        target_f = target_f.append(region_df[region_df['date'] ==  day_target])
+
+    target_f = target_f.astype(float)
+    return target_f
 
 def make_test(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day_ahead_to_predition,
               first_n_attribute_dsc_region):
