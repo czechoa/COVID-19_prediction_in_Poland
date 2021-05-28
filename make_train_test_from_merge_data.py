@@ -3,7 +3,8 @@ import pandas as pd
 import numpy as np
 
 # first_n_attribute_dsc_region= 5
-first_n_attribute_dsc_region = 3 + 17  # region date and day of the week plus oneHotCode (region)
+# global first_n_attribute_dsc_region
+first_n_attribute_dsc_region = 3   # region date
 
 
 def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
@@ -127,6 +128,8 @@ def get_train_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 
 
 def oneHotEncode(df, colName):
+    global first_n_attribute_dsc_region
+    first_n_attribute_dsc_region += len(df['region'].unique())
     if df[colName].dtype == np.dtype('object'):
         dummies = pd.get_dummies(df[colName], prefix=colName)
         col_dsc = first_n_attribute_dsc_region - len(df['region'].unique())

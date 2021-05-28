@@ -5,7 +5,7 @@ from merge_data_mobility_epidemic_situation import get_merge_data_from_to, get_m
 from prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
 
-#  3 dniowa srednia
+#  3 dniowa srednia  i moze oneHotCode
 #  dane dla polski i suma predykcji (  na jednym wykresie )
 # wyslac wykresy
 #   SSTM - LTFTM
