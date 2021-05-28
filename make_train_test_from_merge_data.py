@@ -1,30 +1,7 @@
 # %%
-# from merge_data_mobility_epidemic_situation import get_merge_data, get_merge_data_to_last_day
 import pandas as pd
 
-
-def reshape_data_merge_to_get_train_with_two_week_history(data_merge: pd.DataFrame, number_of_days_in_one_row,
-                                                          first_n_attribute_dsc_region=4):
-    train_all = pd.DataFrame()
-    n = number_of_days_in_one_row
-    number_of_days = len(data_merge.loc[:, 'date'].unique())
-    while n < data_merge.shape[0]:
-        if n % number_of_days == 0:  # new regio
-            n += number_of_days_in_one_row
-        else:
-            data_merge_stack: pd.Series = data_merge.iloc[
-                                          (
-                                                  n - number_of_days_in_one_row):n,
-                                          first_n_attribute_dsc_region:].stack()
-            data_merge_stack = pd.concat(
-                [data_merge.iloc[n, :first_n_attribute_dsc_region], data_merge_stack]).reset_index(
-                drop=True)
-            train_all = train_all.append(data_merge_stack, ignore_index=True)
-            n += 1
-
-    return train_all
-
-
+first_n_attribute_dsc_region= 5
 def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
     # TODO  from  train_all
     # iterate over each group
@@ -38,8 +15,7 @@ def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
     return train_mean_n_days
 
 
-def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFrame, number_of_days_in_one_row,
-                                                           first_n_attribute_dsc_region=4):
+def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFrame, number_of_days_in_one_row):
     train_all = pd.DataFrame()
     number_of_days = len(data_merge.loc[:, 'date'].unique())
     for region in data_merge.loc[:, 'region'].unique():
@@ -54,6 +30,7 @@ def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFr
                 drop=True)
             train_all = train_all.append(region_df_stack, ignore_index=True)
             n += 1
+
     return train_all
 
 
@@ -72,21 +49,8 @@ def make_target(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day
     target_f = target_f.astype(float)
     return target_f
 
-def make_target_from_train_all(train_all_f :  pd.DataFrame, day_target,  number_day_ahead_to_predition):
-    # index = number_of_days_in_one_rows + number_day_ahead_to_predition
 
-    # target = [data_merge.loc[data_merge['region'] == region].iloc[index:, -1] for region in
-    #           data_merge.loc[:, 'region']]
-    target_f = pd.Series()
-    for region_name in train_all_f.loc[:, 'region'].unique():
-        region_df = train_all_f[train_all_f['region'] == region_name]
-        target_f = target_f.append(region_df[region_df['date'] ==  day_target])
-
-    target_f = target_f.astype(float)
-    return target_f
-
-def make_test(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day_ahead_to_predition,
-              first_n_attribute_dsc_region):
+def make_test(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day_ahead_to_predition):
     test_f = pd.DataFrame()
     for region in data_merge.loc[:, 'region'].unique():
         data_merge_stack: pd.Series = data_merge.loc[data_merge['region'] == region].iloc[
@@ -123,7 +87,7 @@ def get_train_only_with_preparation_n_days_ahead(train_all: pd.DataFrame,
 
 
 def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
-                          number_of_days_in_one_rows, number_day_ahead_to_predition, first_n_attribute_dsc_region=4):
+                          number_of_days_in_one_rows, number_day_ahead_to_predition):
     train = get_train_only_with_preparation_n_days_ahead(train_all, number_day_ahead_to_predition)
 
     test = make_test(data_merge, number_of_days_in_one_rows, number_day_ahead_to_predition,
@@ -133,9 +97,19 @@ def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 
     return train, test, target
 
+def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
+                          number_of_days_in_one_rows, number_day_ahead_to_predition):
+    train = get_train_only_with_preparation_n_days_ahead(train_all, number_day_ahead_to_predition)
+
+    test = make_test(data_merge, number_of_days_in_one_rows, number_day_ahead_to_predition,
+                     first_n_attribute_dsc_region)
+
+    target = make_target(data_merge, number_of_days_in_one_rows, number_day_ahead_to_predition)
+
+    return train, test, target
 
 def get_train_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
-                     number_of_days_in_one_rows, number_day_ahead_to_predition, first_n_attribute_dsc_region=4):
+                     number_of_days_in_one_rows, number_day_ahead_to_predition):
     train = get_train_only_with_preparation_n_days_ahead(train_all, number_day_ahead_to_predition)
 
     target = make_target(data_merge, number_of_days_in_one_rows, number_day_ahead_to_predition)

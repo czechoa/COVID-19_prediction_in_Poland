@@ -70,14 +70,23 @@ def get_merge_data_to_last_day(last_day:str = '2021-03-03'):
     merge_last_day = merge.loc[merge['date'] < datetime.strptime(last_day, "%Y-%m-%d").date()]
     return merge_last_day
 
+def add_culumn_is_Poland(data:pd.DataFrame):
+    is_Poland = (data['region'] == 'POLSKA').astype(int)
+    data.insert(4,'sum all region', is_Poland )
+    return data
+
 def get_merge_data_from_to(first_day:str = None, last_day ='2021-04-04' ):
     merge = get_merge_data()
-    days = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
-    merge['date'] = days
+    merge['date'] = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
+
     if(first_day != None):
         merge = merge.loc[merge['date'] >= datetime.strptime(first_day, "%Y-%m-%d").date()]
 
     merge_from_to:pd.DataFrame = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
+
+    merge_from_to  = add_culumn_is_Poland(merge_from_to)
+
+    merge_from_to = merge_from_to.apply(pd.to_numeric, errors='ignore')
 
     merge_from_to = merge_from_to.sort_values(by= ['region_n','date'])
     return merge_from_to
@@ -95,3 +104,5 @@ def get_merge_data_from_to(first_day:str = None, last_day ='2021-04-04' ):
 # data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
 # %%
 data_merge = get_merge_data_from_to()
+# data_merge = add_culumn_is_Poland(data_merge)
+
