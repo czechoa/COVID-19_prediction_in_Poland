@@ -1,7 +1,11 @@
 # %%
 import pandas as pd
+import numpy as np
 
-first_n_attribute_dsc_region= 5
+# first_n_attribute_dsc_region= 5
+first_n_attribute_dsc_region = 3 + 17  # region date and day of the week plus oneHotCode (region)
+
+
 def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
     # TODO  from  train_all
     # iterate over each group
@@ -17,6 +21,9 @@ def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
 
 def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFrame, number_of_days_in_one_row):
     train_all = pd.DataFrame()
+
+    data_merge = oneHotEncode(data_merge, 'region')
+
     number_of_days = len(data_merge.loc[:, 'date'].unique())
     for region in data_merge.loc[:, 'region'].unique():
         region_df = data_merge.loc[data_merge['region'] == region]
@@ -42,7 +49,7 @@ def make_target(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day
     #           data_merge.loc[:, 'region']]
     target_f = pd.DataFrame()
     for region in data_merge.loc[:, 'region'].unique():
-        one_region_target :pd.DataFrame = data_merge[data_merge['region'] == region].iloc[first_index:,[0,1,-1]]
+        one_region_target: pd.DataFrame = data_merge[data_merge['region'] == region].iloc[first_index:, [0, 1, -1]]
         one_region_target = one_region_target.set_index([one_region_target.columns[0], one_region_target.columns[1]])
         target_f = target_f.append(one_region_target)
 
@@ -97,6 +104,7 @@ def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 
     return train, test, target
 
+
 def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
                           number_of_days_in_one_rows, number_day_ahead_to_predition):
     train = get_train_only_with_preparation_n_days_ahead(train_all, number_day_ahead_to_predition)
@@ -108,6 +116,7 @@ def get_train_test_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 
     return train, test, target
 
+
 def get_train_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
                      number_of_days_in_one_rows, number_day_ahead_to_predition):
     train = get_train_only_with_preparation_n_days_ahead(train_all, number_day_ahead_to_predition)
@@ -116,6 +125,16 @@ def get_train_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 
     return train, target
 
+
+def oneHotEncode(df, colName):
+    if df[colName].dtype == np.dtype('object'):
+        dummies = pd.get_dummies(df[colName], prefix=colName)
+        col_dsc = first_n_attribute_dsc_region - len(df['region'].unique())
+        df = pd.concat([df.iloc[:, :col_dsc], dummies, df.iloc[:, col_dsc:]], axis=1)
+
+        # drop the encoded column
+        # df.drop([colName], axis=1, inplace=True)
+    return df
 
 # def get_all_train_test_target(period_of_time=14, day_ahead=7
 #                               , first_n_attribute_dsc_region=4, last_day_train="2021-04-01"):
