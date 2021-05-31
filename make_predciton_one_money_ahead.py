@@ -84,11 +84,11 @@ def plot_prediction_to_Poland(result_all_f, data_merge_from_to_f):
 # %%
 last_day_train = '2021-03-20'
 period_of_time = 21
-data_merge = get_merge_data_from_to(last_day = last_day_train)
+data_merge_org = get_merge_data_from_to(last_day = last_day_train)
+data_merge = avarage_merge_data_from_n_days(data_merge_org.copy(),7)
 # data_merge = data_merge[data_merge["region"] != 'POLSKA']
 # train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
-train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge.copy(), period_of_time)
-# %%
+train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
 
 test_to_predict = make_date_to_prediction(train_all)
 
