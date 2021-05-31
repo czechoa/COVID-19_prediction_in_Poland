@@ -88,6 +88,9 @@ data_merge = get_merge_data_from_to(last_day = last_day_train)
 # data_merge = data_merge[data_merge["region"] != 'POLSKA']
 train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
 # %%
+train_all_1 = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
+
+# %%
 test_to_predict = make_date_to_prediction(train_all)
 result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge,train_all,period_of_time,last_day_train)
 data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')

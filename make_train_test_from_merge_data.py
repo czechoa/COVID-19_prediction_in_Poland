@@ -4,12 +4,13 @@ import numpy as np
 
 # first_n_attribute_dsc_region= 5
 # global first_n_attribute_dsc_region
-first_n_attribute_dsc_region = 3   # region date
+first_n_attribute_dsc_region = 3  # region date
 
 
 def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
     # TODO  from  train_all
     # iterate over each group
+
     df1_grouped = train_f.groupby(train_f.columns[0])
     train_mean_n_days = pd.DataFrame()
     for group_name, df_group in df1_grouped:
@@ -42,6 +43,34 @@ def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFr
     return train_all
 
 
+def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.DataFrame, number_of_days_in_one_row):
+    train_all = pd.DataFrame()
+    data_merge = oneHotEncode(data_merge, 'region')
+
+    number_of_days = len(data_merge.loc[:, 'date'].unique())
+    for region in data_merge.loc[:, 'region'].unique():
+        region_df = data_merge.loc[data_merge['region'] == region]
+        # print(region)
+        region_train = pd.DataFrame()
+        for n in range(number_of_days_in_one_row, number_of_days + 1):
+            region_df_stack: pd.Series = region_df.iloc[
+                                         (
+                                                 n - number_of_days_in_one_row):n,
+                                         first_n_attribute_dsc_region:].stack().reset_index(drop=True)
+            region_train = region_train.append(region_df_stack,ignore_index=True)
+            n += 1
+
+        region_df_dsc = region_df.iloc[(number_of_days_in_one_row - 1):number_of_days + 1, :first_n_attribute_dsc_region].reset_index(drop=True)
+        region_train = region_train.reset_index(drop=True)
+
+        region_train = pd.concat(
+            [region_df_dsc, region_train], axis=1, ignore_index=True)
+
+        train_all = train_all.append(region_train,ignore_index=True)
+
+    return train_all
+
+# %%
 def make_target(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day_ahead_to_predition):
     # index = number_of_days_in_one_rows + number_day_ahead_to_predition 
     first_index = number_of_days_in_one_rows + number_day_ahead_to_predition - 1
