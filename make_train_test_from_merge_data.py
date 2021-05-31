@@ -11,6 +11,7 @@ def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
     # TODO  from  train_all
     # iterate over each group
 
+
     df1_grouped = train_f.groupby(train_f.columns[0])
     train_mean_n_days = pd.DataFrame()
     for group_name, df_group in df1_grouped:
@@ -27,7 +28,20 @@ def avarage_train_all_from_n_days(train_f: pd.DataFrame, days_n):
     train_mean_n_days = df_region.dropna()
 
     return train_mean_n_days
+def avarage_merge_data_from_n_days(merge_data: pd.DataFrame, days_n):
+    # TODO  from  train_all
+    # iterate over each group
+    print(first_n_attribute_dsc_region)
 
+    df1_grouped = merge_data.groupby(merge_data.columns[0])
+    train_mean_n_days = pd.DataFrame()
+    for group_name, df_group in df1_grouped:
+        df_region = df_group.iloc[:,first_n_attribute_dsc_region:].rolling(days_n).mean()
+        train_mean_n_days = train_mean_n_days.append(df_region)
+
+    merge_data.iloc[:,first_n_attribute_dsc_region:] = train_mean_n_days
+    merge_data = merge_data.dropna()
+    return  merge_data
 
 def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFrame, number_of_days_in_one_row):
     train_all = pd.DataFrame()
@@ -52,10 +66,14 @@ def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFr
 
 
 def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.DataFrame, number_of_days_in_one_row, number_of_days_to_avarage = 7):
-
+    global first_n_attribute_dsc_region
+    first_n_attribute_dsc_region = 3  # region date
 
     train_all = pd.DataFrame()
+    data_merge = avarage_merge_data_from_n_days(data_merge,3)
+
     data_merge = oneHotEncode(data_merge, 'region')
+
 
     number_of_days = len(data_merge.loc[:, 'date'].unique())
     for region in data_merge.loc[:, 'region'].unique():
@@ -172,10 +190,11 @@ def get_train_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
 
 def oneHotEncode(df, colName):
     global first_n_attribute_dsc_region
+    col_dsc = first_n_attribute_dsc_region
     first_n_attribute_dsc_region += len(df['region'].unique())
     if df[colName].dtype == np.dtype('object'):
         dummies = pd.get_dummies(df[colName], prefix=colName)
-        col_dsc = first_n_attribute_dsc_region - len(df['region'].unique())
+        # col_dsc = first_n_attribute_dsc_region - len(df['region'].unique())
         df = pd.concat([df.iloc[:, :col_dsc], dummies, df.iloc[:, col_dsc:]], axis=1)
 
         # drop the encoded column

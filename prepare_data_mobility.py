@@ -55,5 +55,5 @@ def get_prepared_data_mobility():
 
 
 # %%
-data:pd.DataFrame = get_prepared_data_mobility()
+# data:pd.DataFrame = get_prepared_data_mobility()
 
