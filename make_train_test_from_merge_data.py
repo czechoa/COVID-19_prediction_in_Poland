@@ -20,6 +20,14 @@ def avarage_train_from_n_days(train_f: pd.DataFrame, days_n):
 
     return train_mean_n_days
 
+def avarage_train_all_from_n_days(train_f: pd.DataFrame, days_n):
+    # TODO  from  train_all
+    # iterate over each group
+    df_region = train_f.rolling(days_n).mean()
+    train_mean_n_days = df_region.dropna()
+
+    return train_mean_n_days
+
 
 def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFrame, number_of_days_in_one_row):
     train_all = pd.DataFrame()
@@ -43,7 +51,9 @@ def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFr
     return train_all
 
 
-def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.DataFrame, number_of_days_in_one_row):
+def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.DataFrame, number_of_days_in_one_row, number_of_days_to_avarage = 3):
+
+
     train_all = pd.DataFrame()
     data_merge = oneHotEncode(data_merge, 'region')
 
@@ -60,14 +70,18 @@ def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.Data
             region_train = region_train.append(region_df_stack,ignore_index=True)
             n += 1
 
-        region_df_dsc = region_df.iloc[(number_of_days_in_one_row - 1):number_of_days + 1, :first_n_attribute_dsc_region].reset_index(drop=True)
+        region_train = avarage_train_all_from_n_days(region_train,number_of_days_to_avarage)
+
+        first_index = number_of_days_in_one_row + number_of_days_to_avarage - 2 # to think  about it
+
+        region_df_dsc = region_df.iloc[ first_index:, :first_n_attribute_dsc_region].reset_index(drop=True)
         region_train = region_train.reset_index(drop=True)
 
         region_train = pd.concat(
             [region_df_dsc, region_train], axis=1, ignore_index=True)
 
         train_all = train_all.append(region_train,ignore_index=True)
-
+        break
     return train_all
 
 # %%
