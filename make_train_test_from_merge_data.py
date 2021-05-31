@@ -51,7 +51,7 @@ def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFr
     return train_all
 
 
-def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.DataFrame, number_of_days_in_one_row, number_of_days_to_avarage = 3):
+def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.DataFrame, number_of_days_in_one_row, number_of_days_to_avarage = 7):
 
 
     train_all = pd.DataFrame()
@@ -70,10 +70,10 @@ def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.Data
             region_train = region_train.append(region_df_stack,ignore_index=True)
             n += 1
 
-        region_train = avarage_train_all_from_n_days(region_train,number_of_days_to_avarage)
+        # region_train = avarage_train_all_from_n_days(region_train,number_of_days_to_avarage)
 
-        first_index = number_of_days_in_one_row + number_of_days_to_avarage - 2 # to think  about it
-
+        # first_index = number_of_days_in_one_row + number_of_days_to_avarage - 2 # to think  about it
+        first_index = number_of_days_in_one_row - 1
         region_df_dsc = region_df.iloc[ first_index:, :first_n_attribute_dsc_region].reset_index(drop=True)
         region_train = region_train.reset_index(drop=True)
 
@@ -81,7 +81,7 @@ def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.Data
             [region_df_dsc, region_train], axis=1, ignore_index=True)
 
         train_all = train_all.append(region_train,ignore_index=True)
-        break
+
     return train_all
 
 # %%
