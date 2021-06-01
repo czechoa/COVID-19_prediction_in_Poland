@@ -15,7 +15,16 @@ def next_day(date: str):
     modified_date = date + timedelta(days=1)
     return datetime.strftime(modified_date, "%Y-%m-%d")
 
-def make_prediction_one_mounth_ahead_for_train_all(data_merge, train_all, period_of_time, last_day_train):
+def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time = 21, last_day_train = '2021-03-20'):
+
+    # last_day_train = '2021-03-20'
+    # period_of_time = 21
+
+    # data_merge = data_merge[data_merge["region"] != 'POLSKA']
+    # train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
+    train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
+
+    test_to_predict = make_date_to_prediction(train_all)
 
     result_all = pd.DataFrame(columns=['date', 'region', 'Liczba zajętych respiratorów (stan ciężki)',
                                        'prediction'])
@@ -56,21 +65,23 @@ def make_prediction_one_mounth_ahead_for_train_all(data_merge, train_all, period
 def plot_prediction_to_Poland(result_all_f, data_merge_from_to_f):
     fig, ax = plt.subplots()
 
-    region_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == 'POLSKA']
+    # first_region = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
+    # days_from_to = pd.to_datetime(first_region.loc[:, 'date'].values, format='%Y-%m-%d')
+
+    date = data_merge_from_to['date'].unique()
+    days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
+
     region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == "POLSKA"]
-
     y = region_merge.iloc[:, -1].astype(float)
-
-    zachodnie = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
-    days_from_to = pd.to_datetime(zachodnie.loc[:, 'date'].values, format='%Y-%m-%d')
-
     plt.plot(days_from_to, y, label="reality")
 
-    days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
+    polska_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == 'POLSKA']
+    days = pd.to_datetime(polska_prd.iloc[:, 0], format='%Y-%m-%d')
 
     x = days
-    y = region_prd.loc[:, 'prediction'].astype(float).values
+    y = polska_prd.loc[:, 'prediction'].astype(float).values
     plt.plot(x, y, label='prediction')
+
     ax.set(xlabel="Date",
            ylabel="engaged respiration",
            title= 'POLSKA'
@@ -87,14 +98,11 @@ period_of_time = 21
 data_merge_org = get_merge_data_from_to(last_day = last_day_train)
 data_merge = avarage_merge_data_from_n_days(data_merge_org.copy(),7)
 # data_merge = data_merge[data_merge["region"] != 'POLSKA']
-# train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
-train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
 
-test_to_predict = make_date_to_prediction(train_all)
+result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time,last_day_train)
 
-result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge,train_all,period_of_time,last_day_train)
 data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
-
+# %%
 plot_prediction_to_Poland(result_all,data_merge_from_to)
 
 # %%
