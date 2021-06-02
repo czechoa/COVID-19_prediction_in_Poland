@@ -41,7 +41,6 @@ def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time=21
         submission = make_submission(test_to_predict, day_ahead_to_predict)
         clear_model()
 
-        day = next_day(day)
         # submission = add_prediction_to_submission(test_sc, submission, day_ahead_to_predict)
 
         submission = submission.reset_index()
@@ -55,6 +54,8 @@ def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time=21
         result_err['relative error in %'] = abs(result_err.loc[:, 'subtract'] / result.iloc[:, -1].astype(float)) * 100
         result_all = result_all.append(result, ignore_index=True)
         result_all_err = result_all_err.append(result_err, ignore_index=True)
+        day = next_day(day)
+
     #
     # norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
     # print(norm_2)
@@ -163,7 +164,9 @@ def plot_for_each_region(result_all_list: list, labels: list, data_merge_from_to
 last_day_train = '2021-03-20'
 period_of_time = 21
 data_merge_org = get_merge_data_from_to(last_day=last_day_train)
-# data_merge = data_merge_org[data_merge_org['region'] == 'POLSKA']
+data_merge = data_merge_org[data_merge_org['region'] == 'POLSKA']
+result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time,
+                                                                                last_day_train)
 # data_merge = avarage_merge_data_from_n_days(data_merge_org.copy(), 7)
 # data_merge = data_merge[data_merge["region"] != 'POLSKA']
 # %%
