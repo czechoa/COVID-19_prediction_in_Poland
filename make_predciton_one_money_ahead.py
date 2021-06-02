@@ -127,6 +127,37 @@ def plot_prediction_to_Poland_for_results(result_all_list: list, labels: list, d
     plt.show()
     fig.savefig("results/Poland prediction engaged respiration when learn from all set")
 
+# %%
+def plot_for_each_region(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame):
+    fig, ax = plt.subplots()
+
+    # first_region = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
+    # days_from_to = pd.to_datetime(first_region.loc[:, 'date'].values, format='%Y-%m-%d')
+
+    date = data_merge_from_to['date'].unique()
+    days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
+    for region in data_merge_from_to_f['region'].unique():
+        region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == region]
+        y = region_merge.iloc[:, -1].astype(float)
+        plt.plot(days_from_to, y, label="reality")
+
+        for result_all_f, label in zip(result_all_list, labels):
+            region_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == region]
+            days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
+            y = region_prd['prediction'].astype(float).values
+            plt.plot(days, y, label=label)
+
+        # plt.scatter(days_from_to[0], y)
+        # plt.annotate("Point 1", (1, 4))
+
+        ax.set(xlabel="Date",
+               ylabel="Engaged respiration",
+               )
+        plt.title(region + ' prediction engaged respiration')
+        plt.gcf().autofmt_xdate()
+        plt.grid()
+        plt.legend(loc='lower left')
+        plt.show()
 
 # %%
 last_day_train = '2021-03-20'
@@ -147,15 +178,12 @@ for i in [1, 3, 7]:
     labels.append(label)
 
 data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
-
-# %%
 plot_prediction_to_Poland_for_results(list_results, labels, data_merge_from_to)
 
 # plot_prediction_to_Poland(result_all, data_merge_from_to)
 
 # %%
-list_results = [result_all, result_all]
-labels = ['test_prediction_7', 'test_prediction_1']
+plot_for_each_region(list_results, labels, data_merge_from_to)
 # %%
 plot_prediction_to_Poland_for_results(list_results, labels, data_merge_from_to)
 
@@ -190,3 +218,5 @@ def plot_prediction_for_ech_region():
         axs[i].legend(loc='lower left')
     plt.show()
     fig.savefig('results/test_plot')
+
+
