@@ -5,12 +5,6 @@ from merge_data_mobility_epidemic_situation import get_merge_data_from_to, get_m
 from prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
 
-
-#  3 dniowa srednia  i moze oneHotCode
-#  dane dla polski i suma predykcji (  na jednym wykresie )
-# wyslac wykresy
-#   SSTM - LTFTM
-#
 def next_day(date: str):
     date = datetime.strptime(date, "%Y-%m-%d")
     modified_date = date + timedelta(days=1)
@@ -29,14 +23,9 @@ def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time=21
     for day_ahead_to_predict in range(1, 31):
         train, target = get_train_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
 
-        # train, test_to_predict = standardScaler(train, test_to_predict, input_scaler=MinMaxScaler())
-        # train = avarage_train_from_n_days(train, 3)
-
         make_all(train, target)
         submission = make_submission(test_to_predict, day_ahead_to_predict)
         clear_model()
-
-        # submission = add_prediction_to_submission(test_sc, submission, day_ahead_to_predict)
 
         submission = submission.reset_index()
         test_ahead: pd.DataFrame = get_test_respiration(date=day)
@@ -88,7 +77,8 @@ def add_region_Poland_as_mean_groupby_date(data_merge_f: pd.DataFrame):
     return data_merge_f
 
 
-def make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org_f: pd.DataFrame, period_of_time_f, last_day_train_f):
+def make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org_f: pd.DataFrame, period_of_time_f,
+                                                       last_day_train_f):
     list_results = list()
     labels = list()
     for i in [1, 3, 7]:
@@ -108,13 +98,10 @@ def make_plot_Poland_as_groupBy(list_results_f: pd.DataFrame, labels, data_merge
 
     title = 'Poland engaged respiration, learned by mean Poland'
 
-    make_plot(list_results_f, labels, data_merge_from_to, title, save)
-    # plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to, path='results/' + title,
-    #                                        title=title)
-    # save_list_results(list_results_f, path='results/' + title)
+    make_plot_for_Poland(list_results_f, labels, data_merge_from_to, title, save)
 
 
-def make_plot(list_results, labels, data_merge_from_to, title='Poland engaged respiration', save=False):
+def make_plot_for_Poland(list_results, labels, data_merge_from_to, title='Poland engaged respiration', save=False):
     plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to, path='results/' + title,
                                            title=title)
     if save:
@@ -126,8 +113,22 @@ def make_prediction_and_subplot_for_all_regions():
     period_of_time = 21
     data_merge_org = get_merge_data_from_to(last_day=last_day_train)
     data_merge_org = data_merge_org[data_merge_org["region"] != 'POLSKA']
-    list_results, labels = make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org,period_of_time,last_day_train)
+    list_results, labels = make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org, period_of_time,
+                                                                              last_day_train)
     data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
-    subplot_prediction_for_all_region(list_results,labels,data_merge_from_to)
+    subplot_prediction_for_all_region(list_results, labels, data_merge_from_to)
 
+def make_data_merge_from_to_from_last_day_train(last_day_train,days_ahead_to_prediction, delta):
+    date = datetime.strptime(last_day_train, "%Y-%m-%d")
+
+    modified_date = date - timedelta(days=delta)
+    first_day = datetime.strftime(modified_date, "%Y-%m-%d")
+
+    modified_date = date + timedelta(days=delta + days_ahead_to_prediction)
+    last_day = datetime.strftime(modified_date, "%Y-%m-%d")
+
+    data_merge_from_to = get_merge_data_from_to(first_day, last_day)
+    return data_merge_from_to
+# %%
+data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20',31,21)
 
