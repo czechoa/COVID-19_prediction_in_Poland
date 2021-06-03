@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
 from make_train_test_from_merge_data import *
+from plots import plot_prediction_to_Poland_from_results, subplot_prediction_for_all_region
 from simple_regresion import *
 from merge_data_mobility_epidemic_situation import get_merge_data_from_to, get_merge_data_to_last_day, get_merge_data
 from prepare_data_epidemic_situation_in_regions import get_test_respiration
@@ -18,11 +18,6 @@ def next_day(date: str):
 
 
 def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time=21, last_day_train='2021-03-20'):
-    # last_day_train = '2021-03-20'
-    # period_of_time = 21
-
-    # data_merge = data_merge[data_merge["region"] != 'POLSKA']
-    # train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
     train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
 
     test_to_predict = make_date_to_prediction(train_all)
@@ -56,108 +51,13 @@ def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time=21
         result_all_err = result_all_err.append(result_err, ignore_index=True)
         day = next_day(day)
 
-    #
-    # norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
-    # print(norm_2)
     result_all = result_all.sort_values(by=['region', 'date'])
     result_all_err = result_all_err.sort_values(by=['region', 'date'])
 
     return result_all, result_all_err
 
 
-# def plot_prediction_to_Poland(result_all_f, data_merge_from_to_f):
-#     fig, ax = plt.subplots()
-#
-#     # first_region = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
-#     # days_from_to = pd.to_datetime(first_region.loc[:, 'date'].values, format='%Y-%m-%d')
-#
-#     date = data_merge_from_to['date'].unique()
-#     days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
-#
-#     region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == "POLSKA"]
-#     y = region_merge.iloc[:, -1].astype(float)
-#     plt.plot(days_from_to, y, label="reality")
-#
-#     polska_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == 'POLSKA']
-#     days = pd.to_datetime(polska_prd.iloc[:, 0], format='%Y-%m-%d')
-#
-#     x = days
-#     y = polska_prd.loc[:, 'prediction'].astype(float).values
-#     plt.plot(x, y, label='prediction')
-#
-#     ax.set(xlabel="Date",
-#            ylabel="engaged respiration",
-#            title='POLSKA'
-#            )
-#     plt.gcf().autofmt_xdate()
-#     plt.grid()
-#     plt.legend(loc='lower left')
-#     plt.show()
-#     # fig.savefig("results/Poland predition when you learn from sum")
-
-
-def plot_prediction_to_Poland_from_results(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame
-                                           ,path = "results/Poland prediction engaged respiration when learn from all set"
-                                           ,title='Poland prediction engaged respiration'):
-    fig, ax = plt.subplots()
-
-    date = data_merge_from_to['date'].unique()
-    days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
-
-    region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == "POLSKA"]
-    y = region_merge.iloc[:, -1].astype(float)
-    plt.plot(days_from_to, y, label="reality")
-
-    for result_all_f, label in zip(result_all_list, labels):
-        polska_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == 'POLSKA']
-        days = pd.to_datetime(polska_prd.iloc[:, 0], format='%Y-%m-%d')
-        y = polska_prd['prediction'].astype(float).values
-        plt.plot(days, y, label=label)
-
-    ax.set(xlabel="Date",
-           ylabel="Engaged respiration",
-           title=title
-           )
-    plt.gcf().autofmt_xdate()
-    plt.grid()
-    plt.legend(loc='lower left')
-    plt.show()
-    fig.savefig(path)
-
-
-def for_each_region_single_plot(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame):
-    fig, ax = plt.subplots()
-
-    # first_region = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
-    # days_from_to = pd.to_datetime(first_region.loc[:, 'date'].values, format='%Y-%m-%d')
-
-    date = data_merge_from_to['date'].unique()
-    days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
-    for region in data_merge_from_to_f['region'].unique():
-        region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == region]
-        y = region_merge.iloc[:, -1].astype(float)
-        plt.plot(days_from_to, y, label="reality")
-
-        for result_all_f, label in zip(result_all_list, labels):
-            region_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == region]
-            days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
-            y = region_prd['prediction'].astype(float).values
-            plt.plot(days, y, label=label)
-
-        # plt.scatter(days_from_to[0], y)
-        # plt.annotate("Point 1", (1, 4))
-
-        ax.set(xlabel="Date",
-               ylabel="Engaged respiration",
-               )
-        plt.title(region + ' prediction engaged respiration')
-        plt.gcf().autofmt_xdate()
-        plt.grid()
-        plt.legend(loc='lower left')
-        plt.show()
-
-
-def save_list_results(list_results, path = 'results/all_prediction_for_region.csv'):
+def save_list_results(list_results, path='results/all_prediction_for_region.csv'):
     all_prediction = pd.DataFrame()
     for result_all_it, i in zip(list_results.copy(), list([1, 3, 7])):
         result_all_it.insert(2, 'avarage from n days back', str(i))
@@ -165,99 +65,69 @@ def save_list_results(list_results, path = 'results/all_prediction_for_region.cs
         result_all_it.drop(columns='avarage from n days back', inplace=True)
     all_prediction.to_csv(path, index=False)
 
-def from_all_prection_to_list_results(all_prediction:pd.DataFrame):
+
+def from_all_prection_to_list_results_and_labels(all_prediction: pd.DataFrame):
     list_results = list()
     for avarage_from_n in all_prediction['avarage from n days back'].unique():
         result = all_prediction[all_prediction['avarage from n days back'] == avarage_from_n]
         result = result.drop(columns='avarage from n days back')
         list_results.append(result)
-    return list_results
+    labels = list()
+    for i in [1, 3, 7]:
+        label = 'prediction from averaged ' + str(i) + ' days back'
+        labels.append(label)
+    return list_results, labels
 
 
+def add_region_Poland_as_mean_groupby_date(data_merge_f: pd.DataFrame):
+    data_merge_f = data_merge_f[data_merge_f["region"] != 'POLSKA']
+    poland_grub: pd.DataFrame = data_merge_f.groupby(by='date').mean().reset_index()
+    poland_grub.insert(0, 'region', 'POLSKA')
+    data_merge_f = data_merge_f.append(poland_grub, ignore_index=True)
+    data_merge_f = data_merge_f.sort_values(by=['region', 'date'])
+    return data_merge_f
 
 
-def plot_prediction_for_each_16_region(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame):
-    regions = result_all_list[0]['region'].unique()
-    z = 0
-    while z < len(regions):
-        print(z)
-        plt.figure( figsize=(15, 15))
-        for i in range(0, 4):
-            if z + i >= len(regions): break
-            plt.subplot(2,2,i+1)
-            region = regions[z + i]
-            date = data_merge_from_to['date'].unique()
-            days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
-            region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == region]
-            y = region_merge.iloc[:, -1].astype(float)
-            plt.plot(days_from_to, y, label="reality")
+def make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org_f: pd.DataFrame, period_of_time_f, last_day_train_f):
+    list_results = list()
+    labels = list()
+    for i in [1, 3, 7]:
+        data_merge = avarage_merge_data_from_n_days(data_merge_org_f.copy(), i)
+        result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time_f,
+                                                                                    last_day_train_f)
+        label = 'prediction from averaged ' + str(i) + ' days back'
+        list_results.append(result_all)
+        labels.append(label)
+    return list_results, labels
 
-            for result_all_f, label in zip(result_all_list, labels):
-                region_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == region]
-                days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
-                y = region_prd['prediction'].astype(float).values
-                plt.plot(days, y, label=label)
 
-            # plt.scatter(days_from_to[0], y)
-            # plt.annotate("Point 1", (1, 4))
+def make_plot_Poland_as_groupBy(list_results_f: pd.DataFrame, labels, data_merge_from_to, save=False):
+    # TODO mul only POLAND by *16
+    for result_all_it in list_results_f:
+        result_all_it['prediction'] = result_all_it['prediction'] * 16
 
-            plt.xlabel(xlabel="Date")
-            plt.ylabel(ylabel="Engaged respiration")
-            plt.title(region)
+    title = 'Poland engaged respiration, learned by mean Poland'
 
-            plt.gcf().autofmt_xdate()
-            plt.grid()
-            plt.legend(loc='lower left')
-        z += i + 1
-        plt.savefig('results/region_prediction_' + str(z),bbox_inches='tight')
-        plt.show()
+    make_plot(list_results_f, labels, data_merge_from_to, title, save)
+    # plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to, path='results/' + title,
+    #                                        title=title)
+    # save_list_results(list_results_f, path='results/' + title)
 
-# %%
-last_day_train = '2021-03-20'
-period_of_time = 21
-data_merge_org = get_merge_data_from_to(last_day=last_day_train)
-data_merge_org = data_merge_org[data_merge_org["region"] != 'POLSKA']
-# %%
-polska_grub:pd.DataFrame =  data_merge_org.groupby(by= 'date').mean().reset_index()
-polska_grub.insert(0,'region','POLSKA')
-data_merge_org = data_merge_org.append(polska_grub,ignore_index=True)
-data_merge_org = data_merge_org.sort_values(by= ['region','date'])
-# %%
-list_results = list()
-labels = list()
-for i in [1, 3, 7]:
-    data_merge = avarage_merge_data_from_n_days(data_merge_org.copy(), i)
-    result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time,
-                                                                                last_day_train)
-    label = 'prediction from averaged ' + str(i) + ' days back'
-    list_results.append(result_all)
-    labels.append(label)
 
-data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
-# %%
-for result_all_it in list_results:
-    result_all_it['prediction'] = result_all_it['prediction'] * 16
+def make_plot(list_results, labels, data_merge_from_to, title='Poland engaged respiration', save=False):
+    plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to, path='results/' + title,
+                                           title=title)
+    if save:
+        save_list_results(list_results, path='results/' + title)
 
-# %%
-title = 'Poland engaged respiration, learned by mean Poland'
-plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to,path= 'results/' + title, title=title)
-# %%
-title = 'Poland engaged respiration, learned by mean Poland'
-save_list_results(list_results,path='results/'+ title)
-# %%plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to)
 
-data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
-all_prediction_for_regions = pd.read_csv('results/all_prediction_for_region.csv')
-list_results = from_all_prection_to_list_results(all_prediction_for_regions)
-labels  =list()
-for i in [1, 3, 7]:
-    label = 'prediction from averaged ' + str(i) + ' days back'
-    labels.append(label)
-# %%
-plot_prediction_for_each_16_region(list_results, labels, data_merge_from_to)
+def make_prediction_and_subplot_for_all_regions():
+    last_day_train = '2021-03-20'
+    period_of_time = 21
+    data_merge_org = get_merge_data_from_to(last_day=last_day_train)
+    data_merge_org = data_merge_org[data_merge_org["region"] != 'POLSKA']
+    list_results, labels = make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org,period_of_time,last_day_train)
+    data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
+    subplot_prediction_for_all_region(list_results,labels,data_merge_from_to)
 
-# %%
-for_each_region_single_plot(list_results, labels, data_merge_from_to)
-# %%
-plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to)
-# %%
+
