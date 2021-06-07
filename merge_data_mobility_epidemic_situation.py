@@ -22,7 +22,7 @@ def change_to_polish_name_regions_in_mobility_data(data_mobility: pd.DataFrame,
     data_mobility = data_mobility.sort_values(by='sub_region_1')
 
 
-    region_mobility = data_mobility.loc[:, 'sub_region_1'].unique()
+    region_mobility = data_mobility[ 'sub_region_1'].unique()
     region_mobility = list(region_mobility)
     region_df = pd.DataFrame()
     region_df['mobility'] = region_mobility
@@ -76,6 +76,7 @@ def get_merge_data_to_last_day(last_day:str = '2021-03-03'):
 
 def get_merge_data_from_to(first_day:str = None, last_day ='2021-04-04' ):
     merge = get_merge_data()
+
     merge['date'] = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
 
     if(first_day != None):

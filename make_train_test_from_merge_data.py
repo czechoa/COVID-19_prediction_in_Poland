@@ -29,6 +29,7 @@ def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.Data
     # data_merge = avarage_merge_data_from_n_days(data_merge,3)
 
     data_merge = oneHotEncode(data_merge, 'region', first_n_attribute_dsc_region)
+
     number_of_days = len(data_merge.loc[:, 'date'].unique())
     for region in data_merge.loc[:, 'region'].unique():
         region_df = data_merge.loc[data_merge['region'] == region]

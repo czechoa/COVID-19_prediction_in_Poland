@@ -13,6 +13,7 @@ def next_day(date: str):
 
 
 def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time=21, last_day_train='2021-03-20'):
+    print(oneHotEncode)
     train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
 
     test_to_predict = make_date_to_prediction(train_all)
@@ -103,7 +104,8 @@ def make_plot_Poland_as_groupBy(list_results_f: pd.DataFrame, labels, data_merge
     make_plot_for_Poland(list_results_f, labels, data_merge_from_to, title, save)
 
 
-def make_plot_for_Poland(list_results, labels, data_merge_from_to, title='Poland engaged respiration', save=False):
+def make_plot_for_Poland(list_results, labels, data_merge_from_to=get_merge_data_from_to('2021-03-01', '2021-05-01'),
+                         title='Poland engaged respiration', save=False):
     plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to, path='results/' + title,
                                            title=title)
     if save:
@@ -132,7 +134,6 @@ def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_pr
 
     data_merge_from_to = get_merge_data_from_to(first_day, last_day)
     return data_merge_from_to
-
 
 # %%
 # data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20', 31, 21)
