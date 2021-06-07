@@ -90,7 +90,14 @@ def get_merge_data_from_to(first_day:str = None, last_day ='2021-04-04' ):
     merge_from_to = merge_from_to.sort_values(by= ['region','date'])
     return merge_from_to
 
+def save_merge_for_Poland():
+    merge_data = get_merge_data_from_to()
+    merge_data = merge_data[merge_data['region'] == 'POLSKA']
+    merge_data.to_csv('results/merge_data_Poland.csv', index=False)
+
 # %%
+# save_merge_for_Poland()
+
 # # merge = merge.sort_values(by='date').reindex()
 # days = pd.to_datetime(merge.loc[:,'date'], format='%Y-%m-%d').dt.date
 # merge['date'] = days

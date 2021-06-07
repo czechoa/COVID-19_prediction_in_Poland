@@ -5,6 +5,7 @@ from merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
 
+
 def next_day(date: str):
     date = datetime.strptime(date, "%Y-%m-%d")
     modified_date = date + timedelta(days=1)
@@ -57,14 +58,15 @@ def save_list_results(list_results, path='results/all_prediction_for_region.csv'
 
 def from_all_prection_to_list_results_and_labels(all_prediction: pd.DataFrame):
     list_results = list()
+    labels = list()
+
     for avarage_from_n in all_prediction['avarage from n days back'].unique():
         result = all_prediction[all_prediction['avarage from n days back'] == avarage_from_n]
         result = result.drop(columns='avarage from n days back')
         list_results.append(result)
-    labels = list()
-    for i in [1, 3, 7]:
-        label = 'prediction from averaged ' + str(i) + ' days back'
+        label = 'prediction from averaged ' + str(avarage_from_n) + ' days back'
         labels.append(label)
+
     return list_results, labels
 
 
@@ -118,7 +120,8 @@ def make_prediction_and_subplot_for_all_regions():
     data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
     subplot_prediction_for_all_region(list_results, labels, data_merge_from_to)
 
-def make_data_merge_from_to_from_last_day_train(last_day_train,days_ahead_to_prediction, delta):
+
+def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_prediction, delta):
     date = datetime.strptime(last_day_train, "%Y-%m-%d")
 
     modified_date = date - timedelta(days=delta)
@@ -129,6 +132,7 @@ def make_data_merge_from_to_from_last_day_train(last_day_train,days_ahead_to_pre
 
     data_merge_from_to = get_merge_data_from_to(first_day, last_day)
     return data_merge_from_to
-# %%
-data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20',31,21)
 
+
+# %%
+# data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20', 31, 21)
