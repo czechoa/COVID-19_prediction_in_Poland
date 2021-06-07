@@ -1,6 +1,7 @@
 import pandas as pd
 
-from make_prediction_one_month_ahead import make_prediction_one_mounth_ahead_for_train_all, make_plot_for_Poland
+from make_prediction_one_month_ahead import make_prediction_one_month_ahead_for_train_all, make_plot_for_Poland, \
+    reshape_data_merge_to_get_train_period_of_time_history_1
 from merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from prepare_data_mobility import get_prepared_data_mobility
 
@@ -21,8 +22,10 @@ data_merge_from_to_pl = data_merge_from_to_pl.append(data_merge_pl,ignore_index=
 data_merge_from_to_pl = data_merge_from_to_pl.sort_values(by='date')
 # data_merge_pl['date'] = pd.to_datetime(data_merge_pl[:, 'date'], format='%Y-%m-%d').dt.date
 # %%
-result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge_pl)
+result_all, result_all_err = make_prediction_one_month_ahead_for_train_all(data_merge_pl)
 # %%
 make_plot_for_Poland([result_all],['test'],title='data from 11.06,2020')
+# %%
+train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge_from_to_pl,21)
 # %%
 data_merge_pl.loc[:, 'region'].unique()

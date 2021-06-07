@@ -12,7 +12,7 @@ def next_day(date: str):
     return datetime.strftime(modified_date, "%Y-%m-%d")
 
 
-def make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time=21, last_day_train='2021-03-20'):
+def make_prediction_one_month_ahead_for_train_all(data_merge, period_of_time=21, last_day_train='2021-03-20'):
     print(oneHotEncode)
     train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
 
@@ -86,8 +86,8 @@ def make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org_f: pd.Data
     labels = list()
     for i in [1, 3, 7]:
         data_merge = avarage_merge_data_from_n_days(data_merge_org_f.copy(), i)
-        result_all, result_all_err = make_prediction_one_mounth_ahead_for_train_all(data_merge, period_of_time_f,
-                                                                                    last_day_train_f)
+        result_all, result_all_err = make_prediction_one_month_ahead_for_train_all(data_merge, period_of_time_f,
+                                                                                   last_day_train_f)
         label = 'prediction from averaged ' + str(i) + ' days back'
         list_results.append(result_all)
         labels.append(label)
