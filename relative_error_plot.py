@@ -6,3 +6,5 @@ def make_plots_relative_error_for_regions():
     prediction['relative_error_%'] = 100*abs(prediction['Liczba zajętych respiratorów (stan ciężki)'] - prediction['prediction'])/prediction['Liczba zajętych respiratorów (stan ciężki)']
     subplot_relative_error_for_all_region(prediction)
     plot_averaged_relative_error_for_all_region(prediction)
+# %%
+make_plots_relative_error_for_regions()

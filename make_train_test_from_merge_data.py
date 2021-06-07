@@ -8,9 +8,8 @@ import numpy as np
 # first_n_attribute_dsc_region = 3 + 16
 def avarage_merge_data_from_n_days(merge_data: pd.DataFrame, days_n, first_n_attribute_dsc_region=3):
     # iterate over each group
-    # first_n_attribute_dsc_region = 3  # region date
-
-    print(first_n_attribute_dsc_region)
+    if first_n_attribute_dsc_region != 3:
+        exit(1)
 
     df1_grouped = merge_data.groupby(merge_data.columns[0])
     train_mean_n_days = pd.DataFrame()
