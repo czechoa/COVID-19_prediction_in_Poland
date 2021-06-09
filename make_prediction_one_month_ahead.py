@@ -103,7 +103,7 @@ def make_plot_Poland_as_groupBy(list_results_f: pd.DataFrame, labels, data_merge
     make_plot_for_Poland(list_results_f, labels, data_merge_from_to, title, save)
 
 
-def make_plot_for_Poland(list_results, labels, data_merge_from_to=get_merge_data_from_to('2021-03-01', '2021-05-01'),
+def make_plot_for_Poland(list_results, labels, data_merge_from_to=get_merge_data_from_to(last_day='2021-05-01'),
                          title='Poland engaged respiration', save=False):
     plot_prediction_to_Poland_from_results(list_results, labels, data_merge_from_to, path='results/' + title,
                                            title=title)
@@ -137,4 +137,4 @@ def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_pr
 # %%
 # data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20', 31, 21)
 # %%
-make_prediction_and_subplot_for_all_regions()
+# make_prediction_and_subplot_for_all_regions()

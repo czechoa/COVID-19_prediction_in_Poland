@@ -4,6 +4,7 @@ from make_prediction_one_month_ahead import make_prediction_one_month_ahead_for_
     reshape_data_merge_to_get_train_period_of_time_history_1, make_date_to_prediction, get_train_target
 from merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from prepare_data_mobility import get_prepared_data_mobility
+
 def merge_data_for_Poland_from_06_2020(last_day = '2021-03-20'):
     poland_resp_from_06_2020 = pd.read_csv("data/polska_respiration_from_11.06.2020.csv",delimiter = ';')
     data_mobility:pd.DataFrame = get_prepared_data_mobility()
@@ -23,11 +24,19 @@ def merge_data_for_Poland_from_06_2020(last_day = '2021-03-20'):
     return data_merge_from_to_pl
 # data_merge_pl['date'] = pd.to_datetime(data_merge_pl[:, 'date'], format='%Y-%m-%d').dt.date
 # %%
+data_merge_pl = merge_data_for_Poland_from_06_2020()
+# %%
+data_merge_to_2021_05 = merge_data_for_Poland_from_06_2020(last_day='2021-05-01')
+# %%
 result_all, result_all_err = make_prediction_one_month_ahead_for_train_all(data_merge_pl)
+make_plot_for_Poland([result_all],['test'],title='Poland prediction from data 06 2020 v1',data_merge_from_to= data_merge_to_2021_05 ,save=True)
 # %%
-make_plot_for_Poland([result_all],['test'],title='data from 11.06,2020')
+train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge_pl, 21)
+test_to_predict = make_date_to_prediction(train_all)
 # %%
+
 # train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge_from_to_pl,21)
 # test_to_predict = make_date_to_prediction(train_all)
 # train, target = get_train_target(data_merge_from_to_pl, train_all, 21, 1)
 # %%
+

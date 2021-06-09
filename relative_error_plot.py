@@ -7,4 +7,4 @@ def make_plots_relative_error_for_regions():
     subplot_relative_error_for_all_region(prediction)
     plot_averaged_relative_error_for_all_region(prediction)
 # %%
-make_plots_relative_error_for_regions()
+# make_plots_relative_error_for_regions()
