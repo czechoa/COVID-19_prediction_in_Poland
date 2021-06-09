@@ -45,6 +45,7 @@ def Poland_prediction_average_of_10_measurements():
                              data_merge_from_to=data_merge_to_2021_05, save=True)
 # %%
 
+
 # train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge_from_to_pl,21)
 # test_to_predict = make_date_to_prediction(train_all)
 # train, target = get_train_target(data_merge_from_to_pl, train_all, 21, 1)
