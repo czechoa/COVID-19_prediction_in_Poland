@@ -12,7 +12,7 @@ def next_day(date: str):
     return datetime.strftime(modified_date, "%Y-%m-%d")
 
 
-def make_prediction_one_month_ahead_for_train_all(data_merge, period_of_time=21, last_day_train='2021-03-20'):
+def make_prediction_one_month_ahead_for_train_all(data_merge, period_of_time=21, last_day_train='2021-03-20', day_ahead = 31):
     train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge, period_of_time)
 
     test_to_predict = make_date_to_prediction(train_all)
@@ -21,7 +21,7 @@ def make_prediction_one_month_ahead_for_train_all(data_merge, period_of_time=21,
                                        'prediction'])
     result_all_err = pd.DataFrame()
     day = next_day(last_day_train)
-    for day_ahead_to_predict in range(1, 31):
+    for day_ahead_to_predict in range(1,day_ahead):
         train, target = get_train_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
 
         make_all(train, target)
