@@ -1,8 +1,8 @@
-from prepareDate.make_train_test_from_merge_data import *
+from prepareData.make_train_test_from_merge_data import *
 from plots import plot_prediction_to_Poland_from_results, subplot_prediction_for_all_region
 from simple_regresion import make_all, make_submission, clear_model
-from prepareDate.merge_data_mobility_epidemic_situation import get_merge_data_from_to
-from prepareDate.prepare_data_epidemic_situation_in_regions import get_test_respiration
+from prepareData.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from prepareData.prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
 
 
