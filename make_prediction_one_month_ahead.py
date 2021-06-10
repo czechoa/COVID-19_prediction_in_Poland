@@ -4,7 +4,7 @@ from simple_regresion import make_all, make_submission, clear_model
 from prepareData.merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from prepareData.prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
-
+from prepareData.data_augmentation import data_augmentation_without_Poland_as_sum
 
 def next_day(date: str):
     date = datetime.strptime(date, "%Y-%m-%d")
@@ -108,12 +108,17 @@ def make_prediction_and_subplot_for_all_regions():
     last_day_train = '2021-03-20'
     period_of_time = 21
     data_merge_org = get_merge_data_from_to(last_day=last_day_train)
+
     data_merge_org = data_merge_org[data_merge_org["region"] != 'POLSKA']
-    list_results, labels = make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org, period_of_time,
-                                                                              last_day_train)
+    data_merge_org = data_augmentation_without_Poland_as_sum(data_merge_org)
+    # list_results, labels = make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org, period_of_time, last_day_train)
+    results, results_error = make_prediction_one_month_ahead_for_train_all(data_merge_org,day_ahead=31)
+
     data_merge_from_to = get_merge_data_from_to('2021-03-01', '2021-05-01')
-    subplot_prediction_for_all_region(list_results, labels, data_merge_from_to)
-    save_list_results(list_results)
+    # subplot_prediction_for_all_region(list_results, labels, data_merge_from_to)
+    subplot_prediction_for_all_region([results], ['prediction'],data_merge_from_to)
+
+    # save_list_results(list_results)
 
 def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_prediction, delta):
     date = datetime.strptime(last_day_train, "%Y-%m-%d")
@@ -131,3 +136,4 @@ def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_pr
 # data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20', 31, 21)
 # %%
 # make_prediction_and_subplot_for_all_regions()
+make_prediction_and_subplot_for_all_regions()
