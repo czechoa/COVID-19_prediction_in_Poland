@@ -1,10 +1,5 @@
 from datetime import datetime
 
-# from .prepare_data_area_population import preparing_data_area_population_regions
-# # from prepare_data_mobility import get_prepared_data_mobility
-# from .prepare_data_mobility import get_prepared_data_mobility
-# from . import get_prepared_data_mobility, prepare_data_epidemic_situation_in_regions
-# from .prepare_data_epidemic_situation_in_regions import prepare_data_epidemic_situation_in_regions
 import pandas as pd
 import numpy as np
 
@@ -106,7 +101,8 @@ def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
 
     merge_from_to = merge_from_to.sort_values(by=['region', 'date'])
 
-    # merge_from_to = merge_area_population(merge_from_to)
+    merge_from_to = merge_area_population(merge_from_to)
+
     return merge_from_to
 
 
@@ -124,13 +120,11 @@ def save_merge_for_Poland():
 # data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
 # %%
 
-# merge_all.insert([3,4],merge_all.columns[[-2,-1]].values,merge_all.iloc[:,[-2,-1]])
 
-
-# %%
-data_merge = get_merge_data_from_to(last_day='2021-05-05')
-data_merge = data_merge[data_merge['region'] != 'POLSKA']
-max_by_region_respiration: pd.DataFrame = data_merge.groupby(by='region')[data_merge.columns[-1]].max().reset_index()
-max_by_region_respiration = max_by_region_respiration.sort_values(data_merge.columns[-1])
-max_3_region = max_by_region_respiration['region'][-3:].values.tolist()
-data_merge[data_merge['regon'].isin(max_3_region)]
+# # %%
+# data_merge = get_merge_data_from_to(last_day='2021-05-05')
+# data_merge = data_merge[data_merge['region'] != 'POLSKA']
+# max_by_region_respiration: pd.DataFrame = data_merge.groupby(by='region')[data_merge.columns[-1]].max().reset_index()
+# max_by_region_respiration = max_by_region_respiration.sort_values(data_merge.columns[-1])
+# max_3_region = max_by_region_respiration['region'][-3:].values.tolist()
+# data_merge[data_merge['regon'].isin(max_3_region)]

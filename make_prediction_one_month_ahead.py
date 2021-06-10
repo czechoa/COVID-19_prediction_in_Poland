@@ -70,13 +70,6 @@ def from_all_prection_to_list_results_and_labels(all_prediction: pd.DataFrame):
     return list_results, labels
 
 
-def add_region_Poland_as_mean_groupby_date(data_merge_f: pd.DataFrame):
-    data_merge_f = data_merge_f[data_merge_f["region"] != 'POLSKA']
-    poland_grub: pd.DataFrame = data_merge_f.groupby(by='date').mean().reset_index()
-    poland_grub.insert(0, 'region', 'POLSKA')
-    data_merge_f = data_merge_f.append(poland_grub, ignore_index=True)
-    data_merge_f = data_merge_f.sort_values(by=['region', 'date'])
-    return data_merge_f
 
 
 def make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org_f: pd.DataFrame, period_of_time_f,

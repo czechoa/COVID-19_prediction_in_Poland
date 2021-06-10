@@ -6,9 +6,13 @@ import numpy as np
 # first_n_attribute_dsc_region= 5
 # global first_n_attribute_dsc_region
 # first_n_attribute_dsc_region = 3 + 16
-def avarage_merge_data_from_n_days(merge_data: pd.DataFrame, days_n, first_n_attribute_dsc_region=3):
+
+
+
+
+def avarage_merge_data_from_n_days(merge_data: pd.DataFrame, days_n, first_n_attribute_dsc_region=5):
     # iterate over each group
-    if first_n_attribute_dsc_region != 3:
+    if first_n_attribute_dsc_region != 5:
         exit(1)
 
     df1_grouped = merge_data.groupby(merge_data.columns[0])
@@ -23,7 +27,7 @@ def avarage_merge_data_from_n_days(merge_data: pd.DataFrame, days_n, first_n_att
 
 
 def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.DataFrame, number_of_days_in_one_row,
-                                                             first_n_attribute_dsc_region=3):
+                                                             first_n_attribute_dsc_region=5):
     train_all = pd.DataFrame()
     # data_merge = avarage_merge_data_from_n_days(data_merge,3)
 
