@@ -41,10 +41,10 @@ def to_procent_data_mobility(data):
     return data
 
 def get_prepared_data_mobility():
-    train_data_path = 'data/2020_PL_Region_Mobility_Report.csv'
+    train_data_path = '../data/2020_PL_Region_Mobility_Report.csv'
     data_2020 = prepare_date_mobility(train_data_path)
     # train_data_path_1 = 'data/2021_PL_Region_Mobility_Report.csv'
-    train_data_path_1 = 'data/2021-05-19_PL_Region_Mobility_Report.csv'
+    train_data_path_1 = '../data/2021-05-19_PL_Region_Mobility_Report.csv'
 
     data_2021 = prepare_date_mobility(train_data_path_1)
     data_all = merge_data_2020_2021(data_2020, data_2021)

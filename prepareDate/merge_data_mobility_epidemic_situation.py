@@ -110,6 +110,12 @@ def save_merge_for_Poland():
 
 # data_merge = merge_data_mobility_covid_19_situation(data_mobility, data_epidemic_situation_in_regions)
 # %%
-# data_merge = get_merge_data_from_to()
-# data_merge = add_culumn_is_Poland(data_merge)
-
+data_merge = get_merge_data_from_to(last_day='2021-05-05')
+data_merge = data_merge[data_merge['region'] != 'POLSKA']
+# %%
+max_by_region_respiration:pd.DataFrame = data_merge.groupby(by= 'region')[data_merge.columns[-1]].max().reset_index()
+max_by_region_respiration = max_by_region_respiration.sort_values(data_merge.columns[-1])
+# %%
+max_3_region =  max_by_region_respiration['region'][-3:].values.tolist()
+# %%
+data_merge[data_merge['regon'].isin(max_3_region)]

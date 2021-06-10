@@ -6,11 +6,11 @@ from simple_regresion import *
 # %%
 def get_data():
     # get train data
-    train_data_path = 'data/train.csv'
+    train_data_path = '../data/train.csv'
     train = pd.read_csv(train_data_path)
 
     # get test data
-    test_data_path = 'data/test.csv'
+    test_data_path = '../data/test.csv'
     test = pd.read_csv(test_data_path)
 
     return train, test
