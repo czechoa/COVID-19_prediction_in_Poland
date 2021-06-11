@@ -37,11 +37,11 @@ def Poland_prediction_average_of_10_measurements():
             sum_result_all = result_all
         else:
             sum_result_all = sum_result_all + result_all
-        sum_result_all.iloc[:, -1] = sum_result_all.iloc[:, -1].div(10)
-        sum_result_all['date'] = result_all['date']
-        sum_result_all['region'] = result_all['region']
-        make_plot_for_Poland([sum_result_all], ['prediction'], title='Poland prediction average of 10 measurements',
-                             data_merge_from_to=data_merge_to_2021_05, save=True)
+    sum_result_all.iloc[:, -1] = sum_result_all.iloc[:, -1].div(10)
+    sum_result_all['date'] = result_all['date']
+    sum_result_all['region'] = result_all['region']
+    make_plot_for_Poland([sum_result_all], ['prediction'], title='Poland prediction average of 10 measurements',
+                         data_merge_from_to=data_merge_to_2021_05, save=True)
 
 # %%
 # data_Poland_to_2021_05 :pd.DataFrame = merge_data_for_Poland_from_06_2020(last_day='2021-05-05')

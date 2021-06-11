@@ -57,7 +57,7 @@ def train_model(train, target):
     checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
     callbacks_list = [checkpoint]
 
-    NN_model.fit(train, target, epochs=15, batch_size=32, validation_split=0.2, callbacks=callbacks_list, verbose=0)
+    NN_model.fit(train, target, epochs=30, batch_size=32, validation_split=0.2, callbacks=callbacks_list, verbose=0)
 
 
 def compline_model():
