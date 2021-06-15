@@ -107,6 +107,7 @@ def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
     return merge_from_to
 
 
+
 def save_merge_for_Poland():
     merge_data = get_merge_data_from_to()
     merge_data = merge_data[merge_data['region'] == 'POLSKA']
