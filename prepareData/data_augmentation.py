@@ -1,10 +1,10 @@
 import pandas as pd
 import  numpy as np
 
-from prepareData.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+# from prepareData.merge_data_mobility_epidemic_situation import get_merge_data_from_to
 
 
-def data_augmentation_without_Poland_as_sum(merge_data_org: pd.DataFrame):
+def data_augmentation(merge_data_org: pd.DataFrame):
     merge_data = merge_data_org.append( return_region_as_weighted_average(merge_data_org), ignore_index=True)
     merge_data = merge_data.append(return_region_as_groupby_date(merge_data_org), ignore_index=True)
     merge_data = merge_data.append(Adding_Gaussian_Noise_to_avarage_region(merge_data), ignore_index=True)
@@ -45,8 +45,8 @@ def Adding_Gaussian_Noise_to_avarage_region(data_merge: pd.DataFrame,seed =2):
     data.insert(0, 'region', 'ŚŚ_Gaus_Noise')
     return data
 # %%
-data_merge = get_merge_data_from_to()
-data_merge = data_augmentation_without_Poland_as_sum(data_merge)
+# data_merge = get_merge_data_from_to()
+# data_merge = data_augmentation(data_merge)
 
 # %%
 # average_region = data_merge[data_merge['region'] == 'ŚŚ_average']

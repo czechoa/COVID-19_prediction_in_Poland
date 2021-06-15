@@ -80,4 +80,5 @@ def get_test_respiration(date='2021-04-11'):
     finale_day = finale_data[finale_data['date'] == date]
     return finale_day
 # %%
+# a = get_test_respiration(date='2021-04-11')
 # data_region = prepare_data_epidemic_situation_in_regions()

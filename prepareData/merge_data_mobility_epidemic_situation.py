@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
+from prepareData.data_augmentation import data_augmentation
 from prepareData.prepare_data_area_population import preparing_data_area_population_regions
 from prepareData.prepare_data_epidemic_situation_in_regions import prepare_data_epidemic_situation_in_regions
 from prepareData.prepare_data_mobility import get_prepared_data_mobility
@@ -102,7 +103,7 @@ def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
     merge_from_to = merge_from_to.sort_values(by=['region', 'date'])
 
     merge_from_to = merge_area_population(merge_from_to)
-
+    merge_from_to = data_augmentation(merge_from_to)
     return merge_from_to
 
 
