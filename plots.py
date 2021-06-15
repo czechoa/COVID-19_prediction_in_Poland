@@ -56,7 +56,7 @@ def plot_prediction_to_Poland_from_results(result_all_list: list, labels: list, 
            )
     plt.gcf().autofmt_xdate()
     plt.grid()
-    plt.legend(loc='lower left')
+    plt.legend(loc='upper left')
     plt.show()
     fig.savefig(path)
 
@@ -92,6 +92,8 @@ def for_each_region_single_plot(result_all_list: list, labels: list, data_merge_
 def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame):
     regions = result_all_list[0]['region'].unique()
     z = 0
+    date = data_merge_from_to_f['date'].unique()
+
     while z < len(regions):
         print(z)
         plt.figure( figsize=(15, 15))
@@ -99,7 +101,6 @@ def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_
             if z + i >= len(regions): break
             plt.subplot(2,2,i+1)
             region = regions[z + i]
-            date = data_merge_from_to_f['date'].unique()
             days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
             region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == region]
             y = region_merge.iloc[:, -1].astype(float)
@@ -132,7 +133,7 @@ def subplot_relative_error_for_all_region(result_all):
     days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
     plt.figure(figsize=(15, 15))
     while z < len(regions):
-        plt.subplot(2, 2, int(z/4) + 1)
+        plt.subplot(3, 2, int(z/4) + 1)
         # avarage_relative_error = np.zeros(len(days_from_to))
         for i in range(0, 4):
 
@@ -189,4 +190,20 @@ def plot_averaged_relative_error_for_all_region(result_all):
     plt.grid()
     # plt.legend(loc='upper left')
     plt.savefig('results/regions_prediction_relative_error_averaged', bbox_inches='tight')
+    plt.show()
+
+def plot_relative_error_for_Polska(result_poland :pd.DataFrame):
+    date = result_poland['date'].unique()
+    days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
+    plt.figure(figsize=(15, 15))
+
+    y = result_poland.iloc[:,-1]
+    plt.plot(days_from_to, y, 'k--')
+    plt.xlabel(xlabel="Date")
+    plt.ylabel(ylabel="Relative_error")
+    plt.title("Poland_prediction_relative_error")
+
+    plt.gcf().autofmt_xdate()
+    plt.grid()
+    plt.savefig('results/Poland_prediction_relative_error', bbox_inches='tight')
     plt.show()
