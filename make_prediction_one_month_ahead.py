@@ -1,6 +1,6 @@
 from prepareData.make_train_test_from_merge_data import *
 from plots import plot_prediction_to_Poland_from_results, subplot_prediction_for_all_region
-from simple_regresion import make_all, make_submission, clear_model
+from simple_regresion import make_all, make_submission, clear_model, standardScaler
 from prepareData.merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from prepareData.prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
@@ -17,12 +17,15 @@ def make_prediction_one_month_ahead_for_train_all(data_merge, period_of_time=21,
 
     test_to_predict = make_date_to_prediction(train_all)
 
+    train_all = standardScaler(train_all,test_to_predict)
+
     result_all = pd.DataFrame(columns=['date', 'region', 'Liczba zajętych respiratorów (stan ciężki)',
                                        'prediction'])
     result_all_err = pd.DataFrame()
     day = next_day(last_day_train)
     for day_ahead_to_predict in range(1,day_ahead):
         train, target = get_train_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
+        train,test_to_predict = standardScaler(train,test_to_predict)
 
         make_all(train, target)
         submission = make_submission(test_to_predict, day_ahead_to_predict)
@@ -127,7 +130,7 @@ def make_prediction_with_data_augmentation_average_10():
     # make_plot_for_Poland([sum_result_all], ['prediction'], title='Poland prediction average of 10 measurements',
     #                      data_merge_from_to=data_merge_to_2021_05, save=True)
 
-def make_prediction_and_subplot_for_all_regions():
+def make_prediction_and_subplot_for_all_regions(subplot= True):
     last_day_train = '2021-03-20'
     period_of_time = 21
     data_merge_org = get_merge_data_from_to(last_day=last_day_train)
@@ -137,11 +140,12 @@ def make_prediction_and_subplot_for_all_regions():
     # list_results, labels = make_list_results_by_averaged_from_1_3_7_days_back(data_merge_org, period_of_time, last_day_train)
     results, results_error = make_prediction_one_month_ahead_for_train_all(data_merge_org,day_ahead=31)
 
-    results.to_csv('results/prediction_for_region_with_data_augmentation.csv', index=False)
+    if subplot:
+        results.to_csv('results/prediction_for_region_with_data_augmentation.csv', index=False)
 
-    data_merge_from_to = get_merge_data_from_to(last_day='2021-05-01')
-    # subplot_prediction_for_all_region(list_results, labels, data_merge_from_to)
-    subplot_prediction_for_all_region([results], ['prediction'],data_merge_from_to)
+        data_merge_from_to = get_merge_data_from_to(last_day='2021-05-01')
+        # subplot_prediction_for_all_region(list_results, labels, data_merge_from_to)
+        subplot_prediction_for_all_region([results], ['prediction'],data_merge_from_to)
 
     # save_list_results(list_results)
 
@@ -159,6 +163,7 @@ def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_pr
 
 # %%
 # data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20', 31, 21)
+make_prediction_and_subplot_for_all_regions(subplot= False)
 # %%
 # make_prediction_and_subplot_for_all_regions()
 # results = make_prediction_and_subplot_for_all_regions()
