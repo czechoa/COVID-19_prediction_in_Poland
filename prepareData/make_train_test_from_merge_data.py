@@ -8,8 +8,6 @@ import numpy as np
 # first_n_attribute_dsc_region = 3 + 16
 
 
-
-
 def avarage_merge_data_from_n_days(merge_data: pd.DataFrame, days_n, first_n_attribute_dsc_region=5):
     # iterate over each group
     if first_n_attribute_dsc_region != 5:
@@ -31,7 +29,7 @@ def reshape_data_merge_to_get_train_period_of_time_history_1(data_merge: pd.Data
     train_all = pd.DataFrame()
     # data_merge = avarage_merge_data_from_n_days(data_merge,3)
 
-    data_merge,first_n_attribute_dsc_region = oneHotEncode(data_merge, 'region', first_n_attribute_dsc_region)
+    data_merge, first_n_attribute_dsc_region = oneHotEncode(data_merge, 'region', first_n_attribute_dsc_region)
 
     number_of_days = len(data_merge.loc[:, 'date'].unique())
     for region in data_merge.loc[:, 'region'].unique():
@@ -116,7 +114,7 @@ def oneHotEncode(df, colName, first_n_attribute_dsc_region):
         # drop the encoded column
         # df.drop([colName], axis=1, inplace=True)
     first_n_attribute_dsc_region = col_dsc + len(df[colName].unique())
-    return df,first_n_attribute_dsc_region
+    return df, first_n_attribute_dsc_region
 
 # def make_test(data_merge: pd.DataFrame, number_of_days_in_one_rows, number_day_ahead_to_predition, first_n_attribute_dsc_region ):
 #     test_f = pd.DataFrame()

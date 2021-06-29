@@ -189,7 +189,7 @@ def make_prediction_and_subplot_for_all_regions(subplot=True):
 # data_merge_from_to = make_data_merge_from_to_from_last_day_train('2021-03-20', 31, 21)
 result_14 = make_prediction_and_subplot_for_all_regions(subplot=True)
 
- # %%
+# %%
 data_merge_all = get_merge_data_from_to(last_day='2021-05-05')
 date = '2021-03-21'
 data_merge_all = data_merge_all.iloc[:, [0, 1, -1]]
@@ -238,12 +238,13 @@ submission = submission.drop(columns='date')
 result = test_ahead.merge(submission, on=['region'])
 # %%
 import pandas as pd
+
 results = pd.read_csv('results/prediction_for_region_with_data_augmentation.csv')
 # %%
 results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
 # results[results['region'] == 'POLSKA'].iloc[:, [-2, -1]] = results[results['region'] == 'POLSKA'].iloc[:,
 #                                                            [-2, -1]] * 16
-w = results[results['region'] == 'POLSKA'].iloc[:,[-1]] * 16
-results.iloc[:, -1]  = results.iloc[:, -1]*16
+w = results[results['region'] == 'POLSKA'].iloc[:, [-1]] * 16
+results.iloc[:, -1] = results.iloc[:, -1] * 16
 make_plot_for_Poland([results], ['prediction'], )
-plot_prediction_to_Poland_from_results([results], ['prediction'],get_merge_data_from_to(last_day='2021-05-05'))
+plot_prediction_to_Poland_from_results([results], ['prediction'], get_merge_data_from_to(last_day='2021-05-05'))

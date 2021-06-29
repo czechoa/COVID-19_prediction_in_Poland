@@ -73,6 +73,7 @@ def drop_columns(data: pd.DataFrame):
 
     return data
 
+
 def get_test_respiration(date='2021-04-11'):
     finale_data = prepare_data_epidemic_situation_in_regions(
         'data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv')

@@ -34,7 +34,9 @@ train_data, test_data = get_data()
 
 # Combine train and test data to process them together
 combined, target = get_combined_data()
-#%%
+
+
+# %%
 
 def get_cols_with_no_nans(df, col_type):
     '''
@@ -60,14 +62,16 @@ def get_cols_with_no_nans(df, col_type):
             cols_with_no_nans.append(col)
     return cols_with_no_nans
 
-num_cols = get_cols_with_no_nans(combined , 'num')
-cat_cols = get_cols_with_no_nans(combined , 'no_num')
-print ('Number of numerical columns with no nan values :',len(num_cols))
-print ('Number of nun-numerical columns with no nan values :',len(cat_cols))
+
+num_cols = get_cols_with_no_nans(combined, 'num')
+cat_cols = get_cols_with_no_nans(combined, 'no_num')
+print('Number of numerical columns with no nan values :', len(num_cols))
+print('Number of nun-numerical columns with no nan values :', len(cat_cols))
 print(combined.shape)
 combined = combined[num_cols + cat_cols]
 
-#%%
+
+# %%
 def oneHotEncode(df, colNames):
     for col in colNames:
         if (df[col].dtype == np.dtype('object')):
@@ -94,7 +98,5 @@ print(train)
 # %%
 # make_all(train, target,"result")
 
-make_submission_cvs(train,target,'data/result')
+make_submission_cvs(train, target, 'data/result')
 # model.make_submission_cvs(train, target, 'data/result')
-
-

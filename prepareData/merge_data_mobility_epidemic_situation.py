@@ -115,6 +115,8 @@ def save_merge_for_Poland():
 
 
 # %%
+# data = get_merge_data_from_to()
+# c = data.columns.unique()
 # merge.to_csv('{}.csv'.format('results/data_merge'), index=False)
 #
 # region_n = np.repeat(range(1, 17), 365)

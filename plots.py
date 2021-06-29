@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import  numpy as np
+import numpy as np
+
+
 # def plot_prediction_to_Poland(result_all_f, data_merge_from_to_f):
 #     fig, ax = plt.subplots()
 #
@@ -33,8 +35,9 @@ import  numpy as np
 
 
 def plot_prediction_to_Poland_from_results(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame
-                                           ,path = "results/Poland prediction engaged respiration when learn from all set"
-                                           ,title='Poland prediction engaged respiration'):
+                                           ,
+                                           path="results/Poland prediction engaged respiration when learn from all set"
+                                           , title='Poland prediction engaged respiration'):
     fig, ax = plt.subplots()
 
     date = data_merge_from_to_f['date'].unique()
@@ -89,6 +92,7 @@ def for_each_region_single_plot(result_all_list: list, labels: list, data_merge_
         plt.legend(loc='lower left')
         plt.show()
 
+
 def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame):
     regions = result_all_list[0]['region'].unique()
     z = 0
@@ -96,10 +100,10 @@ def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_
 
     while z < len(regions):
         print(z)
-        plt.figure( figsize=(15, 15))
+        plt.figure(figsize=(15, 15))
         for i in range(0, 4):
             if z + i >= len(regions): break
-            plt.subplot(2,2,i+1)
+            plt.subplot(2, 2, i + 1)
             region = regions[z + i]
             days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
             region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == region]
@@ -123,8 +127,9 @@ def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_
             plt.grid()
             plt.legend(loc='lower left')
         z += i + 1
-        plt.savefig('results/region_prediction_' + str(z),bbox_inches='tight')
+        plt.savefig('results/region_prediction_' + str(z), bbox_inches='tight')
         plt.show()
+
 
 def subplot_relative_error_for_all_region(result_all):
     regions = result_all['region'].unique()
@@ -133,7 +138,7 @@ def subplot_relative_error_for_all_region(result_all):
     days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
     plt.figure(figsize=(15, 15))
     while z < len(regions):
-        plt.subplot(3, 2, int(z/4) + 1)
+        plt.subplot(3, 2, int(z / 4) + 1)
         # avarage_relative_error = np.zeros(len(days_from_to))
         for i in range(0, 4):
 
@@ -152,7 +157,7 @@ def subplot_relative_error_for_all_region(result_all):
         # plt.plot(days_from_to, avarage_relative_error,'k--',label='test')
         plt.xlabel(xlabel="Date")
         plt.ylabel(ylabel="Relative_error_engaged_respiration")
-        plt.title("Regions_prediction_relative_error_" + str(z+4))
+        plt.title("Regions_prediction_relative_error_" + str(z + 4))
 
         plt.gcf().autofmt_xdate()
         plt.grid()
@@ -160,6 +165,7 @@ def subplot_relative_error_for_all_region(result_all):
         z += 4
     plt.savefig('results/regions_prediction_relative_error_1', bbox_inches='tight')
     plt.show()
+
 
 def plot_averaged_relative_error_for_all_region(result_all):
     regions = result_all['region'].unique()
@@ -169,7 +175,6 @@ def plot_averaged_relative_error_for_all_region(result_all):
     plt.figure(figsize=(15, 15))
     avarage_relative_error = np.zeros(len(days_from_to))
     for i in range(0, len(regions)):
-
         region = regions[i]
 
         region_result = result_all[result_all['region'] == region]
@@ -177,7 +182,6 @@ def plot_averaged_relative_error_for_all_region(result_all):
         avarage_relative_error = avarage_relative_error.__add__(y.values)
         # plt.scatter(days_from_to[0], y)
         # plt.annotate("Point 1", (1, 4))
-
 
     avarage_relative_error = avarage_relative_error / len(regions)
 
@@ -192,12 +196,13 @@ def plot_averaged_relative_error_for_all_region(result_all):
     plt.savefig('results/regions_prediction_relative_error_averaged', bbox_inches='tight')
     plt.show()
 
-def plot_relative_error_for_Polska(result_poland :pd.DataFrame):
+
+def plot_relative_error_for_Polska(result_poland: pd.DataFrame):
     date = result_poland['date'].unique()
     days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
     plt.figure(figsize=(15, 15))
 
-    y = result_poland.iloc[:,-1]
+    y = result_poland.iloc[:, -1]
     plt.plot(days_from_to, y, 'k--')
     plt.xlabel(xlabel="Date")
     plt.ylabel(ylabel="Relative_error")
