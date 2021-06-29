@@ -3,7 +3,6 @@ import numpy as np
 
 
 def data_augmentation(merge_data_org: pd.DataFrame):
-
     merge_data = merge_data_org.append(return_region_as_weighted_average(merge_data_org), ignore_index=True)
     merge_data = merge_data.append(return_region_as_groupby_date(merge_data_org), ignore_index=True)
     merge_data = merge_data.append(adding_Gaussian_Noise_to_averaged_region(merge_data), ignore_index=True)
@@ -12,7 +11,6 @@ def data_augmentation(merge_data_org: pd.DataFrame):
 
 
 def return_region_as_weighted_average(merge_data: pd.DataFrame):
-
     data_merge_org = merge_data[merge_data['region'] != 'POLSKA']
     data_merge = data_merge_org.copy()
 
@@ -24,7 +22,6 @@ def return_region_as_weighted_average(merge_data: pd.DataFrame):
 
 
 def return_region_as_groupby_date(data_merge_f: pd.DataFrame):
-
     data_merge_org = data_merge_f[data_merge_f["region"] != 'POLSKA']
     data_merge = data_merge_org.copy()
 
