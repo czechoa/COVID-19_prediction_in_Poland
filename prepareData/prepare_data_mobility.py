@@ -9,7 +9,6 @@ def prepare_date_mobility(data_path):
 
     data: pd.DataFrame = pd.read_csv(data_path, usecols=i)
     data_Poland = data[data['sub_region_1'].isna()].copy()
-    # data_Poland.loc[:, 'sub_region_1'] = 'Poland'
     data_Poland['sub_region_1'] = 'Poland'
 
     data = data[data['iso_3166_2_code'].notna()]
@@ -17,7 +16,6 @@ def prepare_date_mobility(data_path):
     data = data.drop(columns='parks_percent_change_from_baseline')
     data = data.interpolate()
 
-    # data = day_of_the_week_for_all_regions(data)
     return data
 
 
@@ -37,7 +35,7 @@ def merge_data_2020_2021(data_2020: pd.DataFrame, data_2021: pd.DataFrame):
     return data_all
 
 
-def to_procent_data_mobility(data):
+def to_percent_data_mobility(data):
     data.iloc[:, -5:] = data.iloc[:, -5:].div(100)
     return data
 
@@ -45,15 +43,18 @@ def to_procent_data_mobility(data):
 def get_prepared_data_mobility():
     train_data_path = 'data/2020_PL_Region_Mobility_Report.csv'
     data_2020 = prepare_date_mobility(train_data_path)
-    # train_data_path_1 = 'data/2021_PL_Region_Mobility_Report.csv'
-    train_data_path_1 = 'data/2021-05-19_PL_Region_Mobility_Report.csv'
 
+    train_data_path_1 = 'data/2021-05-19_PL_Region_Mobility_Report.csv'
     data_2021 = prepare_date_mobility(train_data_path_1)
+
     data_all = merge_data_2020_2021(data_2020, data_2021)
+
     data_all = day_of_the_week_for_all_regions(data_all)
     data_all = data_all.drop(columns='iso_3166_2_code')
-    data_all = to_procent_data_mobility(data_all)
+    data_all = to_percent_data_mobility(data_all)
+
     return data_all
 
 # %%
-# data:pd.DataFrame = get_prepared_data_mobility()
+data:pd.DataFrame = get_prepared_data_mobility()
+
