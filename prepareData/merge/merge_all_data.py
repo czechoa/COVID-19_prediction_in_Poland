@@ -1,5 +1,5 @@
-from prepareData.merge_data_mobility_epidemic_situation import get_merge_data_from_to
-from prepareData.data_augmentation import data_augmentation
+from prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from prepareData.augmentation.data_augmentation import data_augmentation
 from prepareData.prepare_data_area_population import preparing_data_area_population_regions
 import pandas as pd
 
@@ -19,4 +19,4 @@ def merge_area_population(merge_data: pd.DataFrame):
 
     return merge_all
 # %%
-# a = get_all_merge_data_from_to(last_day='2021-05-01')
+a = get_all_merge_data_from_to(last_day='2021-05-01')
