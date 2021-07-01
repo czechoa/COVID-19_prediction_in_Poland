@@ -1,7 +1,6 @@
-from prepareData.test_train.make_train_test_from_merge_data import *
-from plots import plot_prediction_to_Poland_from_results, subplot_prediction_for_all_region
-from simple_regresion import make_all, make_submission, clear_model
-from prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from code.plots import plot_prediction_to_Poland_from_results, subplot_prediction_for_all_region
+from code.model.simple_regresion import make_all, make_submission, clear_model
+from code.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
 # from prepareData.prepare_data_epidemic_situation_in_regions import get_test_respiration
 from datetime import datetime, timedelta
 
@@ -239,7 +238,7 @@ result = test_ahead.merge(submission, on=['region'])
 # %%
 import pandas as pd
 
-results = pd.read_csv('results/prediction_for_region_with_data_augmentation.csv')
+results = pd.read_csv('../../results/prediction_for_region_with_data_augmentation.csv')
 # %%
 results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
 # results[results['region'] == 'POLSKA'].iloc[:, [-2, -1]] = results[results['region'] == 'POLSKA'].iloc[:,

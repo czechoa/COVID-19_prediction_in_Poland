@@ -4,7 +4,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras import layers
 from tensorflow.keras.backend import clear_session
 from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import warnings
 import numpy as np
@@ -22,11 +21,11 @@ def make_model(numberOfInput_dim, layers_n):
     # LST -
     # predykcje
     # NN_model.add(norm)
-    print(numberOfInput_dim)
     # NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu'))
     # print(numberOfInput_dim)
     l2 = keras.regularizers.l2(l2=0.01)
-    NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu', kernel_regularizer=l2))
+    NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu',
+                              kernel_regularizer=l2))
     # The Hidden Layers :
     # two hidden layer because repression all not functionras.re
     for i in range(layers_n):
@@ -40,18 +39,6 @@ def make_model(numberOfInput_dim, layers_n):
     NN_model.summary()
 
 
-def make_model_from_audio(numberOfInput_dim, layers_n):
-    NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu'))
-    NN_model.add(layers.Dense(64, activation='swish'))
-    NN_model.add(layers.Dense(64, activation='relu'))
-    NN_model.add(layers.Dense(64, activation='swish'))
-    NN_model.add(layers.Dense(64, activation='relu'))
-    NN_model.add(layers.Dense(64, activation='swish'))
-    NN_model.add(layers.Dense(1))
-    NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
-    NN_model.summary()
-
-
 def train_model(train, target):
     checkpoint_name = 'outModel/Weights.hdf5'
     checkpoint = ModelCheckpoint(checkpoint_name, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
@@ -61,7 +48,7 @@ def train_model(train, target):
 
 
 def compline_model():
-    wights_file = 'outModel/Weights.hdf5'
+    wights_file = '../../outModel/Weights.hdf5'
     NN_model.load_weights(wights_file)  # load it
     NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
 
@@ -115,40 +102,7 @@ def make_all(train, target, layers_n=2):
     NN_model = Sequential()
     # norm = preprocessing.Normalization()
     # norm.adapt(np.array(train))
-    print('start')
     make_model(train.shape[1], layers_n)
     train_model(train, target)
     compline_model()
     # make_submission_cvs(train, target, sub_name, )
-
-
-
-# %%
-# import time
-# def the_best_number_hidden_layers(train_sc, target,test_sc ):
-#     layer_err_mean = list()
-#     for layers_n in range(5):
-#         layer_err_sum = 0
-#         for i in range(5):
-#             # start_time = time.time()
-#             make_all(train_sc, target, layers_n)
-#             submission = make_submission(test_sc, 7)
-#             # print("--- %s seconds ---" % (time.time() - start_time))
-#             clear_model()
-#
-#             submission = submission.reset_index()
-#             # test_ahead: pd.DataFrame = get_test_respiration()
-#             # submission.rename(columns={submission.columns[0]: test_ahead.columns[1], submission.columns[2]: 'prediction'},
-#             #                   inplace=True)
-#
-#             # result = pd.merge(test_ahead, submission.drop(columns=submission.columns[1]), on=test_ahead.columns[1])
-#             result_err = result.iloc[:, :2]
-#             result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)
-#             result_err['relative error in %'] = abs(result_err.loc[:, 'subtract'] / result.iloc[:, -1].astype(float)) * 100
-#             norm_2 = np.linalg.norm(result_err['relative error in %'], ord=2)
-#             layer_err_sum = layer_err_sum + norm_2
-#         layer_err_mean.append(layer_err_sum / 10)
-#     print(layer_err_mean)
-#     hiden_layers_result = pd.DataFrame({'layer': range(5), 'mean_norm_2_result': layer_err_mean})
-#     return  hiden_layers_result
-
