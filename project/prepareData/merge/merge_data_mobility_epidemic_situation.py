@@ -64,6 +64,7 @@ def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
 
     merge_from_to: pd.DataFrame = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
 
+    merge_from_to = merge_from_to.apply(pd.to_numeric, errors='ignore')
     merge_from_to = merge_from_to.sort_values(by=['region', 'date'])
 
     return merge_from_to
