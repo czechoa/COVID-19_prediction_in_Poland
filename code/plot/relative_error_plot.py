@@ -1,5 +1,6 @@
 import pandas as pd
-from code.plots import subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, \
+
+from plots import subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, \
     plot_relative_error_for_Polska
 
 
@@ -25,5 +26,4 @@ def make_plots_relative_error_for_regions_with_augumetation():
     plot_relative_error_for_Polska(prediction_Poland)
 
 
-# %%
 make_plots_relative_error_for_regions_with_augumetation()

@@ -2,38 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-# def plot_prediction_to_Poland(result_all_f, data_merge_from_to_f):
-#     fig, ax = plt.subplots()
-#
-#     # first_region = data_merge_from_to.loc[data_merge_from_to['region'] == 'ZACHODNIOPOMORSKIE']
-#     # days_from_to = pd.to_datetime(first_region.loc[:, 'date'].values, format='%Y-%m-%d')
-#
-#     date = data_merge_from_to['date'].unique()
-#     days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
-#
-#     region_merge = data_merge_from_to_f.loc[data_merge_from_to_f['region'] == "POLSKA"]
-#     y = region_merge.iloc[:, -1].astype(float)
-#     plt.plot(days_from_to, y, label="reality")
-#
-#     polska_prd: pd.DataFrame = result_all_f.loc[result_all_f['region'] == 'POLSKA']
-#     days = pd.to_datetime(polska_prd.iloc[:, 0], format='%Y-%m-%d')
-#
-#     x = days
-#     y = polska_prd.loc[:, 'prediction'].astype(float).values
-#     plt.plot(x, y, label='prediction')
-#
-#     ax.set(xlabel="Date",
-#            ylabel="engaged respiration",
-#            title='POLSKA'
-#            )
-#     plt.gcf().autofmt_xdate()
-#     plt.grid()
-#     plt.legend(loc='lower left')
-#     plt.show()
-#     # fig.savefig("results/Poland predition when you learn from sum")
-
-
 def plot_prediction_to_Poland_from_results(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame
                                            ,
                                            path="results/Poland prediction engaged respiration when learn from all set"
