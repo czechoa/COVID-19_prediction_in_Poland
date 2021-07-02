@@ -24,7 +24,7 @@ def merge_data_for_Poland_from_06_2020(last_day='2021-03-20'):
     return data_merge_from_to_pl
 
 
-def Poland_prediction_average_of_10_measurements():
+def poland_prediction_average_of_10_measurements():
     data_merge_pl = merge_data_for_Poland_from_06_2020()
     data_merge_to_2021_05 = merge_data_for_Poland_from_06_2020(last_day='2021-05-01')
     sum_result_all = pd.DataFrame()
@@ -39,12 +39,3 @@ def Poland_prediction_average_of_10_measurements():
     sum_result_all['region'] = result_all['region']
     make_plot_for_Poland([sum_result_all], ['prediction'], title='Poland prediction average of 10 measurements',
                          data_merge_from_to=data_merge_to_2021_05, save=True)
-
-# %%
-# data_Poland_to_2021_05 :pd.DataFrame = merge_data_for_Poland_from_06_2020(last_day='2021-05-05')
-# data_Poland_to_2021_05.to_csv('data/data_Poland_to_2021_05.csv',index= False)
-
-# train_all = reshape_data_merge_to_get_train_period_of_time_history_1(data_merge_from_to_pl,21)
-# test_to_predict = make_date_to_prediction(train_all)
-# train, target = get_train_target(data_merge_from_to_pl, train_all, 21, 1)
-# %%
