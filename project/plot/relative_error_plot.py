@@ -1,6 +1,6 @@
 import pandas as pd
 
-from plots import subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, \
+from project.plot.plots import subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, \
     plot_relative_error_for_Polska
 
 

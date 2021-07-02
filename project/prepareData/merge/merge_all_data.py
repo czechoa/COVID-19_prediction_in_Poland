@@ -1,6 +1,6 @@
-from code.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
-from code.prepareData.augmentation.data_augmentation import data_augmentation
-from code.prepareData.prepare_data_area_population import preparing_data_area_population_regions
+from project.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from project.prepareData.augmentation.data_augmentation import data_augmentation
+from project.prepareData.prepare_data_area_population import preparing_data_area_population_regions
 import pandas as pd
 
 def get_all_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):

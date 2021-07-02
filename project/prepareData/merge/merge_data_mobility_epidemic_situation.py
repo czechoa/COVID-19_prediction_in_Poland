@@ -2,8 +2,8 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
-from code.prepareData.prepare_data_epidemic_situation_in_regions import prepare_data_epidemic_situation_in_regions
-from code.prepareData.prepare_data_mobility import get_prepared_data_mobility
+from project.prepareData.prepare_data_epidemic_situation_in_regions import prepare_data_epidemic_situation_in_regions
+from project.prepareData.prepare_data_mobility import get_prepared_data_mobility
 
 
 def get_data_mobility_and_data_epidemic_situation_in_regions():
