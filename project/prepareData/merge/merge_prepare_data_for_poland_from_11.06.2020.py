@@ -1,5 +1,5 @@
 import pandas as pd
-from project.model.make_prediction_one_month_ahead import make_prediction_one_month_ahead_for_train_all, make_plot_for_Poland
+from project.prediction.make_prediction_one_month_ahead import make_prediction_one_month_ahead_for_train_all, make_plot_for_Poland
 from merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from project.prepareData.prepare_data_mobility import get_prepared_data_mobility
 

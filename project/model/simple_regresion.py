@@ -48,7 +48,7 @@ def train_model(train, target):
 
 
 def compline_model():
-    wights_file = '../../outModel/Weights.hdf5'
+    wights_file = 'outModel/Weights.hdf5'
     NN_model.load_weights(wights_file)  # load it
     NN_model.compile(loss='mean_absolute_error', optimizer='adam', metrics=['mean_absolute_error'])
 
@@ -106,3 +106,4 @@ def make_all(train, target, layers_n=2):
     train_model(train, target)
     compline_model()
     # make_submission_cvs(train, target, sub_name, )
+

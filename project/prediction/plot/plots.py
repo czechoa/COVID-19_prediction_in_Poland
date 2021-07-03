@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def plot_prediction_to_Poland_from_results(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame
                                            ,
                                            path="results/Poland prediction engaged respiration when learn from all set"
@@ -30,7 +31,6 @@ def plot_prediction_to_Poland_from_results(result_all_list: list, labels: list, 
     plt.legend(loc='upper left')
     plt.show()
     fig.savefig(path)
-
 
 
 def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame):
