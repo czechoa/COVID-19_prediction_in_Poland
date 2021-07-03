@@ -4,7 +4,7 @@ from project.prepareData.prepare_data_area_population import preparing_data_area
 import pandas as pd
 
 
-def get_all_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
+def get_all_merge_data_from_to(first_day: str = None, last_day='2021-05-05'):
     merge_data = get_merge_data_from_to(first_day, last_day)
     merge_from_to = merge_area_population(merge_data)
     merge_from_to = data_augmentation(merge_from_to)

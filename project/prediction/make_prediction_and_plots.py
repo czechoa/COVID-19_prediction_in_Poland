@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from project.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead
 from project.prediction.plot.plots import plot_prediction_to_poland_from_results, subplot_prediction_for_all_region, \
     subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, plot_relative_error_for_poland
-from project.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from project.prepareData.merge.merge_all_data import get_all_merge_data_from_to
 
 import pandas as pd
 
@@ -17,13 +17,13 @@ def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_pr
     modified_date = date + timedelta(days=delta + days_ahead_to_prediction)
     last_day = datetime.strftime(modified_date, "%Y-%m-%d")
 
-    data_merge_from_to = get_merge_data_from_to(first_day, last_day)
+    data_merge_from_to = get_all_merge_data_from_to(first_day, last_day)
     return data_merge_from_to
 
 
 def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day_ahead=30, period_of_time=14,
                                                 subplot=True):
-    data_merge_org = get_merge_data_from_to(last_day=last_day_train)
+    data_merge_org = get_all_merge_data_from_to(last_day=last_day_train)
 
     data_merge_org = data_merge_org[data_merge_org["region"] != 'POLSKA']
 
@@ -32,13 +32,13 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
     if subplot:
         results.to_csv('results/csv/prediction_for_region.csv', index=False)
 
-        data_merge_from_to = get_merge_data_from_to(last_day='2021-05-05')
+        data_merge_from_to = get_all_merge_data_from_to()
         subplot_prediction_for_all_region([results], ['prediction'], data_merge_from_to)
     results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
 
     results.iloc[:, -1] = results.iloc[:, -1] * 16
 
-    plot_prediction_to_poland_from_results([results], ['prediction'], get_merge_data_from_to(last_day='2021-05-05'))
+    plot_prediction_to_poland_from_results([results], ['prediction'], get_all_merge_data_from_to())
 
     return results
 
@@ -53,5 +53,6 @@ def make_plots_relative_error_for_regions(prediction=None):
     prediction_Poland = prediction[prediction['region'] == 'ŚŚ_average']
     subplot_relative_error_for_all_region(prediction.copy())
     prediction = prediction[prediction['region'].isin(prediction['region'].unique()[:-3])]
+
     plot_averaged_relative_error_for_all_region(prediction)
     plot_relative_error_for_poland(prediction_Poland)

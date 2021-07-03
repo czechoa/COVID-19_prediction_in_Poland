@@ -1,6 +1,6 @@
 import pandas as pd
 from project.model.simple_regresion import make_all, make_submission, clear_model
-from project.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from project.prepareData.merge.merge_all_data import get_all_merge_data_from_to
 from datetime import datetime, timedelta
 from project.prepareData.test_train.make_train_test_from_merge_data import \
     reshape_data_merge_to_get_train_period_of_time_history, make_date_to_prediction, get_train_target
@@ -23,7 +23,8 @@ def make_prediction_n_days_ahead(data_merge, period_of_time=21, last_day_train='
     train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
 
     test_to_predict = make_date_to_prediction(train_all)
-    data_merge_all = get_merge_data_from_to(last_day='2021-05-05')
+
+    data_merge_all = get_all_merge_data_from_to()
     data_merge_all['date'] = data_merge_all['date'].astype(str)
     # train_all = standardScaler(train_all,test_to_predict)
 
@@ -61,5 +62,3 @@ def make_prediction_n_days_ahead(data_merge, period_of_time=21, last_day_train='
     result_all_err = result_all_err.sort_values(by=['region', 'date'])
 
     return result_all, result_all_err
-
-

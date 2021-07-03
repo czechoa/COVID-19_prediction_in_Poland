@@ -4,7 +4,7 @@ import numpy as np
 
 
 def plot_prediction_to_poland_from_results(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame,
-                                           path="results/Poland prediction engaged respiration when learn from all set",
+                                           path="results/image/Poland prediction engaged respiration when learn from all set",
                                            title='Poland prediction engaged respiration'):
     fig, ax = plt.subplots()
 
@@ -65,7 +65,7 @@ def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_
             plt.grid()
             plt.legend(loc='lower left')
         z += i + 1
-        plt.savefig('results/region_prediction_' + str(z), bbox_inches='tight')
+        plt.savefig('results/image/region_prediction_' + str(z), bbox_inches='tight')
         plt.show()
 
 
@@ -96,7 +96,7 @@ def subplot_relative_error_for_all_region(result_all):
         plt.grid()
         plt.legend(loc='upper left')
         z += 4
-    plt.savefig('results/regions_prediction_relative_error_1', bbox_inches='tight')
+    plt.savefig('results/image/regions_prediction_relative_error', bbox_inches='tight')
     plt.show()
 
 
@@ -123,7 +123,7 @@ def plot_averaged_relative_error_for_all_region(result_all):
     plt.gcf().autofmt_xdate()
     plt.grid()
     # plt.legend(loc='upper left')
-    plt.savefig('results/regions_prediction_relative_error_averaged', bbox_inches='tight')
+    plt.savefig('results/image/regions_prediction_relative_error_averaged', bbox_inches='tight')
     plt.show()
 
 
@@ -140,5 +140,5 @@ def plot_relative_error_for_poland(result_poland: pd.DataFrame):
 
     plt.gcf().autofmt_xdate()
     plt.grid()
-    plt.savefig('results/Poland_prediction_relative_error', bbox_inches='tight')
+    plt.savefig('results/image/Poland_prediction_relative_error', bbox_inches='tight')
     plt.show()
