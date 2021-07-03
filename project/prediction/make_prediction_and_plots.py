@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from project.prediction.make_prediction_one_month_ahead import make_prediction_one_month_ahead_for_train_all
+from project.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead
 from project.prediction.plot.plots import plot_prediction_to_Poland_from_results, subplot_prediction_for_all_region, \
     subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, plot_relative_error_for_Polska
 from project.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
@@ -21,15 +21,14 @@ def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_pr
     return data_merge_from_to
 
 
-def make_prediction_and_subplot_for_all_regions(subplot=True):
-    last_day_train = '2021-03-20'
-    period_of_time = 14
+def make_prediction_and_subplot_for_all_regions(last_day_train = '2021-03-20', day_ahead=30, period_of_time = 14, subplot=True):
+
     data_merge_org = get_merge_data_from_to(last_day=last_day_train)
 
     data_merge_org = data_merge_org[data_merge_org["region"] != 'POLSKA']
 
-    results, results_error = make_prediction_one_month_ahead_for_train_all(data_merge_org, day_ahead=30,
-                                                                           period_of_time=period_of_time)
+    results, results_error = make_prediction_n_days_ahead(data_merge_org, day_ahead=day_ahead,
+                                                          period_of_time=period_of_time)
     if subplot:
         results.to_csv('results/csv/prediction_for_region.csv', index=False)
 

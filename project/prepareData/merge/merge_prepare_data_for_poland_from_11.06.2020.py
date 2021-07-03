@@ -1,5 +1,5 @@
 import pandas as pd
-from project.prediction.make_prediction_one_month_ahead import make_prediction_one_month_ahead_for_train_all, make_plot_for_Poland
+from project.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead, make_plot_for_Poland
 from merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from project.prepareData.prepare_data_mobility import get_prepared_data_mobility
 
@@ -29,7 +29,7 @@ def poland_prediction_average_of_10_measurements():
     data_merge_to_2021_05 = merge_data_for_Poland_from_06_2020(last_day='2021-05-01')
     sum_result_all = pd.DataFrame()
     for i in range(0, 10):
-        result_all, result_all_err = make_prediction_one_month_ahead_for_train_all(data_merge_pl, day_ahead=30)
+        result_all, result_all_err = make_prediction_n_days_ahead(data_merge_pl, day_ahead=30)
         if i == 0:
             sum_result_all = result_all
         else:

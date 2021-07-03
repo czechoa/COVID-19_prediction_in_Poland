@@ -18,8 +18,8 @@ def get_test_respiration(data_merge: pd.DataFrame, date):
     return finale_day
 
 
-def make_prediction_one_month_ahead_for_train_all(data_merge, period_of_time=21, last_day_train='2021-03-20',
-                                                  day_ahead=31):
+def make_prediction_n_days_ahead(data_merge, period_of_time=21, last_day_train='2021-03-20',
+                                 day_ahead=31):
     train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
 
     test_to_predict = make_date_to_prediction(train_all)
