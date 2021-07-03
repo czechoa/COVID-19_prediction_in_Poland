@@ -54,7 +54,3 @@ def get_prepared_data_mobility():
     data_all = to_percent_data_mobility(data_all)
 
     return data_all
-
-# %%
-data:pd.DataFrame = get_prepared_data_mobility()
-

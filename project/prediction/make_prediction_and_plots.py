@@ -21,8 +21,8 @@ def make_data_merge_from_to_from_last_day_train(last_day_train, days_ahead_to_pr
     return data_merge_from_to
 
 
-def make_prediction_and_subplot_for_all_regions(last_day_train = '2021-03-20', day_ahead=30, period_of_time = 14, subplot=True):
-
+def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day_ahead=30, period_of_time=14,
+                                                subplot=True):
     data_merge_org = get_merge_data_from_to(last_day=last_day_train)
 
     data_merge_org = data_merge_org[data_merge_org["region"] != 'POLSKA']

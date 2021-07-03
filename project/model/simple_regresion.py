@@ -15,23 +15,13 @@ warnings.filterwarnings('ignore', category=DeprecationWarning)
 
 
 def make_model(numberOfInput_dim, layers_n):
-    # The Input Layer :
-    # rekurucyjne, konwolucyjne
-
-    # LST -
-    # predykcje
-    # NN_model.add(norm)
-    # NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu'))
-    # print(numberOfInput_dim)
     l2 = keras.regularizers.l2(l2=0.01)
     NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu',
                               kernel_regularizer=l2))
     # The Hidden Layers :
-    # two hidden layer because repression all not functionras.re
     for i in range(layers_n):
         NN_model.add(layers.Dense(256, kernel_initializer='normal', activation='relu', kernel_regularizer=l2))
 
-    # NN_model.add(Dropout(0.2))
     # The Output Layer :
     NN_model.add(layers.Dense(1, kernel_initializer='normal', activation='linear'))
     # Compile the network :
@@ -100,10 +90,6 @@ def standardScaler(train, test, input_scaler=StandardScaler()):
 def make_all(train, target, layers_n=2):
     global NN_model
     NN_model = Sequential()
-    # norm = preprocessing.Normalization()
-    # norm.adapt(np.array(train))
     make_model(train.shape[1], layers_n)
     train_model(train, target)
     compline_model()
-    # make_submission_cvs(train, target, sub_name, )
-
