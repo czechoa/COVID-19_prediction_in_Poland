@@ -14,9 +14,9 @@ warnings.filterwarnings('ignore')
 warnings.filterwarnings('ignore', category=DeprecationWarning)
 
 
-def make_model(numberOfInput_dim, layers_n):
+def make_model(number_of_input_dim, layers_n):
     l2 = keras.regularizers.l2(l2=0.01)
-    NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=numberOfInput_dim, activation='relu',
+    NN_model.add(layers.Dense(128, kernel_initializer='normal', input_dim=number_of_input_dim, activation='relu',
                               kernel_regularizer=l2))
     # The Hidden Layers :
     for i in range(layers_n):
@@ -45,8 +45,8 @@ def compline_model():
 
 def make_submission_cvs(train: pd.DataFrame, target, sub_name):
     prediction = NN_model.predict(train)
-    my_submission = pd.DataFrame({'Id': train.index[:].to_list()
-                                     , 'Target': target,
+    my_submission = pd.DataFrame({'Id': train.index[:].to_list(),
+                                  'Target': target,
                                   'Prediction': prediction[:, 0]})
     # my_submission.index[:] = train.index[:]
     my_submission.to_csv('{}.csv'.format(sub_name), index=False)
@@ -75,7 +75,7 @@ def clear_model():
     clear_session()
 
 
-def standardScaler(train, test, input_scaler=StandardScaler()):
+def standard_scale(train, test, input_scaler=StandardScaler()):
     if input_scaler is not None:
         # fit scaler
         input_scaler.fit(train)

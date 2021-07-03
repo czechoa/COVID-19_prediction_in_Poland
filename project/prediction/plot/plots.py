@@ -3,10 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_prediction_to_Poland_from_results(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame
-                                           ,
-                                           path="results/Poland prediction engaged respiration when learn from all set"
-                                           , title='Poland prediction engaged respiration'):
+def plot_prediction_to_poland_from_results(result_all_list: list, labels: list, data_merge_from_to_f: pd.DataFrame,
+                                           path="results/Poland prediction engaged respiration when learn from all set",
+                                           title='Poland prediction engaged respiration'):
     fig, ax = plt.subplots()
 
     date = data_merge_from_to_f['date'].unique()
@@ -42,7 +41,9 @@ def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_
         print(z)
         plt.figure(figsize=(15, 15))
         for i in range(0, 4):
-            if z + i >= len(regions): break
+            if z + i >= len(regions):
+                break
+
             plt.subplot(2, 2, i + 1)
             region = regions[z + i]
             days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
@@ -55,9 +56,6 @@ def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_
                 days = pd.to_datetime(region_prd.iloc[:, 0], format='%Y-%m-%d')
                 y = region_prd['prediction'].astype(float).values
                 plt.plot(days, y, label=label)
-
-            # plt.scatter(days_from_to[0], y)
-            # plt.annotate("Point 1", (1, 4))
 
             plt.xlabel(xlabel="Date")
             plt.ylabel(ylabel="Engaged respiration")
@@ -79,22 +77,17 @@ def subplot_relative_error_for_all_region(result_all):
     plt.figure(figsize=(15, 15))
     while z < len(regions):
         plt.subplot(3, 2, int(z / 4) + 1)
-        # avarage_relative_error = np.zeros(len(days_from_to))
         for i in range(0, 4):
 
-            if z + i >= len(regions): break
+            if z + i >= len(regions):
+                break
 
             region = regions[z + i]
 
             region_result = result_all[result_all['region'] == region]
             y = region_result.iloc[:, -1].astype(float)
             plt.plot(days_from_to, y, label=str(region))
-            # avarage_relative_error = avarage_relative_error.__add__(y.values)
-            # plt.scatter(days_from_to[0], y)
-            # plt.annotate("Point 1", (1, 4))
 
-        # avarage_relative_error = avarage_relative_error/4
-        # plt.plot(days_from_to, avarage_relative_error,'k--',label='test')
         plt.xlabel(xlabel="Date")
         plt.ylabel(ylabel="Relative_error_engaged_respiration")
         plt.title("Regions_prediction_relative_error_" + str(z + 4))
@@ -109,7 +102,6 @@ def subplot_relative_error_for_all_region(result_all):
 
 def plot_averaged_relative_error_for_all_region(result_all):
     regions = result_all['region'].unique()
-    z = 0
     date = result_all['date'].unique()
     days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
     plt.figure(figsize=(15, 15))
@@ -120,8 +112,6 @@ def plot_averaged_relative_error_for_all_region(result_all):
         region_result = result_all[result_all['region'] == region]
         y = region_result.iloc[:, -1].astype(float)
         avarage_relative_error = avarage_relative_error.__add__(y.values)
-        # plt.scatter(days_from_to[0], y)
-        # plt.annotate("Point 1", (1, 4))
 
     avarage_relative_error = avarage_relative_error / len(regions)
 
@@ -137,7 +127,7 @@ def plot_averaged_relative_error_for_all_region(result_all):
     plt.show()
 
 
-def plot_relative_error_for_Polska(result_poland: pd.DataFrame):
+def plot_relative_error_for_poland(result_poland: pd.DataFrame):
     date = result_poland['date'].unique()
     days_from_to = pd.to_datetime(date, format='%Y-%m-%d')
     plt.figure(figsize=(15, 15))

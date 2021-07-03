@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
 from project.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead
-from project.prediction.plot.plots import plot_prediction_to_Poland_from_results, subplot_prediction_for_all_region, \
-    subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, plot_relative_error_for_Polska
+from project.prediction.plot.plots import plot_prediction_to_poland_from_results, subplot_prediction_for_all_region, \
+    subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, plot_relative_error_for_poland
 from project.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
 
 import pandas as pd
@@ -38,7 +38,7 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
 
     results.iloc[:, -1] = results.iloc[:, -1] * 16
 
-    plot_prediction_to_Poland_from_results([results], ['prediction'], get_merge_data_from_to(last_day='2021-05-05'))
+    plot_prediction_to_poland_from_results([results], ['prediction'], get_merge_data_from_to(last_day='2021-05-05'))
 
     return results
 
@@ -54,4 +54,4 @@ def make_plots_relative_error_for_regions(prediction=None):
     subplot_relative_error_for_all_region(prediction.copy())
     prediction = prediction[prediction['region'].isin(prediction['region'].unique()[:-3])]
     plot_averaged_relative_error_for_all_region(prediction)
-    plot_relative_error_for_Polska(prediction_Poland)
+    plot_relative_error_for_poland(prediction_Poland)
