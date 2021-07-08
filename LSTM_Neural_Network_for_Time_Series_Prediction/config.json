@@ -2,15 +2,16 @@
   "data": {
     "filename": "data_Poland_to_2021_05_ns.csv",
     "columns": [
+      "Number_of_people_hospitalized",
       "Engaged_respirator"
     ],
     "sequence_length": 7,
-    "train_test_split": 0.85,
+    "train_test_split": 0.80,
     "normalise": false
   },
   "training": {
     "epochs": 2,
-    "batch_size": 16
+    "batch_size": 4
   },
   "model": {
     "loss": "mse",
