@@ -2,6 +2,7 @@
   "data": {
     "filename": "data_Poland_to_2021_05_ns.csv",
     "columns": [
+
       "Number_of_people_hospitalized",
       "Engaged_respirator"
     ],

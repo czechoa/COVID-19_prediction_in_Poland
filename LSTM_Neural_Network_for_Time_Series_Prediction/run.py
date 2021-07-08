@@ -33,7 +33,7 @@ def plot_results_multiple(predicted_data, true_data, prediction_len):
     plt.show()
 
 df = pd.read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv')
-data_df = df.iloc[:,[-2,-1]]
+data_df = df.iloc[:,2:]
 data_desc = data_df.describe()
 data_org = data_df.values
 
@@ -44,13 +44,11 @@ df_ns = pd.DataFrame(columns= data_df.columns, data = data_nor)
 df_ns.to_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05_ns.csv', index= False)
 
 configs = json.load(open('LSTM_Neural_Network_for_Time_Series_Prediction/config.json', 'r'))
-
 data = DataLoader(
 	os.path.join('LSTM_Neural_Network_for_Time_Series_Prediction/data', configs['data']['filename']),
 	configs['data']['train_test_split'],
 	configs['data']['columns']
 )
-
 
 model = Model()
 model.build_model(configs)
@@ -80,16 +78,11 @@ y_test_sc = np.array( y_test) * (data_desc.loc['max'][-1] -  data_desc.loc['min'
 # y_test = y_test * (data_org.max() - data_org.min()) + data_org.mean()
 
 plot_results(predictions,y_test_sc)
-# %%
-# # plot_results_multiple(predictions, y_test, configs['data']['sequence_length'])
 
 predictions_full:list = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
 predictions_sc = np.array( predictions_full) * (data_desc.loc['max'][-1] -  data_desc.loc['min'][-1] ) + data_desc.loc['mean'][-1]
-# y_test_sc = np.array( y_test) * (data_desc.loc['max'][-1] -  data_desc.loc['min'][-1] ) + data_desc.loc['mean'][-1]
 
 # plot_results(predictions_full,y_test)
 
 plot_results(predictions_sc,y_test_sc)
-# %%
-plot_results(predictions,y_test_sc)
 

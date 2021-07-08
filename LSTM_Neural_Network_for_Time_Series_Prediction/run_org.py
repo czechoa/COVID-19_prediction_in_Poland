@@ -34,7 +34,7 @@ def plot_results_multiple(predicted_data, true_data, prediction_len):
 
 
 def main():
-    configs = json.load(open('LSTM_Neural_Network_for_Time_Series_Prediction/config_org.json', 'r'))
+    configs = json.load(open('LSTM_Neural_Network_for_Time_Series_Prediction/config.json', 'r'))
     if not os.path.exists(configs['model']['save_dir']): os.makedirs(configs['model']['save_dir'])
 
     data = DataLoader(
