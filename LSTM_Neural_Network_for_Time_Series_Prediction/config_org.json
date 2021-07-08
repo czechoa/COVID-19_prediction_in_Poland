@@ -2,7 +2,6 @@
 	"data": {
 		"filename": "sp500.csv",
 		"columns": [
-			"Close",
 			"Volume"
 		],
 		"sequence_length": 50,

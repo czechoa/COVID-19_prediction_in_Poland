@@ -29,7 +29,9 @@ class DataLoader():
         data_windows = self.normalise_windows(data_windows, single_window=False) if normalise else data_windows
 
         x = data_windows[:, :-1]
-        y = data_windows[:, -1, [0]]
+        # y = data_windows[:, -1, [0]]
+        y = data_windows[:, -1, [-1]]
+
         return x,y
 
     def get_train_data(self, seq_len, normalise):
@@ -68,7 +70,9 @@ class DataLoader():
         window = self.data_train[i:i+seq_len]
         window = self.normalise_windows(window, single_window=True)[0] if normalise else window
         x = window[:-1]
-        y = window[-1, [0]]
+        # y = window[-1, [0]]
+        y = window[-1, [-1]]
+
         return x, y
 
     def normalise_windows(self, window_data, single_window=False):

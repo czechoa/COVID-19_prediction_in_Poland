@@ -12,6 +12,7 @@ import pandas as pd
 from LSTM_Neural_Network_for_Time_Series_Prediction.core.data_processor import DataLoader
 from LSTM_Neural_Network_for_Time_Series_Prediction.core.model import Model
 import numpy as np
+
 def plot_results(predicted_data, true_data):
     fig = plt.figure(facecolor='white')
     ax = fig.add_subplot(111)
@@ -73,7 +74,6 @@ predictions = model.predict_point_by_point(x_test)
 predictions = np.array( predictions) * (data_desc.loc['max'][-1] -  data_desc.loc['min'][-1] ) + data_desc.loc['mean'][-1]
 y_test_sc = np.array( y_test) * (data_desc.loc['max'][-1] -  data_desc.loc['min'][-1] ) + data_desc.loc['mean'][-1]
 
-
 # predictions = predictions * (data_org.max() - data_org.min()) + data_org.mean()
 # y_test = y_test * (data_org.max() - data_org.min()) + data_org.mean()
 
@@ -85,4 +85,5 @@ predictions_sc = np.array( predictions_full) * (data_desc.loc['max'][-1] -  data
 # plot_results(predictions_full,y_test)
 
 plot_results(predictions_sc,y_test_sc)
+
 
