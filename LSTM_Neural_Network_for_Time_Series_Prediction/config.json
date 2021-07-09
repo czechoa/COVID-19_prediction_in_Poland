@@ -2,22 +2,15 @@
   "data": {
     "filename": "region.csv",
     "columns": [
-        "day of the week",
-      "retail_and_recreation_percent_change_from_baseline",
-      "grocery_and_pharmacy_percent_change_from_baseline",
-      "transit_stations_percent_change_from_baseline",
-      "workplaces_percent_change_from_baseline",
-      "residential_percent_change_from_baseline",
-      "Number_of_people_hospitalized",
       "Engaged_respirator"
     ],
     "sequence_length": 15,
-    "train_test_split": 0.85,
-    "normalise": false
+    "train_test_split": 0.80,
+    "normalise": true
   },
   "training": {
     "epochs": 2,
-    "batch_size": 4
+    "batch_size": 32
   },
   "model": {
     "loss": "mse",

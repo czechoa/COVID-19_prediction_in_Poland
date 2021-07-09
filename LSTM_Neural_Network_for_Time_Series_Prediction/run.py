@@ -37,25 +37,21 @@ def plot_results_multiple(predicted_data, true_data, prediction_len):
 
 def normalised_data(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv'):
     df = pd.read_csv(path)
-    data_df = df.iloc[:, 2:]
+    data_df = df.iloc[:, -2:]
     data_desc = data_df.describe()
     data_org = data_df.values
 
     data_nor = (data_org - data_desc.loc['mean'].values) / (data_desc.loc['max'].values - data_desc.loc['min'].values)
     # data_nor = (data_org - data_desc.loc['mean'])/ (data_desc.loc['max'] - data_desc.loc['min'])
-
-    df_ns = pd.DataFrame(columns=data_df.columns, data=data_nor)
-    df_ns.insert(0,'region',df['region'])
-    df_ns.to_csv(path[:-4] + '_ns.csv', index=False)
+    df.iloc[:,-2:] = data_nor
+    # df_ns = pd.DataFrame(columns=data_df.columns, data=data_nor)
+    # df_ns.insert(0,'region',df['region'])
+    df.to_csv(path[:-4] + '_ns.csv', index=False)
     return data_desc
 
-# x_full = np.zeros()
-# y_full = np.array
 
-data_desc = normalised_data('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_merge.csv')
-data_merge = pd.read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_merge_ns.csv')
-
-
+# data_desc = normalised_data('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
+data_merge = pd.read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
 
 first = True
 for region in data_merge.loc[:,'region'].unique():
@@ -79,20 +75,19 @@ for region in data_merge.loc[:,'region'].unique():
         x_full = x
         y_full = y
         first = False
+        x_test, y_test = data.get_test_data(
+            seq_len=configs['data']['sequence_length'],
+            normalise=configs['data']['normalise']
+        )
     else:
         x_full = np.concatenate((x_full, x), axis=0)
         y_full = np.concatenate((y_full, y), axis=0)
-
+    break
     # x_full = np.insert(x_full, x)
     # y_full = np.insert(y_full, y)
 
 x = x_full
 y = y_full
-
-x_test, y_test = data.get_test_data(
-    seq_len=configs['data']['sequence_length'],
-    normalise=configs['data']['normalise']
-)
 
 model.train(
     x,
@@ -102,20 +97,23 @@ model.train(
     ,save_dir=configs['model']['save_dir']
 )
 
-predictions = model.predict_point_by_point(x_test)
+# predictions = model.predict_point_by_point(x_test)
 
-predictions = np.array(predictions) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + data_desc.loc['mean'][-1]
-y_test_sc = np.array(y_test) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + data_desc.loc['mean'][-1]
+# predictions = np.array(predictions) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + data_desc.loc['mean'][-1]
+# y_test_sc = np.array(y_test) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + data_desc.loc['mean'][-1]
 
 # predictions = predictions * (data_org.max() - data_org.min()) + data_org.mean()
 # y_test = y_test * (data_org.max() - data_org.min()) + data_org.mean()
 
-plot_results(predictions, y_test_sc)
+# plot_results(predictions, y_test)
 
 predictions_full: list = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
-predictions_sc = np.array(predictions_full) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + \
-                 data_desc.loc['mean'][-1]
+# predictions_sc = np.array(predictions_full) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + \
+#                  data_desc.loc['mean'][-1]
 
-# plot_results(predictions_full,y_test)
+plot_results(predictions_full,y_test)
 
-plot_results(predictions_sc, y_test_sc)
+# plot_results(predictions_sc, y_test_sc)
+# %%
+b = data_merge.columns().unique()
+
