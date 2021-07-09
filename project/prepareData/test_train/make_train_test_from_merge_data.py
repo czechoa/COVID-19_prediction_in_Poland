@@ -20,7 +20,7 @@ def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFr
     train_all = pd.DataFrame()
     # data_merge = avaraged_merge_data_from_n_days(data_merge,3)
 
-    data_merge, first_n_attribute_dsc_region = oneHotEncode(data_merge, 'region', first_n_attribute_dsc_region)
+    data_merge, first_n_attribute_dsc_region = one_hot_encode(data_merge, 'region', first_n_attribute_dsc_region)
 
     number_of_days = len(data_merge.loc[:, 'date'].unique())
     for region in data_merge.loc[:, 'region'].unique():
@@ -93,12 +93,12 @@ def get_train_target(data_merge: pd.DataFrame, train_all: pd.DataFrame,
     return train, target
 
 
-def oneHotEncode(df, colName, first_n_attribute_dsc_region):
+def one_hot_encode(df, col_name, first_n_attribute_dsc_region):
     col_dsc = first_n_attribute_dsc_region
 
-    if df[colName].dtype == np.dtype('object'):
-        dummies = pd.get_dummies(df[colName], prefix=colName)
+    if df[col_name].dtype == np.dtype('object'):
+        dummies = pd.get_dummies(df[col_name], prefix=col_name)
         df = pd.concat([df.iloc[:, :col_dsc], dummies, df.iloc[:, col_dsc:]], axis=1)
 
-    first_n_attribute_dsc_region = col_dsc + len(df[colName].unique())
+    first_n_attribute_dsc_region = col_dsc + len(df[col_name].unique())
     return df, first_n_attribute_dsc_region

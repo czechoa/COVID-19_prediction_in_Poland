@@ -1,4 +1,4 @@
-region,date,day of the week,retail_and_recreation_percent_change_from_baseline,grocery_and_pharmacy_percent_change_from_baseline,transit_stations_percent_change_from_baseline,workplaces_percent_change_from_baseline,residential_percent_change_from_baseline,Liczba osób hospitalizowanych ,Liczba zajętych respiratorów (stan ciężki)
+region,date,day of the week,retail_and_recreation_percent_change_from_baseline,grocery_and_pharmacy_percent_change_from_baseline,transit_stations_percent_change_from_baseline,workplaces_percent_change_from_baseline,residential_percent_change_from_baseline,Number_of_people_hospitalized,Engaged_respirator
 WIELKOPOLSKIE,2020-10-23,1,-21.0,1.0,-33.0,-21.0,8.0,924,59
 WIELKOPOLSKIE,2020-10-24,2,-30.0,-11.0,-31.0,-8.0,6.0,929,56
 WIELKOPOLSKIE,2020-10-25,3,-39.0,-11.0,-24.0,-14.0,3.0,961,75

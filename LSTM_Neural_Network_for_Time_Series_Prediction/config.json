@@ -1,6 +1,6 @@
 {
   "data": {
-    "filename": "data_Poland_to_2021_05_ns.csv",
+    "filename": "region.csv",
     "columns": [
         "day of the week",
       "retail_and_recreation_percent_change_from_baseline",
@@ -11,8 +11,8 @@
       "Number_of_people_hospitalized",
       "Engaged_respirator"
     ],
-    "sequence_length": 8,
-    "train_test_split": 0.80,
+    "sequence_length": 15,
+    "train_test_split": 0.85,
     "normalise": false
   },
   "training": {
@@ -27,7 +27,7 @@
       {
         "type": "lstm",
         "neurons": 100,
-        "input_timesteps": 7,
+        "input_timesteps": 14,
         "input_dim": 8,
         "return_seq": true
       },

@@ -19,3 +19,9 @@ def merge_area_population(merge_data: pd.DataFrame, attribute_dsc=3):
     merge_all = merge_dsc.merge(merge_data, on=list(merge_data.columns.values[0:attribute_dsc]))
 
     return merge_all
+# %%
+# from project.prepareData.test_train.make_train_test_from_merge_data import one_hot_encode
+# a = get_all_merge_data_from_to()
+# b, number_desc =  one_hot_encode(a,'region',5)
+# b.to_csv('results/csv/data_all_with_one_hot_encode.csv', index=False)
+
