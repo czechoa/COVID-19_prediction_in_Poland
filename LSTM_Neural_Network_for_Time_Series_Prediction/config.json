@@ -1,12 +1,12 @@
 {
   "data": {
-    "filename": "region.csv",
+    "filename": "region_ns.csv",
     "columns": [
       "Engaged_respirator"
     ],
     "sequence_length": 8,
     "train_test_split": 0.82,
-    "normalise": true
+    "normalise": false
   },
   "training": {
     "epochs": 2,
