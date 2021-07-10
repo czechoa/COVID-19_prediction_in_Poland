@@ -12,6 +12,7 @@ import pandas as pd
 from LSTM_Neural_Network_for_Time_Series_Prediction.core.data_processor import DataLoader
 from LSTM_Neural_Network_for_Time_Series_Prediction.core.model import Model
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 
 def plot_results(predicted_data, true_data):
@@ -42,15 +43,25 @@ def normalised_data(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/da
     data_org = data_df.values
 
     data_nor = (data_org - data_desc.loc['mean'].values) / (data_desc.loc['max'].values - data_desc.loc['min'].values)
-    # data_nor = (data_org - data_desc.loc['mean'])/ (data_desc.loc['max'] - data_desc.loc['min'])
+    # data_nor = (data_org) / (data_desc.loc['max'].values - data_desc.loc['min'].values)
+
     df.iloc[:,-2:] = data_nor
     # df_ns = pd.DataFrame(columns=data_df.columns, data=data_nor)
     # df_ns.insert(0,'region',df['region'])
     df.to_csv(path[:-4] + '_ns.csv', index=False)
     return data_desc
+def normalised_data_min_max(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv'):
+    df = pd.read_csv(path)
+    data_df = df.iloc[:, -2:]
+    data_desc = data_df.describe()
+    data_org = data_df.values
+    scaler = MinMaxScaler(feature_range=(-1,1))
+    data_nor = scaler.fit_transform(data_org)
 
+    df.iloc[:,-2:] = data_nor
+    df.to_csv(path[:-4] + '_ns.csv', index=False)
+    return data_desc
 
-# data_desc = normalised_data('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
 data_merge = pd.read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
 
 first = True
@@ -58,6 +69,8 @@ for region in data_merge.loc[:,'region'].unique():
 
     data_region = data_merge[data_merge['region'] == region]
     data_region.to_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv')
+    # data_desc = normalised_data_min_max('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv')
+
     configs = json.load(open('LSTM_Neural_Network_for_Time_Series_Prediction/config.json', 'r'))
     data = DataLoader(
         os.path.join('LSTM_Neural_Network_for_Time_Series_Prediction/data', configs['data']['filename']),
@@ -75,14 +88,10 @@ for region in data_merge.loc[:,'region'].unique():
         x_full = x
         y_full = y
         first = False
-        x_test, y_test = data.get_test_data(
-            seq_len=configs['data']['sequence_length'],
-            normalise=configs['data']['normalise']
-        )
+
     else:
         x_full = np.concatenate((x_full, x), axis=0)
         y_full = np.concatenate((y_full, y), axis=0)
-    break
     # x_full = np.insert(x_full, x)
     # y_full = np.insert(y_full, y)
 
@@ -97,6 +106,10 @@ model.train(
     ,save_dir=configs['model']['save_dir']
 )
 
+x_test, y_test = data.get_test_data(
+    seq_len=configs['data']['sequence_length'],
+    normalise=configs['data']['normalise']
+)
 # predictions = model.predict_point_by_point(x_test)
 
 # predictions = np.array(predictions) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + data_desc.loc['mean'][-1]
