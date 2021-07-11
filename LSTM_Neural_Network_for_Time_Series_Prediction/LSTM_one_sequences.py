@@ -58,7 +58,7 @@ dataset = dataset.astype('float32')
 scaler = MinMaxScaler(feature_range=(0, 1))
 dataset = scaler.fit_transform(dataset.reshape(len(dataset),1))
 # split into train and test sets
-train_size = int(len(dataset) * 0.8)
+train_size = int(len(dataset) * 0.9)
 test_size = len(dataset) - train_size
 train, test = dataset[0:train_size,:], dataset[train_size:len(dataset),:]
 # reshape into X=t and Y=t+1
@@ -66,24 +66,53 @@ look_back = 1
 trainX, trainY = create_dataset(train, look_back)
 testX, testY = create_dataset(test, look_back)
 # reshape input to be [samples, time steps, features]
-trainX = numpy.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
-testX = numpy.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
+trainX = numpy.reshape(trainX, ( 1,trainX.shape[0], trainX.shape[1]))
+trainY = numpy.reshape(trainY, ( 1,trainY.shape[0], 1))
+
+# testX = numpy.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
 # create and fit the LSTM network
 model = Sequential()
-model.add(LSTM(4, input_shape=(1, look_back)))
+model.add(LSTM(100, return_sequences=True,stateful=True,batch_input_shape=(1,None,1)))
 model.add(Dense(1))
 model.compile(loss='mean_squared_error', optimizer='adam')
-model.fit(trainX, trainY, epochs=100, batch_size=1, verbose=2)
+model.fit(trainX, trainY, epochs=200, batch_size=1, verbose=2)
+model.reset_states()
+
 # make predictions
-trainPredict = model.predict(trainX)
-testPredict = model.predict(testX)
+predictions = model.predict(trainX)
+# testPredict = model.predict(testX)
 # invert predictions
-trainPredict = scaler.inverse_transform(trainPredict)
-trainY = scaler.inverse_transform([trainY])
-testPredict = scaler.inverse_transform(testPredict)
+
+# predictions = model.predict(trainX)
+future = []
+currentStep = predictions[:,-1:,:]
+
+for i in range(testY.shape[0]):
+    currentStep = model.predict(currentStep) #get the next step
+    future.append(currentStep) #store the future steps
+
+#after processing a sequence, reset the states for safety
+model.reset_states()
+
+
+future_array = np.array(future)
+future_array = future_array[:,0,0,0]
+future_array = future_array.reshape(future_array.shape[0],1)
+
+# reshape back
+def reshape_back(train_f :np.array):
+    train_f = train_f[0,:,0]
+    train_f = train_f.reshape(len(train_f),1)
+    return  train_f
+
+trainPredict = scaler.inverse_transform(reshape_back(predictions))
+trainY = scaler.inverse_transform(reshape_back(trainY))
+#
+testPredict = scaler.inverse_transform(future_array)
 testY = scaler.inverse_transform([testY])
+#
 # calculate root mean squared error
-trainScore = math.sqrt(mean_squared_error(trainY[0], trainPredict[:,0]))
+trainScore = math.sqrt(mean_squared_error(trainY[:,0], trainPredict[:,0]))
 print('Train Score: %.2f RMSE' % (trainScore))
 testScore = math.sqrt(mean_squared_error(testY[0], testPredict[:,0]))
 print('Test Score: %.2f RMSE' % (testScore))
