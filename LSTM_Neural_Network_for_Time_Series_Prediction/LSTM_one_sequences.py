@@ -73,24 +73,27 @@ trainY = numpy.reshape(trainY, ( 1,trainY.shape[0], 1))
 # create and fit the LSTM network
 model = Sequential()
 model.add(LSTM(100, return_sequences=True,stateful=True,batch_input_shape=(1,None,1)))
+# model.add(LSTM(70,return_sequences=True,stateful=True))
+# model.add(LSTM(1,return_sequences=False,stateful=True))
 model.add(Dense(1))
 model.compile(loss='mean_squared_error', optimizer='adam')
-model.fit(trainX, trainY, epochs=200, batch_size=1, verbose=2)
-model.reset_states()
+model.fit(trainX, trainY, epochs=50, batch_size=1, verbose=2)
+
+
+# model.reset_states()
 
 # make predictions
-predictions = model.predict(trainX)
+# predictions = model.predict(trainX)
 # testPredict = model.predict(testX)
 # invert predictions
-
 # predictions = model.predict(trainX)
 future = []
-currentStep = predictions[:,-1:,:]
-
+# currentStep = predictions[:,-1:,:]
+currentStep = trainX[:,-2:-1,:]
 for i in range(testY.shape[0]):
     currentStep = model.predict(currentStep) #get the next step
+    currentStep = currentStep.reshape(1,1,1)
     future.append(currentStep) #store the future steps
-
 #after processing a sequence, reset the states for safety
 model.reset_states()
 
@@ -105,6 +108,7 @@ def reshape_back(train_f :np.array):
     train_f = train_f.reshape(len(train_f),1)
     return  train_f
 
+predictions = trainY
 trainPredict = scaler.inverse_transform(reshape_back(predictions))
 trainY = scaler.inverse_transform(reshape_back(trainY))
 #
