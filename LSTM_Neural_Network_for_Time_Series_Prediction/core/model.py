@@ -67,6 +67,13 @@ class Model():
 		print('[Model] Training Completed. Model saved as %s' % save_fname)
 		timer.stop()
 
+	def train_from_website(self,x, y, epochs, batch_size, save_dir):
+		look_back = 3
+		self.model.add(LSTM(4, input_shape=(1, look_back)))
+		self.model.add(Dense(1))
+		self.model.compile(loss='mean_squared_error', optimizer='adam')
+		self.model.fit(x, y, epochs=100, batch_size=1, verbose=2)
+
 	def train_generator(self, data_gen, epochs, batch_size, steps_per_epoch, save_dir):
 		timer = Timer()
 		timer.start()

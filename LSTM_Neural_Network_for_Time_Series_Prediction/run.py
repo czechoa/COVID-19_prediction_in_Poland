@@ -52,24 +52,25 @@ def normalised_data(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/da
     return data_desc
 def normalised_data_min_max(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv'):
     df = pd.read_csv(path)
-    data_df = df.iloc[:, -2:]
+    data_df = df.iloc[:, 3:]
     data_desc = data_df.describe()
     data_org = data_df.values
     scaler = MinMaxScaler(feature_range=(0,1))
     data_nor = scaler.fit_transform(data_org)
 
-    df.iloc[:,-2:] = data_nor
+    df.iloc[:,3:] = data_nor
     df.to_csv(path[:-4] + '_ns.csv', index=False)
     return data_desc
 
-data_merge = pd.read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
+data_desc = normalised_data_min_max('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
+data_merge = pd.read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode_ns.csv')
 
 first = True
-for region in data_merge.loc[:,'region'].unique():
+for region in data_merge.loc[:,'region'].unique()[::-1]:
 
     data_region = data_merge[data_merge['region'] == region]
     data_region.to_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv')
-    data_desc = normalised_data_min_max('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv')
+    # data_desc = normalised_data_min_max('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv')
 
     configs = json.load(open('LSTM_Neural_Network_for_Time_Series_Prediction/config.json', 'r'))
     data = DataLoader(
@@ -90,12 +91,13 @@ for region in data_merge.loc[:,'region'].unique():
         y_full = y
         first = False
 
+
     else:
         x_full = np.concatenate((x_full, x), axis=0)
         y_full = np.concatenate((y_full, y), axis=0)
     # x_full = np.insert(x_full, x)
     # y_full = np.insert(y_full, y)
-    break
+
 x = x_full
 y = y_full
 
@@ -106,11 +108,11 @@ model.train(
     batch_size=configs['training']['batch_size']
     ,save_dir=configs['model']['save_dir']
 )
-
 x_test, y_test = data.get_test_data(
     seq_len=configs['data']['sequence_length'],
     normalise=configs['data']['normalise']
 )
+
 # predictions = model.predict_point_by_point(x_test)
 
 # predictions = np.array(predictions) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + data_desc.loc['mean'][-1]
