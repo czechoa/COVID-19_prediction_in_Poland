@@ -9,128 +9,154 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 # from numpy import newaxis
 import numpy as np
+
+
 # convert an array of values into a dataset matrix
 def create_dataset(dataset, look_back=1):
-	dataX, dataY = [], []
-	for i in range(len(dataset)-look_back-1):
-		a = dataset[i:(i+look_back), :]
-		dataX.append(a)
-		dataY.append(dataset[i + look_back, :])
-	return numpy.array(dataX), numpy.array(dataY)
-
-def predict_sequence_full(self, data, window_size):
-    #Shift the window by 1 new prediction each time, re-run predictions on new window
-    print('[Model] Predicting Sequences Full...')
-    curr_frame = data[0]
-    predicted = []
-    for i in range(len(data)):
-        predicted.append(self.model.predict(curr_frame[np.newaxis,:,:])[0,0])
-        curr_frame = curr_frame[1:]
-        curr_frame = np.insert(curr_frame, [window_size-2], predicted[-1], axis=0)
-    return predicted
-
-def predict_sequence_full_mine(self, data, window_size):
-    #Shift the window by 1 new prediction each time, re-run predictions on new window
-    print('[Model] Predicting Sequences Full...')
-    curr_frame = data[0]
-    predicted = []
-    for i in range(len(data)):
-        predicted.append(self.model.predict(curr_frame[np.newaxis,:,:])[0,0])
-        curr_frame = curr_frame[1:]
-        curr_frame = np.insert(curr_frame, [window_size-2], predicted[-1], axis=0)
-    return predicted
-
-# fix random seed for reproducibility
-numpy.random.seed(7)
-# load the dataset
-# data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
-# dataframe = data_merge[data_merge['region'] == data_merge['region'].unique()[0]].iloc[:,-1]
-
-data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv')
-dataframe = data_merge.iloc[:,[-2,-1]]
-
-# dataframe = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv',  engine='python')
-# data = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv',c)
-# dataset = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv', usecols=[1], engine='python')
-dataset = dataframe.values
-dataset = dataset.astype('float32')
-# normalize the dataset
-scaler = MinMaxScaler(feature_range=(0, 1))
-dataset = scaler.fit_transform(dataset.reshape(len(dataset),dataset.shape[1]))
-# split into train and test sets
-train_size = int(len(dataset) * 0.9)
-test_size = len(dataset) - train_size
-train, test = dataset[0:train_size,:], dataset[train_size:len(dataset),:]
-# reshape into X=t and Y=t+1
-look_back = 1
-trainX, trainY = create_dataset(train, look_back)
-testX, testY = create_dataset(test, look_back)
-# reshape input to be [samples, time steps, features]
-features = trainX.shape[2]
-trainX = numpy.reshape(trainX, ( 1,trainX.shape[0], features))
-trainY = numpy.reshape(trainY, ( 1,trainY.shape[0], features))
-
-# testX = numpy.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
-# create and fit the LSTM network
-model = Sequential()
-model.add(LSTM(100, return_sequences=True,stateful=True,batch_input_shape=(1,None,features)))
-# model.add(LSTM(70,return_sequences=True,stateful=True))
-# model.add(LSTM(1,return_sequences=False,stateful=True))
-model.add(Dense(features))
-model.compile(loss='mean_squared_error', optimizer='adam')
-model.fit(trainX, trainY, epochs=50, batch_size=1, verbose=2)
+    dataX, dataY = [], []
+    for i in range(len(dataset) - look_back - 1):
+        a = dataset[i:(i + look_back), :]
+        dataX.append(a)
+        dataY.append(dataset[i + look_back, :])
+    return numpy.array(dataX), numpy.array(dataY)
 
 
-# model.reset_states()
+def load_dataset(columns_index=[-2, -1]):
+    #  fix random seed for reproducibility
+    numpy.random.seed(7)
+    # load the dataset
+    # data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
+    # dataframe = data_merge[data_merge['region'] == data_merge['region'].unique()[0]].iloc[:,-1]
 
-# make predictions
-# predictions = model.predict(trainX)
-# testPredict = model.predict(testX)
-# invert predictions
-# predictions = model.predict(trainX)
-future = []
-# currentStep = predictions[:,-1:,:]
-currentStep = trainX[:,-2:-1,:]
-for i in range(testY.shape[0]):
-    currentStep = model.predict(currentStep) #get the next step
-    # currentStep = currentStep.reshape(1,1,)
-    future.append(currentStep) #store the future steps
-#after processing a sequence, reset the states for safety
-model.reset_states()
+    data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv')
+    dataframe = data_merge.iloc[:, columns_index]
 
-future_array = np.array(future)
-future_array = future_array[:,0,0,:]
-future_array = future_array.reshape(future_array.shape[0],features)
+    # dataframe = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv',  engine='python')
+    # data = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv',c)
+    # dataset = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv', usecols=[1], engine='python')
+    dataset = dataframe.values
+    dataset = dataset.astype('float32')
+    features = dataset.shape[1]
+    return dataset, features
 
-# reshape back
-def reshape_back(train_f :np.array):
-    train_f = train_f[0,:,:]
+
+def normalise_dataset(dataset):
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    dataset = scaler.fit_transform(dataset.reshape(len(dataset), dataset.shape[1]))
+    return dataset, scaler
+
+
+def split_into_train_and_test_sets(split=0.85):
+    train_size = int(len(dataset) * split)
+    test_size = len(dataset) - train_size
+    train, test = dataset[0:train_size, :], dataset[train_size:len(dataset), :]
+    return train, test
+
+
+def reshape_train_to_one_sample(trainX, trainY, features):
+    trainX = numpy.reshape(trainX, (1, trainX.shape[0], features))
+    trainY = numpy.reshape(trainY, (1, trainY.shape[0], features))
+    return trainX, trainY
+
+
+def create_and_fit_model(trainX, trainY):
+    model = Sequential()
+    model.add(LSTM(100, return_sequences=True, stateful=True, batch_input_shape=(1, None, features)))
+    # model.add(LSTM(70,return_sequences=True,stateful=True))
+    # model.add(LSTM(features,return_sequences=False,stateful=True))
+    model.add(Dense(features))
+    model.compile(loss='mean_squared_error', optimizer='adam')
+    model.fit(trainX, trainY, epochs=50, batch_size=1, verbose=2)
+    return model
+
+
+def make_prediction_future():
+    model.reset_states()
+
+    # make predictions
+    predictions = model.predict(trainX)
+    # testPredict = model.predict(testX)
+    # invert predictions
+    # predictions = model.predict(trainX)
+    future = []
+    currentStep = predictions[:, -1:, :]
+    # currentStep = trainX[:,-2:-1,:]
+    for i in range(testY.shape[0]):
+        currentStep = model.predict(currentStep)  # get the next step
+        # currentStep = currentStep.reshape(1,1,)
+        future.append(currentStep)  # store the future steps
+    # after processing a sequence, reset the states for safety
+    model.reset_states()
+
+    future_array = np.array(future)
+    future_array = future_array[:, 0, 0, :]
+    future_array = future_array.reshape(future_array.shape[0], features)
+    return future_array, predictions
+
+
+def reshape_back(train_f: np.array):
+    train_f = train_f[0, :, :]
     # train_f = train_f.reshape(len(train_f),features)
-    return  train_f
-predictions = trainX
-trainPredict = scaler.inverse_transform(reshape_back(predictions))
-trainY = scaler.inverse_transform(reshape_back(trainY))
+    return train_f
 
-testPredict = scaler.inverse_transform(future_array)
 
-testY = scaler.inverse_transform(testY)
-# calculate root mean squared error
-trainScore = math.sqrt(mean_squared_error(trainY[:,-1], trainPredict[:,-1]))
-print('Train Score: %.2f RMSE' % (trainScore))
-testScore = math.sqrt(mean_squared_error(testY[:,-1], testPredict[:,-1]))
-print('Test Score: %.2f RMSE' % (testScore))
-# shift train predictions for plotting
-trainPredictPlot = numpy.empty_like(dataset)
-trainPredictPlot[:, :] = numpy.nan
-trainPredictPlot[look_back:len(trainPredict)+look_back, :] = trainPredict
-# shift test predictions for plotting
-testPredictPlot = numpy.empty_like(dataset)
-testPredictPlot[:, :] = numpy.nan
-testPredictPlot[len(trainPredict)+(look_back*2)+1:len(dataset)-1, :] = testPredict
-# plot baseline and predictions
-dataset_transf = scaler.inverse_transform(dataset)
-for i in range(features):
-    plt.plot(dataset_transf[:,i])
-    plt.plot(trainPredictPlot[:,i])
-    plt.plot(testPredictPlot[:,i])
-    plt.show()
+def calculate_root_mean_squared_error(trainY, trainPredict, testY, testPredict):
+    trainScore = math.sqrt(mean_squared_error(trainY[:, -1], trainPredict[:, -1]))
+    print('Train Score: %.2f RMSE' % (trainScore))
+    testScore = math.sqrt(mean_squared_error(testY[:, -1], testPredict[:, -1]))
+    print('Test Score: %.2f RMSE' % (testScore))
+
+
+def inverse_transform_train(scaler, predictions, trainY):
+    trainPredict = scaler.inverse_transform(reshape_back(predictions))
+    trainY = scaler.inverse_transform(reshape_back(trainY))
+    return trainPredict, trainY
+
+
+def inverse_transform_test(scaler, future_array, testY):
+    testPredict = scaler.inverse_transform(future_array)
+    testY = scaler.inverse_transform(testY)
+    return testPredict, testY
+
+
+def shift_train_predictions_for_plotting():
+    trainPredictPlot = numpy.empty_like(dataset)
+    trainPredictPlot[:, :] = numpy.nan
+    trainPredictPlot[look_back:len(trainPredict) + look_back, :] = trainPredict
+    # shift test predictions for plotting
+    testPredictPlot = numpy.empty_like(dataset)
+    testPredictPlot[:, :] = numpy.nan
+    testPredictPlot[len(trainPredict) + (look_back * 2) + 1:len(dataset) - 1, :] = testPredict
+    return trainPredictPlot, testPredictPlot
+
+
+def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot, features):
+    dataset_transf = scaler.inverse_transform(dataset)
+    for i in range(features):
+        plt.plot(dataset_transf[:, i])
+        plt.plot(trainPredictPlot[:, i])
+        plt.plot(testPredictPlot[:, i])
+        plt.show()
+
+
+look_back = 1
+dataset, features = load_dataset()
+dataset, scaler = normalise_dataset(dataset)
+train, test = split_into_train_and_test_sets()
+
+trainX, trainY = create_dataset(train)
+testX, testY = create_dataset(test)
+
+# features = trainX.shape[2]
+trainX, trainY = reshape_train_to_one_sample(trainX, trainY, features)
+
+model = create_and_fit_model(trainX, trainY)
+
+future_array, predictions = make_prediction_future()
+
+trainPredict, trainY = inverse_transform_train(scaler, predictions, trainY)
+testPredict, testY = inverse_transform_test(scaler, future_array, testY)
+
+
+trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting()
+plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot, features)
