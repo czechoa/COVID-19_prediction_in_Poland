@@ -23,7 +23,6 @@ def create_dataset(dataset, look_back=1):
 
 def load_dataset(columns_index=[-2, -1]):
     #  fix random seed for reproducibility
-    numpy.random.seed(7)
     # load the dataset
     # data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
     # dataframe = data_merge[data_merge['region'] == data_merge['region'].unique()[0]].iloc[:,-1]
@@ -37,7 +36,7 @@ def load_dataset(columns_index=[-2, -1]):
     dataset = dataframe.values
     dataset = dataset.astype('float32')
     features = dataset.shape[1]
-    return dataset, features
+    return dataset
 
 
 def normalise_dataset(dataset):
@@ -53,13 +52,14 @@ def split_into_train_and_test_sets(split=0.85):
     return train, test
 
 
-def reshape_train_to_one_sample(trainX, trainY, features):
-    trainX = numpy.reshape(trainX, (1, trainX.shape[0], features))
-    trainY = numpy.reshape(trainY, (1, trainY.shape[0], features))
+def reshape_train_to_one_sample(trainX, trainY):
+    trainX = numpy.reshape(trainX, (1, trainX.shape[0], trainX.shape[2]))
+    trainY = numpy.reshape(trainY, (1, trainY.shape[0], trainY.shape[1]))
     return trainX, trainY
 
 
 def create_and_fit_model(trainX, trainY):
+    features = trainX.shape[2]
     model = Sequential()
     model.add(LSTM(100, return_sequences=True, stateful=True, batch_input_shape=(1, None, features)))
     # model.add(LSTM(70,return_sequences=True,stateful=True))
@@ -70,9 +70,8 @@ def create_and_fit_model(trainX, trainY):
     return model
 
 
-def make_prediction_future():
+def make_prediction_future(model, trainX, testY):
     model.reset_states()
-
     # make predictions
     predictions = model.predict(trainX)
     # testPredict = model.predict(testX)
@@ -90,6 +89,8 @@ def make_prediction_future():
 
     future_array = np.array(future)
     future_array = future_array[:, 0, 0, :]
+
+    features = trainX.shape[2]
     future_array = future_array.reshape(future_array.shape[0], features)
     return future_array, predictions
 
@@ -119,7 +120,7 @@ def inverse_transform_test(scaler, future_array, testY):
     return testPredict, testY
 
 
-def shift_train_predictions_for_plotting():
+def shift_train_predictions_for_plotting(dataset,trainPredict, testPredict,look_back):
     trainPredictPlot = numpy.empty_like(dataset)
     trainPredictPlot[:, :] = numpy.nan
     trainPredictPlot[look_back:len(trainPredict) + look_back, :] = trainPredict
@@ -130,33 +131,32 @@ def shift_train_predictions_for_plotting():
     return trainPredictPlot, testPredictPlot
 
 
-def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot, features):
-    dataset_transf = scaler.inverse_transform(dataset)
-    for i in range(features):
-        plt.plot(dataset_transf[:, i])
+def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
+    for i in range(dataset.shape[1]):
+        plt.plot(dataset[:, i])
         plt.plot(trainPredictPlot[:, i])
         plt.plot(testPredictPlot[:, i])
         plt.show()
 
+# numpy.random.seed(7)
 
 look_back = 1
-dataset, features = load_dataset()
+dataset = load_dataset()
 dataset, scaler = normalise_dataset(dataset)
 train, test = split_into_train_and_test_sets()
 
 trainX, trainY = create_dataset(train)
 testX, testY = create_dataset(test)
 
-# features = trainX.shape[2]
-trainX, trainY = reshape_train_to_one_sample(trainX, trainY, features)
+trainX, trainY = reshape_train_to_one_sample(trainX, trainY)
 
 model = create_and_fit_model(trainX, trainY)
 
-future_array, predictions = make_prediction_future()
+future_array, predictions = make_prediction_future(model, trainX, testY)
 
 trainPredict, trainY = inverse_transform_train(scaler, predictions, trainY)
 testPredict, testY = inverse_transform_test(scaler, future_array, testY)
+dataset = scaler.inverse_transform(dataset)
 
-
-trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting()
-plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot, features)
+trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting(dataset,trainPredict,testPredict,look_back)
+plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot)
