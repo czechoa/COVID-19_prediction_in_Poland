@@ -147,12 +147,14 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
 look_back = 1
 
 data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
+data_merge["region"].replace({"ŚŚ_average":"ŚŚŚ_average"}, inplace=True)
+data_merge = data_merge.sort_values(by=['region', 'date'])
 
 first = True
 x_full = np.array
 y_full = np.array
 
-for region_name in data_merge['region'].unique()[:-1]:
+for region_name in data_merge['region'].unique():
     if region_name == 'POLSKA':
         continue
     region = data_merge[data_merge['region'] == region_name]
