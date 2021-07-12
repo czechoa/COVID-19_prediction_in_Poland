@@ -21,7 +21,7 @@ def create_dataset(dataset, look_back=1):
     return numpy.array(dataX), numpy.array(dataY)
 
 
-def load_dataset(region , columns_index=[-2, -1]):
+def load_dataset(region, columns_index=[-2, -1]):
     #  fix random seed for reproducibility
     # load the dataset
     # data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
@@ -119,7 +119,7 @@ def inverse_transform_test(scaler, future_array, testY):
     return testPredict, testY
 
 
-def shift_train_predictions_for_plotting(dataset,trainPredict, testPredict,look_back):
+def shift_train_predictions_for_plotting(dataset, trainPredict, testPredict, look_back):
     trainPredictPlot = np.empty_like(dataset)
     trainPredictPlot[:, :] = np.nan
     trainPredictPlot[look_back:len(trainPredict) + look_back, :] = trainPredict
@@ -132,9 +132,14 @@ def shift_train_predictions_for_plotting(dataset,trainPredict, testPredict,look_
 
 def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
     for i in range(dataset.shape[1]):
-        plt.plot(dataset[:, i])
-        plt.plot(trainPredictPlot[:, i])
-        plt.plot(testPredictPlot[:, i])
+        plt.plot(dataset[:, i],label= 'true data')
+        plt.plot(trainPredictPlot[:, i], label= 'train prediction')
+        plt.plot(testPredictPlot[:, i], label= 'prediction (future)')
+        # plt.xlabel(xlabel="Date")
+        # plt.ylabel(ylabel= )
+        plt.title("Regions_prediction_averaged_relative_error")
+        plt.grid()
+        plt.legend()
         plt.show()
 
 # numpy.random.seed(7)
@@ -143,16 +148,15 @@ look_back = 1
 
 data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
 
-
 first = True
 x_full = np.array
 y_full = np.array
 
-for region_name in  data_merge['region'].unique():
+for region_name in data_merge['region'].unique()[:-1]:
     if region_name == 'POLSKA':
         continue
     region = data_merge[data_merge['region'] == region_name]
-    dataset = load_dataset(region)
+    dataset = load_dataset(region, columns_index = [-2,-1])
     dataset, scaler = normalise_dataset(dataset)
     train, test = split_into_train_and_test_sets(split=0.8)
 
@@ -171,8 +175,8 @@ trainX = x_full
 trainY = y_full
 
 model = create_and_fit_model(trainX, trainY)
-trainX = trainX[-1:,:,:]
-trainY = trainY[-1:,:,:]
+trainX = trainX[-1:, :, :]
+trainY = trainY[-1:, :, :]
 
 # trainX = trainX.reshape(1,len(trainX),trainX.shape[1])
 future_array, predictions = make_prediction_future(model, trainX, testY)
@@ -181,10 +185,12 @@ trainPredict, trainY = inverse_transform_train(scaler, predictions, trainY)
 testPredict, testY = inverse_transform_test(scaler, future_array, testY)
 dataset = scaler.inverse_transform(dataset)
 
-trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting(dataset,trainPredict,testPredict,look_back)
+trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting(dataset, trainPredict, testPredict, look_back)
 # plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot)
 
 region = data_merge[data_merge['region'] == 'POLSKA']
 dataset = load_dataset(region)
-
 plot_baseline_and_predictions(dataset, trainPredictPlot * 16, testPredictPlot * 16)
+
+# %%
+
