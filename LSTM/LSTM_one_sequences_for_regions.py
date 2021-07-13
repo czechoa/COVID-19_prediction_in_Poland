@@ -1,4 +1,3 @@
-import numpy
 import matplotlib.pyplot as plt
 from pandas import read_csv
 import math
@@ -7,7 +6,6 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
-# from numpy import newaxis
 import numpy as np
 
 
@@ -18,7 +16,7 @@ def create_dataset(dataset, look_back=1):
         a = dataset[i:(i + look_back), :]
         dataX.append(a)
         dataY.append(dataset[i + look_back, :])
-    return numpy.array(dataX), numpy.array(dataY)
+    return np.array(dataX), np.array(dataY)
 
 
 def load_dataset(region, columns_index=[-2, -1]):
@@ -52,8 +50,8 @@ def split_into_train_and_test_sets(split=0.85):
 
 
 def reshape_train_to_one_sample(trainX, trainY):
-    trainX = numpy.reshape(trainX, (1, trainX.shape[0], trainX.shape[2]))
-    trainY = numpy.reshape(trainY, (1, trainY.shape[0], trainY.shape[1]))
+    trainX = np.reshape(trainX, (1, trainX.shape[0], trainX.shape[2]))
+    trainY = np.reshape(trainY, (1, trainY.shape[0], trainY.shape[1]))
     return trainX, trainY
 
 
@@ -146,7 +144,7 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
 
 look_back = 1
 split = 0.78
-data_merge = read_csv('LSTM/data/data_all_with_one_hot_encode.csv')
+data_merge = read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
 data_merge["region"].replace({"ŚŚ_average":"ŚŚŚ_average"}, inplace=True)
 data_merge = data_merge.sort_values(by=['region', 'date'])
 
