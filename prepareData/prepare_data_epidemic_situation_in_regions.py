@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def prepare_data_epidemic_situation_in_regions(
-        train_data_path='data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv'):
+        train_data_path='data/data_input/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv'):
     data = pd.read_csv(train_data_path, header=1)
 
     data = split_data_that_region_as_attribute(data)
@@ -74,7 +74,7 @@ def drop_columns(data: pd.DataFrame):
 
 def get_test_respiration(date='2021-04-11'):
     finale_data = prepare_data_epidemic_situation_in_regions(
-        'data/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv')
+        'data/data_input/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv')
 
     finale_data = finale_data.drop(columns=[finale_data.columns[-2]])
     finale_day = finale_data[finale_data['date'] == date]

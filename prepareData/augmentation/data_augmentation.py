@@ -2,10 +2,11 @@ import pandas as pd
 import numpy as np
 
 
-def data_augmentation(merge_data_org: pd.DataFrame):
+def data_augmentation(merge_data_org: pd.DataFrame, number_of_gaussian_noise_regions = 1):
     merge_data = merge_data_org.append(return_region_as_weighted_average(merge_data_org), ignore_index=True)
     merge_data = merge_data.append(return_region_as_groupby_date(merge_data_org), ignore_index=True)
-    merge_data = merge_data.append(adding_Gaussian_Noise_to_averaged_region(merge_data), ignore_index=True)
+    for i in range(number_of_gaussian_noise_regions):
+        merge_data = merge_data.append(adding_Gaussian_Noise_to_averaged_region(merge_data,seed=i), ignore_index=True)
 
     return merge_data
 
@@ -56,6 +57,6 @@ def adding_Gaussian_Noise_to_averaged_region(data_merge: pd.DataFrame, seed=2):
     data = pd.DataFrame(columns=data_merge.columns[3:], data=data_values)
     data_dsc = average_region.iloc[:, [1, 2]].reset_index(drop=True)
     data = pd.concat([data_dsc, data], axis=1)
-    data.insert(0, 'region', 'ŚŚ_Gaus_Noise')
+    data.insert(0, 'region', 'ŚŚ_Gaus_Noise_seed_'+str(seed))
 
     return data

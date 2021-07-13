@@ -5,7 +5,7 @@ from prepareData.prepare_data_mobility import get_prepared_data_mobility
 
 
 def merge_data_for_Poland_from_06_2020(last_day='2021-03-20'):
-    poland_resp_from_06_2020 = pd.read_csv("data/polska_respiration_from_11.06.2020.csv", delimiter=';')
+    poland_resp_from_06_2020 = pd.read_csv("data/data_input/polska_respiration_from_11.06.2020.csv", delimiter=';')
     data_mobility: pd.DataFrame = get_prepared_data_mobility()
     data_mobility_pl = data_mobility[data_mobility['sub_region_1'] == 'Poland']
     data_merge_pl = pd.merge(data_mobility_pl, poland_resp_from_06_2020, on='date')
