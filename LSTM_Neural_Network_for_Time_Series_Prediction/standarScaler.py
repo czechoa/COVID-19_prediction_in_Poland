@@ -9,7 +9,7 @@ def standardScaler(data, denomrmlization = False):
         data = scaler.inverse_transform(data)
     return data
 
-df = pd.read_csv('data/data_Poland_to_2021_05.csv')
+df = pd.read_csv('../data/data/data_Poland_to_2021_05.csv')
 data_df = df.iloc[:,[-2,-1]]
 data_desc = data_df.describe()
 data = data_df.values

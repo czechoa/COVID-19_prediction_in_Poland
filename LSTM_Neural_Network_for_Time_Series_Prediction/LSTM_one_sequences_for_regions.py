@@ -145,7 +145,7 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
 # numpy.random.seed(7)
 
 look_back = 1
-
+split = 0.78
 data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
 data_merge["region"].replace({"ŚŚ_average":"ŚŚŚ_average"}, inplace=True)
 data_merge = data_merge.sort_values(by=['region', 'date'])
@@ -160,7 +160,7 @@ for region_name in data_merge['region'].unique():
     region = data_merge[data_merge['region'] == region_name]
     dataset = load_dataset(region, columns_index = [-2,-1])
     dataset, scaler = normalise_dataset(dataset)
-    train, test = split_into_train_and_test_sets(split=0.8)
+    train, test = split_into_train_and_test_sets(split=split)
 
     trainX, trainY = create_dataset(train)
     testX, testY = create_dataset(test)
