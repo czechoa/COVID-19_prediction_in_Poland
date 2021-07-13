@@ -24,13 +24,13 @@ def create_dataset(dataset, look_back=1):
 def load_dataset(columns_index=[-2, -1]):
     #  fix random seed for reproducibility
     # load the dataset
-    # data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
+    # data_merge = read_csv('LSTM/data/data_all_with_one_hot_encode.csv')
     # dataframe = data_merge[data_merge['region'] == data_merge['region'].unique()[0]].iloc[:,-1]
 
-    data_merge = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv')
+    data_merge = read_csv('LSTM/data/data_Poland_to_2021_05.csv')
     dataframe = data_merge.iloc[:, columns_index]
 
-    # dataframe = read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv',  engine='python')
+    # dataframe = read_csv('LSTM/data/region.csv',  engine='python')
     # data = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv',c)
     # dataset = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv', usecols=[1], engine='python')
     dataset = dataframe.values

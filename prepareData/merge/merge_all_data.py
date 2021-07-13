@@ -1,6 +1,6 @@
-from project.prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
-from project.prepareData.augmentation.data_augmentation import data_augmentation
-from project.prepareData.prepare_data_area_population import preparing_data_area_population_regions
+from prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from prepareData.augmentation import data_augmentation
+from prepareData.prepare_data_area_population import preparing_data_area_population_regions
 import pandas as pd
 
 
@@ -20,7 +20,7 @@ def merge_area_population(merge_data: pd.DataFrame, attribute_dsc=3):
 
     return merge_all
 # %%
-# from project.prepareData.test_train.make_train_test_from_merge_data import one_hot_encode
+# from RNN.prepareData.test_train.make_train_test_from_merge_data import one_hot_encode
 # a = get_all_merge_data_from_to()
 # b, number_desc =  one_hot_encode(a,'region',5)
 # b.to_csv('results/csv/data_all_with_one_hot_encode.csv', index=False)

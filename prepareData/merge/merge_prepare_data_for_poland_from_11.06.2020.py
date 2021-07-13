@@ -1,7 +1,7 @@
 import pandas as pd
-from project.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead, make_plot_for_Poland
+from RNN.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead, make_plot_for_Poland
 from merge_data_mobility_epidemic_situation import get_merge_data_from_to
-from project.prepareData.prepare_data_mobility import get_prepared_data_mobility
+from prepareData.prepare_data_mobility import get_prepared_data_mobility
 
 
 def merge_data_for_Poland_from_06_2020(last_day='2021-03-20'):

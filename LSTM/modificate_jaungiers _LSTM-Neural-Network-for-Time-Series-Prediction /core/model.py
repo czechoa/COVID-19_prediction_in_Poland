@@ -1,10 +1,9 @@
 import os
-import math
 import numpy as np
 import datetime as dt
 from numpy import newaxis
-from LSTM_Neural_Network_for_Time_Series_Prediction.core.utils import Timer
-from tensorflow.keras.layers import Dense, Activation, Dropout, LSTM
+from LSTM.core.utils import Timer
+from tensorflow.keras.layers import Dense, Dropout, LSTM
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 

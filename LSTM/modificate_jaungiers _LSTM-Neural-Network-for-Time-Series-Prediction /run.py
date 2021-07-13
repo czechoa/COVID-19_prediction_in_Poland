@@ -5,12 +5,10 @@ __license__ = "MIT"
 
 import os
 import json
-import time
-import math
 import matplotlib.pyplot as plt
 import pandas as pd
-from LSTM_Neural_Network_for_Time_Series_Prediction.core.data_processor import DataLoader
-from LSTM_Neural_Network_for_Time_Series_Prediction.core.model import Model
+from LSTM.core.data_processor import DataLoader
+from LSTM.core.model import Model
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
@@ -36,7 +34,7 @@ def plot_results_multiple(predicted_data, true_data, prediction_len):
     plt.show()
 
 
-def normalised_data(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv'):
+def normalised_data(path='LSTM/data/data_Poland_to_2021_05.csv'):
     df = pd.read_csv(path)
     data_df = df.iloc[:, -2:]
     data_desc = data_df.describe()
@@ -50,7 +48,7 @@ def normalised_data(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/da
     # df_ns.insert(0,'region',df['region'])
     df.to_csv(path[:-4] + '_ns.csv', index=False)
     return data_desc
-def normalised_data_min_max(path='LSTM_Neural_Network_for_Time_Series_Prediction/data/data_Poland_to_2021_05.csv'):
+def normalised_data_min_max(path='LSTM/data/data_Poland_to_2021_05.csv'):
     df = pd.read_csv(path)
     data_df = df.iloc[:, 3:]
     data_desc = data_df.describe()
@@ -62,19 +60,19 @@ def normalised_data_min_max(path='LSTM_Neural_Network_for_Time_Series_Prediction
     df.to_csv(path[:-4] + '_ns.csv', index=False)
     return data_desc
 
-data_desc = normalised_data_min_max('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode.csv')
-data_merge = pd.read_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/data_all_with_one_hot_encode_ns.csv')
+data_desc = normalised_data_min_max('LSTM/data/data_all_with_one_hot_encode.csv')
+data_merge = pd.read_csv('LSTM/data/data_all_with_one_hot_encode_ns.csv')
 
 first = True
 for region in data_merge.loc[:,'region'].unique()[::-1]:
 
     data_region = data_merge[data_merge['region'] == region]
-    data_region.to_csv('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv')
-    # data_desc = normalised_data_min_max('LSTM_Neural_Network_for_Time_Series_Prediction/data/region.csv')
+    data_region.to_csv('LSTM/data/region.csv')
+    # data_desc = normalised_data_min_max('LSTM/data/region.csv')
 
-    configs = json.load(open('LSTM_Neural_Network_for_Time_Series_Prediction/config.json', 'r'))
+    configs = json.load(open('LSTM/config.json', 'r'))
     data = DataLoader(
-        os.path.join('LSTM_Neural_Network_for_Time_Series_Prediction/data', configs['data']['filename']),
+        os.path.join('LSTM/data', configs['data']['filename']),
         configs['data']['train_test_split'],
         configs['data']['columns'],
         configs['data']['sequence_length']

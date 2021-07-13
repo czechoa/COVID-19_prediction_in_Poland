@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
-from project.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead
-from project.prediction.plot.plots import plot_prediction_to_poland_from_results, subplot_prediction_for_all_region, \
+from RNN.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead
+from RNN.prediction.plot.plots import plot_prediction_to_poland_from_results, subplot_prediction_for_all_region, \
     subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, plot_relative_error_for_poland
-from project.prepareData.merge.merge_all_data import get_all_merge_data_from_to
+from prepareData.merge.merge_all_data import get_all_merge_data_from_to
 
 import pandas as pd
 

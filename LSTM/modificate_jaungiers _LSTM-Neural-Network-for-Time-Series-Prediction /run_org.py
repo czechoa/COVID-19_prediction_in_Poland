@@ -5,11 +5,10 @@ __license__ = "MIT"
 
 import os
 import json
-import time
 import math
 import matplotlib.pyplot as plt
-from LSTM_Neural_Network_for_Time_Series_Prediction.core.data_processor import DataLoader
-from LSTM_Neural_Network_for_Time_Series_Prediction.core.model import Model
+from LSTM.core.data_processor import DataLoader
+from LSTM.core.model import Model
 
 
 def plot_results(predicted_data, true_data):
@@ -34,11 +33,11 @@ def plot_results_multiple(predicted_data, true_data, prediction_len):
 
 
 def main():
-    configs = json.load(open('LSTM_Neural_Network_for_Time_Series_Prediction/config_org.json', 'r'))
+    configs = json.load(open('LSTM/config_org.json', 'r'))
     if not os.path.exists(configs['model']['save_dir']): os.makedirs(configs['model']['save_dir'])
 
     data = DataLoader(
-        os.path.join('LSTM_Neural_Network_for_Time_Series_Prediction/data', configs['data']['filename']),
+        os.path.join('LSTM/data', configs['data']['filename']),
         configs['data']['train_test_split'],
         configs['data']['columns']
     )

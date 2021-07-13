@@ -1,3 +1,3 @@
-# from project.prepareData import *
+# from RNN.prepareData import *
 # from prepare_data_mobility import get_prepared_data_mobility
 

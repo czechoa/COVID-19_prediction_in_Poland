@@ -16,7 +16,7 @@
   "model": {
     "loss": "mse",
     "optimizer": "adam",
-    "save_dir": "LSTM_Neural_Network_for_Time_Series_Prediction/saved_models",
+    "save_dir": "LSTM_Neural_Network_for_Time_Series_Prediction/modificate_jaungiers _LSTM-Neural-Network-for-Time-Series-Prediction/saved_models",
     "layers": [
       {
         "type": "lstm",
