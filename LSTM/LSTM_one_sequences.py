@@ -27,7 +27,7 @@ def load_dataset(columns_index=[-2, -1]):
     # data_merge = read_csv('LSTM/data/data_all_with_one_hot_encode.csv')
     # dataframe = data_merge[data_merge['region'] == data_merge['region'].unique()[0]].iloc[:,-1]
 
-    data_merge = read_csv('LSTM/data/data_Poland_to_2021_05.csv')
+    data_merge = read_csv('data/data_lstm/data_Poland_to_2021_05.csv')
     dataframe = data_merge.iloc[:, columns_index]
 
     # dataframe = read_csv('LSTM/data/region.csv',  engine='python')
@@ -57,6 +57,10 @@ def reshape_train_to_one_sample(trainX, trainY):
     trainY = numpy.reshape(trainY, (1, trainY.shape[0], trainY.shape[1]))
     return trainX, trainY
 
+def reshape_train_to_one_sample_with_one_target(trainX, trainY):
+    trainX = numpy.reshape(trainX, (1, trainX.shape[0], trainX.shape[2]))
+    trainY = numpy.reshape(trainY[:,-1], (1, trainY.shape[0], 1))
+    return trainX, trainY
 
 def create_and_fit_model(trainX, trainY):
     features = trainX.shape[2]
@@ -64,7 +68,7 @@ def create_and_fit_model(trainX, trainY):
     model.add(LSTM(100, return_sequences=True, stateful=True, batch_input_shape=(1, None, features)))
     # model.add(LSTM(70,return_sequences=True,stateful=True))
     # model.add(LSTM(features,return_sequences=False,stateful=True))
-    model.add(Dense(features))
+    model.add(Dense(trainY.shape[2]))
     model.compile(loss='mean_squared_error', optimizer='adam')
     model.fit(trainX, trainY, epochs=50, batch_size=1, verbose=2)
     return model
@@ -94,6 +98,27 @@ def make_prediction_future(model, trainX, testY):
     future_array = future_array.reshape(future_array.shape[0], features)
     return future_array, predictions
 
+def make_prediction_next_day(model, trainX, testY):
+    predictions = model.predict(trainX)
+    # testPredict = model.predict(testX)
+    # invert predictions
+    # predictions = model.predict(trainX)
+    future = []
+    currentStep = predictions[:, -1:, :]
+    # currentStep = trainX[:,-2:-1,:]
+    for i in range(1):
+        currentStep = model.predict(currentStep)  # get the next step
+        # currentStep = currentStep.reshape(1,1,)
+        future.append(currentStep)  # store the future steps
+    # after processing a sequence, reset the states for safety
+    model.reset_states()
+
+    future_array = np.array(future)
+    future_array = future_array[:, 0, 0, :]
+
+    features = trainX.shape[2]
+    future_array = future_array.reshape(future_array.shape[0], features)
+    return future_array, predictions
 
 def reshape_back(train_f: np.array):
     train_f = train_f[0, :, :]
@@ -148,12 +173,12 @@ train, test = split_into_train_and_test_sets()
 trainX, trainY = create_dataset(train)
 testX, testY = create_dataset(test)
 
-trainX, trainY = reshape_train_to_one_sample(trainX, trainY)
-
+trainX, trainY = reshape_train_to_one_sample_with_one_target(trainX, trainY)
 model = create_and_fit_model(trainX, trainY)
 
-future_array, predictions = make_prediction_future(model, trainX, testY)
-
+# future_array, predictions = make_prediction_future(model, trainX, testY)
+future_array, predictions = make_prediction_next_day(model, trainX, testY)
+# %%
 trainPredict, trainY = inverse_transform_train(scaler, predictions, trainY)
 testPredict, testY = inverse_transform_test(scaler, future_array, testY)
 dataset = scaler.inverse_transform(dataset)

@@ -37,7 +37,7 @@ def main():
     if not os.path.exists(configs['model']['save_dir']): os.makedirs(configs['model']['save_dir'])
 
     data = DataLoader(
-        os.path.join('LSTM/data', configs['data']['filename']),
+        os.path.join('data/data_lstm', configs['data']['filename']),
         configs['data']['train_test_split'],
         configs['data']['columns']
     )

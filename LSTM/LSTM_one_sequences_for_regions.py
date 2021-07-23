@@ -59,9 +59,12 @@ def create_and_fit_model(trainX, trainY):
     features = trainX.shape[2]
     model = Sequential()
     model.add(LSTM(100, return_sequences=True, stateful=True, batch_input_shape=(1, None, features)))
+    # model.add(LSTM(4, batch_input_shape=(1, None, features), stateful=True))
     # model.add(LSTM(5,return_sequences=True,stateful=True))
     # model.add(LSTM(features,return_sequences=False,stateful=True))
-    model.add(Dense(features,activation='linear'))
+    # model.add(Dense(features,activation='linear'))
+    model.add(Dense(1))
+
     model.compile(loss="mse", optimizer='adam')
     model.fit(trainX, trainY, epochs=5, batch_size=1, verbose=2)
     return model
@@ -76,8 +79,10 @@ def make_prediction_future(model, trainX, testY):
     # predictions = model.predict(trainX)
     future = []
     currentStep = predictions[:, -1:, :]
-    # currentStep = trainX[:,-2:-1,:]
+    currentStep = trainY[:,-1:,:]
+    # for i in range(testY.shape[0]):
     for i in range(testY.shape[0]):
+
         currentStep = model.predict(currentStep)  # get the next step
         # currentStep = currentStep.reshape(1,1,)
         future.append(currentStep)  # store the future steps
@@ -135,7 +140,7 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
         plt.plot(testPredictPlot[:, i], label= 'prediction (future)')
         # plt.xlabel(xlabel="Date")
         # plt.ylabel(ylabel= )
-        plt.title("Regions_prediction_averaged_relative_error")
+        plt.title(i)
         plt.grid()
         plt.legend()
         plt.show()
@@ -144,16 +149,17 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
 
 look_back = 1
 split = 0.78
-columns_index=[-1]
 data_merge = read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
 data_merge["region"].replace({"ŚŚ_average":"ŚŚŚ_average"}, inplace=True)
 data_merge = data_merge.sort_values(by=['region', 'date'])
+columns_index=[-1]
+# columns_index= range(data_merge.shape[1]-1,data_merge.shape[1])
 
 first = True
 x_full = np.array
 y_full = np.array
 
-for region_name in data_merge['region'].unique():
+for region_name in data_merge['region'].unique()[0:]:
     if region_name == 'POLSKA':
         continue
     region = data_merge[data_merge['region'] == region_name]
