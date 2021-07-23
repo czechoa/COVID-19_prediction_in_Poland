@@ -2,7 +2,7 @@ import os
 import numpy as np
 import datetime as dt
 from numpy import newaxis
-from LSTM.core.utils import Timer
+from LSTM.modificate_jaungiers_LSTM.core.utils import Timer
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint

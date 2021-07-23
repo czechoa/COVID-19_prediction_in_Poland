@@ -59,11 +59,11 @@ def create_and_fit_model(trainX, trainY):
     features = trainX.shape[2]
     model = Sequential()
     model.add(LSTM(100, return_sequences=True, stateful=True, batch_input_shape=(1, None, features)))
-    # model.add(LSTM(70,return_sequences=True,stateful=True))
+    # model.add(LSTM(5,return_sequences=True,stateful=True))
     # model.add(LSTM(features,return_sequences=False,stateful=True))
-    model.add(Dense(features))
-    model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(trainX, trainY, epochs=50, batch_size=1, verbose=2)
+    model.add(Dense(features,activation='linear'))
+    model.compile(loss="mse", optimizer='adam')
+    model.fit(trainX, trainY, epochs=5, batch_size=1, verbose=2)
     return model
 
 
@@ -144,6 +144,7 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
 
 look_back = 1
 split = 0.78
+columns_index=[-1]
 data_merge = read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
 data_merge["region"].replace({"ŚŚ_average":"ŚŚŚ_average"}, inplace=True)
 data_merge = data_merge.sort_values(by=['region', 'date'])
@@ -156,7 +157,7 @@ for region_name in data_merge['region'].unique():
     if region_name == 'POLSKA':
         continue
     region = data_merge[data_merge['region'] == region_name]
-    dataset = load_dataset(region, columns_index = [-2,-1])
+    dataset = load_dataset(region, columns_index)
     dataset, scaler = normalise_dataset(dataset)
     train, test = split_into_train_and_test_sets(split=split)
 
@@ -183,14 +184,13 @@ future_array, predictions_train = make_prediction_future(model, trainX, testY)
 
 trainPredict, trainY = inverse_transform_train(scaler, predictions_train, trainY)
 testPredict, testY = inverse_transform_test(scaler, future_array, testY)
+
 dataset = scaler.inverse_transform(dataset)
 
 trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting(dataset, trainPredict, testPredict, look_back)
 # plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot)
 
 region = data_merge[data_merge['region'] == 'POLSKA']
-dataset = load_dataset(region)
+
+dataset = load_dataset(region,columns_index)
 plot_baseline_and_predictions(dataset, trainPredictPlot * 16, testPredictPlot * 16)
-
-# %%
-
