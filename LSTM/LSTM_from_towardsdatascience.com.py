@@ -7,26 +7,27 @@ import numpy as np
 import pandas as pd
 
 dataframe = pd.read_csv('data/data_lstm/data_Poland_to_2021_05.csv',  engine='python')
+dataframe = dataframe.iloc[:int(dataframe.shape[0]*0.85)]
 dataset = dataframe.values[:,-1:]
 dataset = dataset.astype('float32')
 close_data = dataset
 close_data = close_data.reshape((-1,1))
-split_percent = 0.95
+split_percent = 1.
 split = int(split_percent*len(close_data))
 
 close_train = close_data[:split]
-close_test = close_data[split:]
+# close_test = close_data[split:]
 
 date_train = dataframe['date'][:split]
-date_test =dataframe['date'][split:]
+# date_test =dataframe['date'][split:]
 
 print(len(close_train))
-print(len(close_test))
+# print(len(close_test))
 
 look_back = 15
 
 train_generator = TimeseriesGenerator(close_train, close_train, length=look_back, batch_size=20)
-test_generator = TimeseriesGenerator(close_test, close_test, length=look_back, batch_size=1)
+# test_generator = TimeseriesGenerator(close_test, close_test, length=look_back, batch_size=1)
 
 model = Sequential()
 model.add(
@@ -41,11 +42,11 @@ num_epochs = 25
 model.fit_generator(train_generator, epochs=num_epochs, verbose=1)
 
 
-prediction = model.predict_generator(test_generator)
+# prediction = model.predict_generator(test_generator)
 
 close_train = close_train.reshape((-1))
-close_test = close_test.reshape((-1))
-prediction = prediction.reshape((-1))
+# close_test = close_test.reshape((-1))
+# prediction = prediction.reshape((-1))
 
 close_data = close_data.reshape((-1))
 
@@ -79,18 +80,18 @@ trace1 = go.Scatter(
     mode = 'lines',
     name = 'Data'
 )
-trace2 = go.Scatter(
-    x = date_test,
-    y = prediction,
-    mode = 'lines',
-    name = 'Prediction'
-)
-trace3 = go.Scatter(
-    x = date_test,
-    y = close_test,
-    mode='lines',
-    name = 'Ground Truth'
-)
+# trace2 = go.Scatter(
+#     x = date_test,
+#     y = prediction,
+#     mode = 'lines',
+#     name = 'Prediction'
+# )
+# trace3 = go.Scatter(
+#     x = date_test,
+#     y = close_test,
+#     mode='lines',
+#     name = 'Ground Truth'
+# )
 trace4 = go.Scatter(
     x = forecast_dates,
     y = forecast,
@@ -103,6 +104,6 @@ layout = go.Layout(
     xaxis = {'title' : "Date"},
     yaxis = {'title' : "Close"}
 )
-fig = go.Figure(data=[trace1,trace2,trace3, trace4], layout=layout)
+fig = go.Figure(data=[trace1,trace4], layout=layout)
 fig.show()
 

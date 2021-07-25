@@ -12,6 +12,8 @@ from sklearn.preprocessing import MinMaxScaler
 
 from LSTM.modificate_jaungiers_LSTM.core.data_processor import DataLoader
 from LSTM.modificate_jaungiers_LSTM.core.model import Model
+import plotly.graph_objects as go
+
 
 
 def plot_results(predicted_data, true_data):
@@ -41,15 +43,14 @@ def normalised_data(path='data/data_lstm/data_Poland_to_2021_05.csv'):
     data_desc = data_df.describe()
     data_org = data_df.values
 
-    data_nor = (data_org - data_desc.loc['mean'].values) / (data_desc.loc['max'].values - data_desc.loc['min'].values)
-    # data_nor = (data_org) / (data_desc.loc['max'].values - data_desc.loc['min'].values)
+    # data_nor = (data_org - data_desc.loc['mean'].values) / (data_desc.loc['max'].values - data_desc.loc['min'].values)
+    data_nor = (data_org) / (data_desc.loc['max'].values - data_desc.loc['min'].values)
 
     df.iloc[:, -2:] = data_nor
     # df_ns = pd.DataFrame(columns=data_df.columns, data=data_nor)
     # df_ns.insert(0,'region',df['region'])
     df.to_csv(path[:-4] + '_ns.csv', index=False)
     return data_desc
-
 
 def normalised_data_min_max(path='data/data_lstm/data_Poland_to_2021_05.csv'):
     df = pd.read_csv(path)
@@ -66,8 +67,12 @@ def normalised_data_min_max(path='data/data_lstm/data_Poland_to_2021_05.csv'):
 
 # data_desc = normalised_data_min_max('LSTM/data/data_all_with_one_hot_encode.csv')
 data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
+data_merge["region"].replace({"ŚŚ_average":"ŚŚŚ_average"}, inplace=True)
+data_merge = data_merge.sort_values(by=['region', 'date'])
+data_merge.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv',index=False)
 first = True
-for region in data_merge.loc[:, 'region'].unique()[::-1]:
+
+for region in data_merge.loc[:, 'region'].unique():
 
     if region == 'POLSKA':
         continue
@@ -94,28 +99,27 @@ for region in data_merge.loc[:, 'region'].unique()[::-1]:
         x_full = x
         y_full = y
         first = False
-
-
     else:
         x_full = np.concatenate((x_full, x), axis=0)
         y_full = np.concatenate((y_full, y), axis=0)
     # x_full = np.insert(x_full, x)
     # y_full = np.insert(y_full, y)
-    break
-x = x_full
-y = y_full
+
+
 x_test, y_test = data.get_test_data(
     seq_len=configs['data']['sequence_length'],
     normalise=configs['data']['normalise']
 )
+# x = x_full
+# y = y_full
+
 model.train(
-    x,
-    y,
+    x_full,
+    y_full,
     epochs=configs['training']['epochs'],
     batch_size=configs['training']['batch_size']
     , save_dir=configs['model']['save_dir']
 )
-# %%
 # predictions = model.predict_point_by_point(x_test)
 
 # predictions = np.array(predictions) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + data_desc.loc['mean'][-1]
@@ -125,13 +129,63 @@ model.train(
 # y_test = y_test * (data_org.max() - data_org.min()) + data_org.mean()
 
 # plot_results(predictions, y_test)
+# region = data_merge[data_merge['region'] == 'POLSKA']
 
 predictions_full: list = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
 # predictions_sc = np.array(predictions_full) * (data_desc.loc['max'][-1] - data_desc.loc['min'][-1]) + \
 #                  data_desc.loc['mean'][-1]
 
+
+# %%
+
 plot_results(predictions_full, y_test)
 
-# plot_results(predictions_sc, y_test_sc)
 # %%
-# b = data_merge.columns().unique()
+data_region = data_merge[data_merge['region'] == 'POLSKA']
+date_train = data_region['date'].iloc[:int(data_region.shape[0]*configs['data']['train_test_split'])]
+y_train_org = data_region['Engaged_respirator'].iloc[:int(data_region.shape[0]*configs['data']['train_test_split'])]
+y_test_org = data_region['Engaged_respirator'].iloc[int(data_region.shape[0]*configs['data']['train_test_split']):]
+date_test = data_region['date'].iloc[int(data_region.shape[0]*configs['data']['train_test_split']):]
+
+trace1 = go.Scatter(
+    x = date_train,
+    y = y_train_org,
+    mode = 'lines',
+    name = 'Data'
+)
+trace2 = go.Scatter(
+    x = date_train,
+    y = y[:,0],
+    mode = 'lines',
+    name = 'Prediction'
+)
+trace3 = go.Scatter(
+    x = date_test,
+    y = y_test[:,0],
+    mode='lines',
+    name = 'Ground Truth'
+)
+trace4 = go.Scatter(
+    x = date_test,
+    y = predictions_full,
+    mode='lines',
+    name = 'futere'
+)
+
+trace5 = go.Scatter(
+    x = date_test,
+    y = y_test_org,
+    mode='lines',
+    name = 'futere'
+)
+
+layout = go.Layout(
+    title = "Google Stock",
+    xaxis = {'title' : "Date"},
+    yaxis = {'title' : "Close"}
+)
+
+fig = go.Figure(data=[trace2,trace3,trace4], layout=layout)
+fig.show()
+
+# plot_results(predictions_sc, y_test_sc)
