@@ -2,6 +2,37 @@
   "data": {
     "filename": "region_ns.csv",
     "columns": [
+              "region_DOLNOŚLĄSKIE",
+      "region_KUJAWSKO-POMORSKIE",
+      "region_LUBELSKIE",
+      "region_LUBUSKIE",
+      "region_MAZOWIECKIE",
+      "region_MAŁOPOLSKIE",
+      "region_OPOLSKIE",
+      "region_PODKARPACKIE",
+      "region_PODLASKIE",
+      "region_POLSKA",
+      "region_POMORSKIE",
+      "region_WARMIŃSKO-MAZURSKIE",
+      "region_WIELKOPOLSKIE",
+      "region_ZACHODNIOPOMORSKIE",
+      "region_ŁÓDZKIE",
+      "region_ŚLĄSKIE",
+      "region_ŚWIĘTOKRZYSKIE",
+      "region_ŚŚ_Gaus_Noise_seed_0",
+      "region_ŚŚ_Gaus_Noise_seed_1",
+      "region_ŚŚ_Gaus_Noise_seed_2",
+      "region_ŚŚ_Gaus_Noise_seed_3",
+      "region_ŚŚ_Gaus_Noise_seed_4",
+      "region_ŚŚ_Gaus_Noise_seed_5",
+      "region_ŚŚ_Gaus_Noise_seed_6",
+      "region_ŚŚ_Gaus_Noise_seed_7",
+      "region_ŚŚ_Gaus_Noise_seed_8",
+      "region_ŚŚ_Gaus_Noise_seed_9",
+      "region_ŚŚ_average",
+      "region_ŚŚ_weighted_average",
+
+      "Number_of_people_hospitalized",
       "Engaged_respirator"
     ],
     "sequence_length": 8,
@@ -9,7 +40,7 @@
     "normalise": false
   },
   "training": {
-    "epochs": 10,
+    "epochs": 2,
     "batch_size": 32
   },
   "model": {

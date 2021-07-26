@@ -63,7 +63,7 @@ def create_and_fit_model(trainX, trainY):
     # model.add(LSTM(5,return_sequences=True,stateful=True))
     # model.add(LSTM(features,return_sequences=False,stateful=True))
     # model.add(Dense(features,activation='linear'))
-    model.add(Dense(1))
+    model.add(Dense(1,activation="linear"))
 
     model.compile(loss="mse", optimizer='adam')
     model.fit(trainX, trainY, epochs=5, batch_size=1, verbose=2)

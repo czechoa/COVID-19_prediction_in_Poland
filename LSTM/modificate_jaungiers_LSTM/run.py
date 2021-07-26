@@ -28,6 +28,9 @@ def normalised_data_min_max(path='data/data_lstm/data_Poland_to_2021_05.csv'):
 
 
 # data_desc = normalised_data_min_max('LSTM/data/data_all_with_one_hot_encode.csv')
+def main():
+    _
+
 data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
 data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
 data_merge = data_merge.sort_values(by=['region', 'date'])
@@ -68,7 +71,7 @@ x_test, y_test = data.get_test_data(
     seq_len=configs['data']['sequence_length'],
     normalise=configs['data']['normalise']
 )
-
+# %%
 model = Model()
 model.build_model(configs)
 model.train(
@@ -79,7 +82,8 @@ model.train(
     , save_dir=configs['model']['save_dir']
 )
 
-predictions_full: list = model.predict_sequence_full_from_train(x, configs['data']['sequence_length'])
+
+predictions_full: list = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
 
 date_train = data_region['date'].iloc[:int(data_region.shape[0] * configs['data']['train_test_split'])]
 y_train_org = data_region['Engaged_respirator'].iloc[:int(data_region.shape[0] * configs['data']['train_test_split'])]
@@ -128,3 +132,9 @@ fig = go.Figure(data=[trace2, trace3, trace4], layout=layout)
 # fig = go.Figure(data=[trace1,trace5], layout=layout)
 
 fig.show()
+
+
+# %%
+for _ in range(10):
+    main()
+
