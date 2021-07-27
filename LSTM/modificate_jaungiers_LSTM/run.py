@@ -33,18 +33,25 @@ def main():
 
 data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
 data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
-data_merge = data_merge.sort_values(by=['region', 'date'])
+data_merge_org = data_merge.sort_values(by=['region', 'date'])
+data_merge = data_merge_org[data_merge['region'] != 'POLSKA']
 data_merge.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv', index=False)
-first = True
+data_desc = normalised_data_min_max('data/data_lstm/data_all_with_one_hot_encode.csv')
+data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode_ns.csv')
 
+first = True
+i = 0
 for region in data_merge.loc[:, 'region'].unique():
 
-    if region == 'POLSKA':
+    # if region == 'POLSKA:
+    #     continue
+
+    if 'ŚŚ' not in region:
         continue
+    print(region)
 
     data_region = data_merge[data_merge['region'] == region]
     data_region.to_csv('data/data_lstm/region.csv', index=False)
-    data_desc = normalised_data_min_max('data/data_lstm/region.csv')
 
     configs = json.load(open('LSTM/modificate_jaungiers_LSTM/config.json', 'r'))
     data = DataLoader(
@@ -71,7 +78,7 @@ x_test, y_test = data.get_test_data(
     seq_len=configs['data']['sequence_length'],
     normalise=configs['data']['normalise']
 )
-# %%
+
 model = Model()
 model.build_model(configs)
 model.train(
@@ -89,6 +96,8 @@ date_train = data_region['date'].iloc[:int(data_region.shape[0] * configs['data'
 y_train_org = data_region['Engaged_respirator'].iloc[:int(data_region.shape[0] * configs['data']['train_test_split'])]
 y_test_org = data_region['Engaged_respirator'].iloc[int(data_region.shape[0] * configs['data']['train_test_split']):]
 date_test = data_region['date'].iloc[int(data_region.shape[0] * configs['data']['train_test_split']):]
+
+predictions_train = model.predict_point_by_point(x)
 
 trace1 = go.Scatter(
     x=date_train,
@@ -121,17 +130,25 @@ trace5 = go.Scatter(
     mode='lines',
     name='futere'
 )
-
+trace6 = go.Scatter(
+    x=date_train,
+    y=predictions_train,
+    mode='lines',
+    name='futere'
+)
 layout = go.Layout(
     title="Google Stock",
     xaxis={'title': "Date"},
     yaxis={'title': "Close"}
 )
 
-fig = go.Figure(data=[trace2, trace3, trace4], layout=layout)
+fig = go.Figure(data=[trace2,trace3, trace4,trace6], layout=layout)
 # fig = go.Figure(data=[trace1,trace5], layout=layout)
 
 fig.show()
+# %%
+model.predict_single(x_test,configs['data']['sequence_length'])
+# %%
 
 
 # %%
