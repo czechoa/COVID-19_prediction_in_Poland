@@ -60,3 +60,19 @@ def adding_Gaussian_Noise_to_averaged_region(data_merge: pd.DataFrame, seed=2):
     data.insert(0, 'region', 'ŚŚ_Gaus_Noise_seed_'+str(seed))
 
     return data
+
+def adding_Gaussian_Noise_to_data_Poland(data_poland: pd.DataFrame, seed=2):
+    np.random.seed(seed)
+
+    average_region = data_poland[data_poland['region'] == 'POLSKA']
+    data_values_before = average_region.iloc[:, 3:].values
+
+    gauss_noise_parameters = (1 - np.random.normal(0, 0.03, data_values_before.shape))
+    data_values = np.multiply(data_values_before, gauss_noise_parameters)
+
+    data = pd.DataFrame(columns=data_poland.columns[3:], data=data_values)
+    data_dsc = average_region.iloc[:, [1, 2]].reset_index(drop=True)
+    data = pd.concat([data_dsc, data], axis=1)
+    data.insert(0, 'region', 'ŚŚ_Gaus_Noise_seed_'+str(seed))
+
+    return data

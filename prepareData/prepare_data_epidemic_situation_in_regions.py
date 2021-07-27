@@ -11,6 +11,7 @@ def prepare_data_epidemic_situation_in_regions(
     data['region'] = data['region'].replace('POLSKA (SUMA)', 'POLSKA')
 
     data = drop_columns(data)
+    data = data.rename(columns={data.columns[-2]: "Number_of_people_hospitalized", data.columns[-1]: "Engaged_respirator"})
     return data
 
 
