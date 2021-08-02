@@ -138,4 +138,7 @@ class Model():
 		# 	curr_frame = curr_frame[1:]
 		# 	curr_frame = np.insert(curr_frame, [window_size-2], predicted[-1], axis=0)
 		return predicted
+	def model_reset(self):
+		self.model.reset_states()
+
 

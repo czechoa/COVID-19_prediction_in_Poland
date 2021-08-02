@@ -31,28 +31,19 @@ def normalised_data_min_max(path='data/data_lstm/data_Poland_to_2021_05.csv'):
 def main():
     _
 
-data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
-data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
-data_merge_org = data_merge.sort_values(by=['region', 'date'])
-data_merge = data_merge_org[data_merge['region'] != 'POLSKA']
-data_merge.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv', index=False)
-data_desc = normalised_data_min_max('data/data_lstm/data_all_with_one_hot_encode.csv')
-data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode_ns.csv')
-
+data_merge = pd.read_csv('data/data_lstm/merge_data_Poland.csv')
+data_desc,data_merge = normalised_data_min_max('data/data_lstm/merge_data_Poland.csv')
 first = True
-i = 0
-for region in data_merge.loc[:, 'region'].unique():
+
+for region in reversed(data_merge.loc[:, 'region'].unique()):
 
     # if region == 'POLSKA:
     #     continue
 
-    if 'ŚŚ' not in region:
-        continue
-    print(region)
 
     data_region = data_merge[data_merge['region'] == region]
     data_region.to_csv('data/data_lstm/region.csv', index=False)
-
+    print(region)
     configs = json.load(open('LSTM/modificate_jaungiers_LSTM/config.json', 'r'))
     data = DataLoader(
         os.path.join('data/data_lstm', configs['data']['filename']),
@@ -78,7 +69,6 @@ x_test, y_test = data.get_test_data(
     seq_len=configs['data']['sequence_length'],
     normalise=configs['data']['normalise']
 )
-
 model = Model()
 model.build_model(configs)
 model.train(
@@ -88,8 +78,8 @@ model.train(
     batch_size=configs['training']['batch_size']
     , save_dir=configs['model']['save_dir']
 )
-
-
+model.model_reset()
+predictions_train = model.predict_point_by_point(x)
 predictions_full: list = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
 
 date_train = data_region['date'].iloc[:int(data_region.shape[0] * configs['data']['train_test_split'])]
@@ -97,7 +87,6 @@ y_train_org = data_region['Engaged_respirator'].iloc[:int(data_region.shape[0] *
 y_test_org = data_region['Engaged_respirator'].iloc[int(data_region.shape[0] * configs['data']['train_test_split']):]
 date_test = data_region['date'].iloc[int(data_region.shape[0] * configs['data']['train_test_split']):]
 
-predictions_train = model.predict_point_by_point(x)
 
 trace1 = go.Scatter(
     x=date_train,
@@ -154,4 +143,5 @@ model.predict_single(x_test,configs['data']['sequence_length'])
 # %%
 for _ in range(10):
     main()
-
+# %%
+print(str(data_merge.columns).replace("\'","\""))

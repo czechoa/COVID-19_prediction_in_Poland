@@ -1,3 +1,5 @@
+import plotly.graph_objects as go
+
 import matplotlib.pyplot as plt
 from pandas import read_csv
 import math
@@ -59,8 +61,8 @@ def create_and_fit_model(trainX, trainY):
     features = trainX.shape[2]
     model = Sequential()
     model.add(LSTM(100, return_sequences=True, stateful=True, batch_input_shape=(1, None, features)))
-    # model.add(LSTM(4, batch_input_shape=(1, None, features), stateful=True))
-    # model.add(LSTM(5,return_sequences=True,stateful=True))
+    # model.add(LSTM(100, batch_input_shape=(1, None, features), stateful=True))
+    model.add(LSTM(100,return_sequences=True,stateful=True))
     # model.add(LSTM(features,return_sequences=False,stateful=True))
     # model.add(Dense(features,activation='linear'))
     model.add(Dense(1,activation="linear"))
@@ -200,3 +202,58 @@ region = data_merge[data_merge['region'] == 'POLSKA']
 
 dataset = load_dataset(region,columns_index)
 plot_baseline_and_predictions(dataset, trainPredictPlot * 16, testPredictPlot * 16)
+
+date_train = region['date'].iloc[:int(region.shape[0] * split)]
+y_train_org = region['Engaged_respirator'].iloc[:int(region.shape[0] * split)]
+y_test_org = region['Engaged_respirator'].iloc[int(region.shape[0] *split):]
+date_test = region['date'].iloc[int(region.shape[0] * split):]
+
+# %%
+
+trace1 = go.Scatter(
+    x=date_train,
+    y=y_train_org,
+    mode='lines',
+    name='Data'
+)
+trace2 = go.Scatter(
+    x=date_train,
+    y=trainPredict[:,0]*16,
+    mode='lines',
+    name='Prediction train'
+)
+trace3 = go.Scatter(
+    x=date_test,
+    y=testPredict[:,0]*16,
+    mode='lines',
+    name='Prediction future'
+)
+# trace4 = go.Scatter(
+#     x=date_test,
+#     y=predictions_full,
+#     mode='lines',
+#     name='futere'
+# )
+
+trace5 = go.Scatter(
+    x=date_test,
+    y=y_test_org,
+    mode='lines',
+    name='Ground true'
+)
+trace6 = go.Scatter(
+    x=date_train,
+    y=predictions_train,
+    mode='lines',
+    name='futere'
+)
+layout = go.Layout(
+    title="Google Stock",
+    xaxis={'title': "Date"},
+    yaxis={'title': "Close"}
+)
+
+fig = go.Figure(data=[trace1,trace2,trace3,trace5], layout=layout)
+# fig = go.Figure(data=[trace1,trace5], layout=layout)
+
+fig.show()
