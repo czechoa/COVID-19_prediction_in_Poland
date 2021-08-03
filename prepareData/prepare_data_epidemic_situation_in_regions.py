@@ -3,7 +3,8 @@ import pandas as pd
 
 def prepare_data_epidemic_situation_in_regions(
         train_data_path='data/data_input/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv'):
-    data = pd.read_csv(train_data_path, header=1)
+    # data = pd.read_csv(train_data_path, header=1)
+    data = pd.read_excel("https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n_kuhtI214dqN5Ho#",header=1)
 
     data = split_data_that_region_as_attribute(data)
     data = format_date(data)
@@ -85,4 +86,4 @@ def get_test_respiration(date='2021-04-11'):
 
 # %%
 # a = get_test_respiration(date='2021-04-11')
-# data_region = prepare_data_epidemic_situation_in_regions()
+data_region = prepare_data_epidemic_situation_in_regions("https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n_kuhtI214dqN5Ho")
