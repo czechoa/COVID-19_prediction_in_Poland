@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+from prepareData.dowload_unzip.download_unzip import get_unzip_data_regions_mobility
 
 
-def prepare_date_mobility(data_path):
+def prepare_date_mobility(data_path=get_unzip_data_regions_mobility()):
     # SUB_REGION_ 2 = 2
     i = list(range(8, 15))
     i.extend((2, 5))
@@ -23,7 +24,7 @@ def day_of_the_week_for_all_regions(data: pd.DataFrame):
     number_of_region = len(data['sub_region_1'].unique())
     number_day = int(data.shape[0] / number_of_region)
 
-    day_of_the_week = [x % 7 + 1 for x in range(1, number_day + 1)]
+    day_of_the_week = [ (x % 7)/7  for x in range(1, number_day + 1)]
     day_of_the_week_all = np.tile(day_of_the_week, number_of_region)
     data.insert(3, 'day of the week', day_of_the_week_all)
     return data
@@ -44,8 +45,9 @@ def get_prepared_data_mobility():
     train_data_path = 'data/data_input/2020_PL_Region_Mobility_Report.csv'
     data_2020 = prepare_date_mobility(train_data_path)
 
-    train_data_path_1 = 'data/data_input/2021-05-19_PL_Region_Mobility_Report.csv'
-    data_2021 = prepare_date_mobility(train_data_path_1)
+    # train_data_path_1 = 'data/data_input/2021-05-19_PL_Region_Mobility_Report.csv'
+    # data_2021 = prepare_date_mobility(train_data_path_1)
+    data_2021 = prepare_date_mobility()
 
     data_all = merge_data_2020_2021(data_2020, data_2021)
 
@@ -54,3 +56,5 @@ def get_prepared_data_mobility():
     data_all = to_percent_data_mobility(data_all)
 
     return data_all
+# %%
+a = get_prepared_data_mobility()
