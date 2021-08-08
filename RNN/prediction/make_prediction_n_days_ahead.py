@@ -2,7 +2,7 @@ import pandas as pd
 from RNN.model.simple_regresion import make_all, make_submission, clear_model
 from prepareData.merge.merge_all_data import get_all_merge_data_from_to
 from datetime import datetime, timedelta
-from prepareData import \
+from prepareData.test_train.make_train_test_from_merge_data import \
     reshape_data_merge_to_get_train_period_of_time_history, make_date_to_prediction, get_train_target
 
 

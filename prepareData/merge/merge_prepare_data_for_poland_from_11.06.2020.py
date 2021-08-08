@@ -47,5 +47,5 @@ def save_merge_data_for_Poland_from_06_2020_with_augumetation():
 #     make_plot_for_Poland([sum_result_all], ['prediction'], title='Poland prediction average of 10 measurements',
 #                          data_merge_from_to=data_merge_to_2021_05, save=True)
 # %%
-save_merge_data_for_Poland_from_06_2020_with_augumetation()
+# save_merge_data_for_Poland_from_06_2020_with_augumetation()
 

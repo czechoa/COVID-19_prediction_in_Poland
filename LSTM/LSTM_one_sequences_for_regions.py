@@ -208,7 +208,6 @@ y_train_org = region['Engaged_respirator'].iloc[:int(region.shape[0] * split)]
 y_test_org = region['Engaged_respirator'].iloc[int(region.shape[0] *split):]
 date_test = region['date'].iloc[int(region.shape[0] * split):]
 
-# %%
 
 trace1 = go.Scatter(
     x=date_train,
