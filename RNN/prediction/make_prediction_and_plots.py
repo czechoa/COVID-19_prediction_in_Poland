@@ -37,7 +37,7 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
     results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
 
     # results.iloc[:, -1] = results.iloc[:, -1] * 16
-
+    results.loc[results['region'] == 'POLSKA', 'prediction'] = results.loc[results['region'] == 'POLSKA', 'prediction'] * 16
     plot_prediction_to_poland_from_results([results], ['prediction'], get_all_merge_data_from_to())
 
     return results

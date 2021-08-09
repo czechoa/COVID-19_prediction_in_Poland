@@ -8,5 +8,3 @@ make_plots_relative_error_for_regions(prediction = result)
 
 
 
-
-
