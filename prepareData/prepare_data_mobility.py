@@ -3,8 +3,10 @@ import numpy as np
 from prepareData.dowload_unzip.download_unzip import get_unzip_data_regions_mobility
 
 
-def prepare_date_mobility(data_path=get_unzip_data_regions_mobility()):
+def prepare_date_mobility(data_path=None):
     # SUB_REGION_ 2 = 2
+    if data_path is None:
+        data_path = get_unzip_data_regions_mobility()
     i = list(range(8, 15))
     i.extend((2, 5))
 
@@ -58,6 +60,5 @@ def get_prepared_data_mobility():
     return data_all
 
 # %%
-a = get_prepared_data_mobility()
-# b = get_prepared_data_mobility()
+# a = get_prepared_data_mobility()
 

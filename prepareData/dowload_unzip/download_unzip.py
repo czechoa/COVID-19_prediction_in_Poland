@@ -12,5 +12,3 @@ def get_unzip_data_regions_mobility():
     file = zip_file_object.open(Poland_file)
     content = file.read()
     return BytesIO(content)
-
-# df = pd.read_csv(BytesIO(content))
