@@ -28,7 +28,7 @@ def make_prediction_n_days_ahead(data_merge, period_of_time=21, last_day_train='
     data_merge_all['date'] = data_merge_all['date'].astype(str)
     # train_all = standardScaler(train_all,test_to_predict)
 
-    result_all = pd.DataFrame(columns=['date', 'region', 'Liczba zajętych respiratorów (stan ciężki)',
+    result_all = pd.DataFrame(columns=['date', 'region', 'Engaged_respirator',
                                        'prediction'])
     result_all_err = pd.DataFrame()
     day = next_day(last_day_train)

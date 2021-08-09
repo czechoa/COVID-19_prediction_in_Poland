@@ -36,7 +36,7 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
         subplot_prediction_for_all_region([results], ['prediction'], data_merge_from_to)
     results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
 
-    results.iloc[:, -1] = results.iloc[:, -1] * 16
+    # results.iloc[:, -1] = results.iloc[:, -1] * 16
 
     plot_prediction_to_poland_from_results([results], ['prediction'], get_all_merge_data_from_to())
 
@@ -48,8 +48,8 @@ def make_plots_relative_error_for_regions(prediction=None):
         prediction = pd.read_csv('results/csv/prediction_for_region.csv')
 
     prediction['relative_error_%'] = 100 * abs(
-        prediction['Liczba zajętych respiratorów (stan ciężki)'] - prediction['prediction']) / prediction[
-                                         'Liczba zajętych respiratorów (stan ciężki)']
+        prediction['Engaged_respirator'] - prediction['prediction']) / prediction[
+                                         'Engaged_respirator']
     prediction_Poland = prediction[prediction['region'] == 'ŚŚ_average']
     subplot_relative_error_for_all_region(prediction.copy())
     prediction = prediction[prediction['region'].isin(prediction['region'].unique()[:-3])]
