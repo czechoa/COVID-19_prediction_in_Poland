@@ -24,7 +24,7 @@ def day_of_the_week_for_all_regions(data: pd.DataFrame):
     number_of_region = len(data['sub_region_1'].unique())
     number_day = int(data.shape[0] / number_of_region)
 
-    day_of_the_week = [(x % 7) / 7 for x in range(1, number_day + 1)]
+    day_of_the_week = [(x % 7) / 6 for x in range(1, number_day + 1)]
     day_of_the_week_all = np.tile(day_of_the_week, number_of_region)
     data.insert(3, 'day of the week', day_of_the_week_all)
     return data
@@ -57,7 +57,7 @@ def get_prepared_data_mobility():
 
     return data_all
 
-
 # %%
-# a = get_prepared_data_mobility()
+a = get_prepared_data_mobility()
+# b = get_prepared_data_mobility()
 
