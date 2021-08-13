@@ -8,7 +8,7 @@ from prepareData.prepare_data_mobility import get_prepared_data_mobility
 
 def get_data_mobility_and_data_epidemic_situation_in_regions():
     data_mobility = get_prepared_data_mobility()
-    data_epidemic_situation_in_regions = prepare_data_epidemic_situation_in_regions()
+    data_epidemic_situation_in_regions = prepare_data_epidemic_situation_in_regions(None)
     return data_mobility, data_epidemic_situation_in_regions
 
 
@@ -62,15 +62,18 @@ def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
     if first_day is not None:
         merge = merge.loc[merge['date'] >= datetime.strptime(first_day, "%Y-%m-%d").date()]
 
-    merge_from_to: pd.DataFrame = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
+    if last_day is not None:
+        merge: pd.DataFrame = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
 
-    merge_from_to = merge_from_to.apply(pd.to_numeric, errors='ignore')
-    merge_from_to = merge_from_to.sort_values(by=['region', 'date'])
+    merge = merge.apply(pd.to_numeric, errors='ignore')
+    merge = merge.sort_values(by=['region', 'date'])
 
-    return merge_from_to
+    return merge
 
 
 def save_merge_for_Poland():
     merge_data = get_merge_data_from_to()
     merge_data = merge_data[merge_data['region'] == 'POLSKA']
     merge_data.to_csv('results/merge_data_Poland.csv', index=False)
+# %%
+# get_merge_data_from_to(first_day=None,last_day=None)

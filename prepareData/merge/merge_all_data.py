@@ -26,4 +26,4 @@ def save_all_merge_data_with_one_hot_encode():
     merge_data_one_hot_encode, number_desc =  one_hot_encode(merge_data,'region',5)
     merge_data_one_hot_encode.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv', index=False)
 # %%
-a = get_all_merge_data_from_to()
+# a = get_all_merge_data_from_to(last_day=None)
