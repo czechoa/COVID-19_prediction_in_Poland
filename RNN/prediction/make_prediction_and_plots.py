@@ -23,11 +23,11 @@ import pandas as pd
 
 def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day_ahead=30, period_of_time=14,
                                                 subplot=True):
-    data_all_days = get_all_merge_data()
+    data_all_days_org = get_all_merge_data()
 
     # print(last_day_train)
 
-    data_all_days = data_all_days[data_all_days["region"] != 'POLSKA']
+    data_all_days = data_all_days_org[data_all_days_org["region"] != 'POLSKA']
 
     results = make_prediction_n_days_ahead(data_all_days, day_ahead=day_ahead,
                                                           period_of_time=period_of_time,last_day_train= last_day_train)
@@ -40,7 +40,7 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
 
     # results.iloc[:, -1] = results.iloc[:, -1] * 16
     results.loc[results['region'] == 'POLSKA', 'prediction'] = results.loc[results['region'] == 'POLSKA', 'prediction'] * 16
-    # plot_prediction_to_poland_from_results([results], ['prediction'], get_all_merge_data_from_to())
+    plot_prediction_to_poland_from_results([results], ['prediction'], data_all_days_org)
 
     return results
 

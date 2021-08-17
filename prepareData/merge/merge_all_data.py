@@ -18,6 +18,7 @@ def get_all_merge_data(number_of_gaussian_noise_regions=1):
     merge_data_all_days = get_merge_data()
     merge_data_all_days = merge_area_population(merge_data_all_days)
     merge_data_all_days = data_augmentation(merge_data_all_days, number_of_gaussian_noise_regions)
+    merge_data_all_days = merge_data_all_days.sort_values(by=['region', 'date'])
     return merge_data_all_days
 
 
