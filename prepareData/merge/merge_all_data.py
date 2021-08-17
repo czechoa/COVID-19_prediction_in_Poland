@@ -14,12 +14,6 @@ def get_all_merge_data_from_to(first_day: str = None, last_day='2021-05-05', num
 
     return data_all_from_to
 
-
-# def get_all_merge_data_from_to_and_merge_data_all_days(first_day: str = None, last_day='2021-05-05', number_of_gaussian_noise_regions = 1):
-#     merge_data_all_days =
-#     merge_from_to = get_all_merge_data_from_to(first_day,last_day, number_of_gaussian_noise_regions,merge_data_all_days )
-#     return merge_data_all_days,merge_from_to
-
 def get_all_merge_data(number_of_gaussian_noise_regions=1):
     merge_data_all_days = get_merge_data()
     merge_data_all_days = merge_area_population(merge_data_all_days)
@@ -42,5 +36,5 @@ def save_all_merge_data_with_one_hot_encode():
     merge_data_one_hot_encode.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv', index=False)
 
 
-a = get_all_merge_data()
-b = get_all_merge_data_from_to(data=a)
+# a = get_all_merge_data()
+# b = get_all_merge_data_from_to(data=a)

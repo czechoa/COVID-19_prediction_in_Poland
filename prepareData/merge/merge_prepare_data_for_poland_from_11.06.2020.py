@@ -1,5 +1,4 @@
 import pandas as pd
-# from RNN.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead, make_plot_for_Poland
 from prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
 from prepareData.prepare_data_mobility import get_prepared_data_mobility
 from prepareData.augmentation.data_augmentation import adding_Gaussian_Noise_to_data_Poland
@@ -31,21 +30,5 @@ def save_merge_data_for_Poland_from_06_2020_with_augumetation():
         data_Poland:pd.DataFrame = data_Poland.append(adding_Gaussian_Noise_to_data_Poland(data_Poland, i))
     data_Poland, number_desc = one_hot_encode(data_Poland, 'region', 3)
     data_Poland.to_csv('data/data_lstm/merge_data_Poland.csv',index=False)
-# def poland_prediction_average_of_10_measurements():
-#     data_merge_pl = merge_data_for_Poland_from_06_2020()
-#     data_merge_to_2021_05 = merge_data_for_Poland_from_06_2020(last_day='2021-05-01')
-#     sum_result_all = pd.DataFrame()
-#     for i in range(0, 10):
-#         result_all, result_all_err = make_prediction_n_days_ahead(data_merge_pl, day_ahead=30)
-#         if i == 0:
-#             sum_result_all = result_all
-#         else:
-#             sum_result_all = sum_result_all + result_all
-#     sum_result_all.iloc[:, -1] = sum_result_all.iloc[:, -1].div(10)
-#     sum_result_all['date'] = result_all['date']
-#     sum_result_all['region'] = result_all['region']
-#     make_plot_for_Poland([sum_result_all], ['prediction'], title='Poland prediction average of 10 measurements',
-#                          data_merge_from_to=data_merge_to_2021_05, save=True)
-# %%
-# save_merge_data_for_Poland_from_06_2020_with_augumetation()
+
 
