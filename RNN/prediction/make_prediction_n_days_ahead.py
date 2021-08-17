@@ -18,23 +18,27 @@ def get_test_respiration(data_merge: pd.DataFrame, date):
     return finale_day
 
 
-def make_prediction_n_days_ahead(data_merge:pd.DataFrame, period_of_time=21, last_day_train='2021-03-20',
+def make_prediction_n_days_ahead(data_all_days:pd.DataFrame, period_of_time=21, last_day_train='2021-03-20',
                                  day_ahead=31):
-    train_all = reshape_data_merge_to_get_train_period_of_time_history(data_merge, period_of_time)
+
+    data_to_last_day = get_all_merge_data_from_to(last_day=last_day_train,data=data_all_days)
+
+    train_all = reshape_data_merge_to_get_train_period_of_time_history(data_to_last_day, period_of_time)
 
     test_to_predict = make_date_to_prediction(train_all)
 
-    data_merge_all_days = get_all_merge_data_from_to(last_day=None)
+    # data_all_days = get_all_merge_data_from_to(last_day=None)
     # data_merge_all:pd.DataFrame = data_merge.copy()
-    data_merge_all_days['date'] = data_merge_all_days['date'].astype(str)
+    data_all_days['date'] = data_all_days['date'].astype(str)
     # train_all = standardScaler(train_all,test_to_predict)
-    last_day_train = data_merge_all_days['date'].unique()[-1]
+    last_day_train = str(data_to_last_day['date'].unique()[-1])
     result_all = pd.DataFrame(columns=['date', 'region', 'Engaged_respirator',
                                        'prediction'])
-    result_all_err = pd.DataFrame()
+    print(last_day_train)
+    # result_all_err = pd.DataFrame()
     day = next_day(last_day_train)
     for day_ahead_to_predict in range(1, day_ahead + 1):
-        train, target = get_train_target(data_merge, train_all, period_of_time, day_ahead_to_predict)
+        train, target = get_train_target(data_to_last_day, train_all, period_of_time, day_ahead_to_predict)
         # train,test_to_predict = standardScaler(train,test_to_predict)
 
         make_all(train, target)
@@ -42,7 +46,7 @@ def make_prediction_n_days_ahead(data_merge:pd.DataFrame, period_of_time=21, las
         clear_model()
 
         submission = submission.reset_index()
-        test_ahead: pd.DataFrame = get_test_respiration(data_merge_all_days, day)
+        test_ahead: pd.DataFrame = get_test_respiration(data_all_days, day)
 
         submission.rename(
             columns={submission.columns[0]: test_ahead.columns[0], submission.columns[1]: test_ahead.columns[1],
@@ -62,4 +66,4 @@ def make_prediction_n_days_ahead(data_merge:pd.DataFrame, period_of_time=21, las
     result_all = result_all.sort_values(by=['region', 'date'])
     # result_all_err = result_all_err.sort_values(by=['region', 'date'])
 
-    return result_all, result_all_err
+    return result_all
