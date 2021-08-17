@@ -10,7 +10,6 @@ def preparing_data_area_population_regions():
 
     area_population.iloc[:, -2] = (area_population.iloc[:, -2] - area_population.iloc[:,
                                                                  -2].mean()) / area_population.iloc[:, -2].std()
-
     area_population = area_population.iloc[:, [0, -2, -1]]
     return area_population
 

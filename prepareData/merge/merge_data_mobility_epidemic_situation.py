@@ -54,8 +54,9 @@ def get_merge_data():
     return data_merge
 
 
-def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
-    merge = get_merge_data()
+def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04',merge = None):
+    if merge is None:
+        merge = get_merge_data()
 
     merge['date'] = pd.to_datetime(merge.loc[:, 'date'], format='%Y-%m-%d').dt.date
 
@@ -65,7 +66,6 @@ def get_merge_data_from_to(first_day: str = None, last_day='2021-04-04'):
     if last_day is not None:
         merge: pd.DataFrame = merge.loc[merge['date'] <= datetime.strptime(last_day, "%Y-%m-%d").date()]
 
-    merge = merge.apply(pd.to_numeric, errors='ignore')
     merge = merge.sort_values(by=['region', 'date'])
 
     return merge
@@ -75,5 +75,3 @@ def save_merge_for_Poland():
     merge_data = get_merge_data_from_to()
     merge_data = merge_data[merge_data['region'] == 'POLSKA']
     merge_data.to_csv('results/merge_data_Poland.csv', index=False)
-# %%
-# get_merge_data_from_to(first_day=None,last_day=None)

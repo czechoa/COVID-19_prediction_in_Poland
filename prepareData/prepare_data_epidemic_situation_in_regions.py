@@ -5,12 +5,10 @@ from prepareData.read_spreadsheets.read_spreadsheets import get_spreadsheets_cov
 
 def prepare_data_epidemic_situation_in_regions(
         train_data_path='data/data_input/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv'):
-
     if train_data_path is None:
         data = get_spreadsheets_covid_situation_in_region_as_df()
     else:
         data = pd.read_csv(train_data_path, header=1)
-
 
     data = split_data_that_region_as_attribute(data)
     data = format_date(data)
@@ -18,7 +16,9 @@ def prepare_data_epidemic_situation_in_regions(
     data['region'] = data['region'].replace('POLSKA (SUMA)', 'POLSKA')
 
     data = drop_columns(data)
-    data = data.rename(columns={data.columns[-2]: "Number_of_people_hospitalized", data.columns[-1]: "Engaged_respirator"})
+    data = data.rename(
+        columns={data.columns[-2]: "Number_of_people_hospitalized", data.columns[-1]: "Engaged_respirator"})
+    data = to_columns_type_numeric(data)
     return data
 
 
@@ -90,9 +90,9 @@ def get_test_respiration(date='2021-04-11'):
     return finale_day
 
 
-# %%
-# a = get_test_respiration(date='2021-04-11')
-# data_region:pd.DataFrame = prepare_data_epidemic_situation_in_regions(None)
-# %%
+def to_columns_type_numeric(data):
+    return data.apply(pd.to_numeric,
+                      errors='ignore')
 
 
+# data_region: pd.DataFrame = prepare_data_epidemic_situation_in_regions(None)

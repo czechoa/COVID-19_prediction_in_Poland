@@ -11,11 +11,11 @@ def data_augmentation(merge_data_org: pd.DataFrame, number_of_gaussian_noise_reg
     return merge_data
 
 
-def return_region_as_weighted_average(merge_data: pd.DataFrame):
+def return_region_as_weighted_average(merge_data: pd.DataFrame, first_dsc_attribute = 3):
     data_merge_org = merge_data[merge_data['region'] != 'POLSKA']
     data_merge = data_merge_org.copy()
 
-    data_merge.iloc[:, 3:] = (data_merge['population_%'].values * data_merge.iloc[:, 3:].values.T).T
+    data_merge.iloc[:, first_dsc_attribute:] = (data_merge['population_%'].values * data_merge.iloc[:, first_dsc_attribute:].values.T).T
     weighted_average_region: pd.DataFrame = data_merge.groupby(by=['date', 'day of the week']).sum().reset_index()
     weighted_average_region.insert(0, 'region', 'ŚŚ_weighted_average')
 
