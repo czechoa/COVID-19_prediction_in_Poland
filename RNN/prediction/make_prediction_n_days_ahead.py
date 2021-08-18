@@ -39,8 +39,7 @@ def make_prediction_n_days_ahead(data_all_days: pd.DataFrame, period_of_time=21,
         if test_ahead.empty:
             result = submission
         else:
-            submission = submission.drop(columns='date')
-            result = submission.merge(test_ahead, on=['region'])
+            result = submission.merge(test_ahead, on=['region','date'])
 
         result_all = result_all.append(result, ignore_index=True)
         day = next_day(day)
