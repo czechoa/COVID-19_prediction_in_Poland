@@ -1,12 +1,9 @@
-from RNN.prediction.make_prediction_and_plots import make_prediction_and_subplot_for_all_regions, \
-    make_plots_relative_error_for_regions
-# %%
-result = make_prediction_and_subplot_for_all_regions(day_ahead=30,period_of_time=7)
-make_plots_relative_error_for_regions(prediction = result)
+from RNN.prediction.make_prediction_and_plots import make_prediction_and_subplot_for_all_regions
+
+result = make_prediction_and_subplot_for_all_regions(last_day_train= '2021-03-30', day_ahead=14, period_of_time_learning=7)
 
 # %% now
-result = make_prediction_and_subplot_for_all_regions(last_day_train= None,day_ahead=30,period_of_time=7, subplot= False)
-# make_plots_relative_error_for_regions(prediction = result)
+result = make_prediction_and_subplot_for_all_regions(last_day_train= None, day_ahead=30, period_of_time_learning=7, subplot_for_regions= False, relative_error=False)
 
 
 
