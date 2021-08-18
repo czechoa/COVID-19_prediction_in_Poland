@@ -5,7 +5,7 @@ import pandas as pd
 
 def get_spreadsheets_covid_situation_in_region_as_list():
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-    SERVICE_ACCOUNT_FILE = 'prepareData/read_spreadsheets/key.json'
+    SERVICE_ACCOUNT_FILE = 'prepare_data/merge/data_epidemic_situation_in_regions/read_spreadsheets/key.json'
 
     creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)

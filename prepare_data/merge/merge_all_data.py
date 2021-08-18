@@ -1,13 +1,13 @@
-from prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to, get_merge_data
-from prepareData.augmentation.data_augmentation import data_augmentation
-from prepareData.prepare_data_area_population import preparing_data_area_population_regions
+from prepare_data.merge.data_area_and_population.prepare_data_area_population import \
+    preparing_data_area_population_regions
+from prepare_data.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to, get_merge_data
+from prepare_data.augmentation.data_augmentation import data_augmentation
 import pandas as pd
-from prepareData.test_train.make_train_test_from_merge_data import one_hot_encode
+from prepare_data.test_train.make_train_test_from_merge_data import one_hot_encode
 
 
 def get_all_merge_data_from_to(first_day: str = None, last_day='2021-05-05', number_of_gaussian_noise_regions=1,
                                data=None):
-
     if data is None:
         data = get_all_merge_data(number_of_gaussian_noise_regions)
     data_all_from_to = get_merge_data_from_to(first_day, last_day, data)

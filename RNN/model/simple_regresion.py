@@ -61,12 +61,9 @@ def make_submission(test: pd.DataFrame, days_ahead):
 
 def make_future_submission(test: pd.DataFrame, day):
     prediction = NN_model.predict(test)
-    # name = 'prediction ' + str(days_ahead) + ' ahead'
-    # name = 'prediction'
     my_submission = pd.DataFrame({'region': test.index.get_level_values(0),
                                   'date': day,
                                   'prediction': prediction[:, 0]})
-    # my_submission = pd.DataFrame(index=test.index, data={name: list(prediction[:, 0])})
     return my_submission
 
 

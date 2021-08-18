@@ -2,13 +2,14 @@ from datetime import datetime
 import pandas as pd
 import numpy as np
 
-from prepareData.prepare_data_epidemic_situation_in_regions import prepare_data_epidemic_situation_in_regions
-from prepareData.prepare_data_mobility import get_prepared_data_mobility
+from prepare_data.merge.data_epidemic_situation_in_regions.prepare_data_epidemic_situation_in_regions import \
+    prepare_data_epidemic_situation_in_regions
+from prepare_data.merge.data_mobillity.prepare_data_mobility import get_prepared_data_mobility
 
 
 def get_data_mobility_and_data_epidemic_situation_in_regions():
     data_mobility = get_prepared_data_mobility()
-    data_epidemic_situation_in_regions = prepare_data_epidemic_situation_in_regions(None)
+    data_epidemic_situation_in_regions = prepare_data_epidemic_situation_in_regions(train_data_path=None)
     return data_mobility, data_epidemic_situation_in_regions
 
 

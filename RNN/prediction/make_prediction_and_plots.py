@@ -1,9 +1,7 @@
 from RNN.prediction.make_prediction_n_days_ahead import make_prediction_n_days_ahead
 from RNN.prediction.plot.plots import plot_prediction_to_poland_from_results, subplot_prediction_for_all_region, \
     subplot_relative_error_for_all_region, plot_averaged_relative_error_for_all_region, plot_relative_error_for_poland
-from prepareData.merge.merge_all_data import get_all_merge_data_from_to, get_all_merge_data
-
-import pandas as pd
+from prepare_data.merge.merge_all_data import get_all_merge_data_from_to, get_all_merge_data
 
 
 def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day_ahead=30, period_of_time_learning=14,
@@ -15,7 +13,7 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
     results = make_prediction_n_days_ahead(data_all_days, day_ahead=day_ahead,
                                            period_of_time=period_of_time_learning, last_day_train=last_day_train)
     if subplot_for_regions:
-        data_merge_from_to = get_all_merge_data_from_to(data= data_all_days, last_day= last_day_train)
+        data_merge_from_to = get_all_merge_data_from_to(data=data_all_days, last_day=last_day_train)
         subplot_prediction_for_all_region([results], ['prediction'], data_merge_from_to)
 
     results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
@@ -29,16 +27,14 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
     return results
 
 
-def make_plots_relative_error_for_regions(prediction=None):
-    if prediction is not None:
-        prediction = pd.read_csv('results/csv/prediction_for_region.csv')
+def make_plots_relative_error_for_regions(prediction):
 
     prediction['relative_error_%'] = 100 * abs(
         prediction['Engaged_respirator'] - prediction['prediction']) / prediction[
                                          'Engaged_respirator']
-    prediction_Poland = prediction[prediction['region'] == 'ŚŚ_average']
+    prediction_poland = prediction[prediction['region'] == 'ŚŚ_average']
     subplot_relative_error_for_all_region(prediction.copy())
     prediction = prediction[prediction['region'].isin(prediction['region'].unique()[:-3])]
 
     plot_averaged_relative_error_for_all_region(prediction)
-    plot_relative_error_for_poland(prediction_Poland)
+    plot_relative_error_for_poland(prediction_poland)

@@ -1,6 +1,7 @@
 import pandas as pd
 
-from prepareData.read_spreadsheets.read_spreadsheets import get_spreadsheets_covid_situation_in_region_as_df
+from prepare_data.merge.data_epidemic_situation_in_regions.read_spreadsheets.read_spreadsheets import \
+    get_spreadsheets_covid_situation_in_region_as_df
 
 
 def prepare_data_epidemic_situation_in_regions(
@@ -86,7 +87,7 @@ def get_test_respiration(data_merge: pd.DataFrame, date):
     return finale_day
 
 # def get_test_respiration(date='2021-04-11'):
-#     finale_data = prepare_data_epidemic_situation_in_regions(
+#     finale_data = data_epidemic_situation_in_regions(
 #         'data/data_input/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv')
 #
 #     finale_data = finale_data.drop(columns=[finale_data.columns[-2]])
@@ -100,4 +101,4 @@ def to_columns_type_numeric(data):
                       errors='ignore')
 
 
-# data_region: pd.DataFrame = prepare_data_epidemic_situation_in_regions(None)
+# data_region: pd.DataFrame = data_epidemic_situation_in_regions(None)

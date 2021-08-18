@@ -38,7 +38,6 @@ def subplot_prediction_for_all_region(result_all_list: list, labels: list, data_
     date = data_merge_from_to_f['date'].unique()
 
     while z < len(regions):
-        print(z)
         plt.figure(figsize=(15, 15))
         for i in range(0, 4):
             if z + i >= len(regions):

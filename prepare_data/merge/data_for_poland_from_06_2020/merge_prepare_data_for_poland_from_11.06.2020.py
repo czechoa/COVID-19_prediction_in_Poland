@@ -1,8 +1,8 @@
 import pandas as pd
-from prepareData.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
-from prepareData.prepare_data_mobility import get_prepared_data_mobility
-from prepareData.augmentation.data_augmentation import adding_Gaussian_Noise_to_data_Poland
-from prepareData.test_train.make_train_test_from_merge_data import one_hot_encode
+from prepare_data.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
+from prepare_data.merge.data_mobillity import get_prepared_data_mobility
+from prepare_data.augmentation.data_augmentation import adding_Gaussian_Noise_to_data_Poland
+from prepare_data.test_train.make_train_test_from_merge_data import one_hot_encode
 
 
 def merge_data_for_Poland_from_06_2020(last_day='2021-03-20'):

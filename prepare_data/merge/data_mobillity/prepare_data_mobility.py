@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from prepareData.dowload_unzip.download_unzip import get_unzip_data_regions_mobility
+from prepare_data.merge.data_mobillity.dowload_unzip.download_unzip import get_unzip_data_regions_mobility
 
 
 def prepare_date_mobility(data_path=None):

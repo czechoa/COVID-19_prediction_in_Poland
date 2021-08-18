@@ -1,4 +1,3 @@
-# %%
 import pandas as pd
 import numpy as np
 
@@ -18,7 +17,6 @@ def averaged_merge_data_from_n_days(merge_data: pd.DataFrame, days_n, first_n_at
 def reshape_data_merge_to_get_train_period_of_time_history(data_merge: pd.DataFrame, number_of_days_in_one_row,
                                                            first_n_attribute_dsc_region=5):
     train_all = pd.DataFrame()
-    # data_merge = avaraged_merge_data_from_n_days(data_merge,3)
 
     data_merge, first_n_attribute_dsc_region = one_hot_encode(data_merge, 'region', first_n_attribute_dsc_region)
 
