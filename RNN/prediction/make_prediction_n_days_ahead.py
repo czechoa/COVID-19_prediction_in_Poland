@@ -1,7 +1,9 @@
 import pandas as pd
-from RNN.model.simple_regresion import make_all, make_submission, clear_model
+from RNN.model.simple_regresion import make_all, make_submission, clear_model, make_future_submission
 from prepareData.merge.merge_all_data import get_all_merge_data_from_to
 from datetime import datetime, timedelta
+
+from prepareData.prepare_data_epidemic_situation_in_regions import get_test_respiration
 from prepareData.test_train.make_train_test_from_merge_data import \
     reshape_data_merge_to_get_train_period_of_time_history, make_date_to_prediction, get_train_target
 
@@ -10,12 +12,6 @@ def next_day(date: str):
     date = datetime.strptime(date, "%Y-%m-%d")
     modified_date = date + timedelta(days=1)
     return datetime.strftime(modified_date, "%Y-%m-%d")
-
-
-def get_test_respiration(data_merge: pd.DataFrame, date):
-    data_merge = data_merge.iloc[:, [0, 1, -1]]
-    finale_day = data_merge[data_merge['date'] == date]
-    return finale_day
 
 
 def make_prediction_n_days_ahead(data_all_days:pd.DataFrame, period_of_time=21, last_day_train='2021-03-20',
@@ -42,19 +38,23 @@ def make_prediction_n_days_ahead(data_all_days:pd.DataFrame, period_of_time=21, 
         # train,test_to_predict = standardScaler(train,test_to_predict)
 
         make_all(train, target)
-        submission = make_submission(test_to_predict, day_ahead_to_predict)
+        submission = make_future_submission(test_to_predict, day)
         clear_model()
 
-        submission = submission.reset_index()
+        # submission = submission.reset_index()
         test_ahead: pd.DataFrame = get_test_respiration(data_all_days, day)
 
-        submission.rename(
-            columns={submission.columns[0]: test_ahead.columns[0], submission.columns[1]: test_ahead.columns[1],
-                     submission.columns[2]: 'prediction'},
-            inplace=True)
-        submission = submission.drop(columns='date')
+        # submission.rename(
+        #     columns={submission.columns[0]: test_ahead.columns[0], submission.columns[1]: test_ahead.columns[1],
+        #              submission.columns[2]: 'prediction'},
+        #     inplace=True)
+        # submission = submission.drop(columns='date')
 
-        result = test_ahead.merge(submission, on=['region'])
+        if test_ahead.empty:
+            result = submission
+        else:
+            submission = submission.drop(columns='date')
+            result = submission.merge(test_ahead, on=['region'])
 
         # result_err = result.iloc[:, :2]
         # result_err['subtract'] = result.iloc[:, -2].astype(float) - result.iloc[:, -1].astype(float)

@@ -80,14 +80,19 @@ def drop_columns(data: pd.DataFrame):
     return data
 
 
-def get_test_respiration(date='2021-04-11'):
-    finale_data = prepare_data_epidemic_situation_in_regions(
-        'data/data_input/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv')
-
-    finale_data = finale_data.drop(columns=[finale_data.columns[-2]])
-    finale_day = finale_data[finale_data['date'] == date]
-
+def get_test_respiration(data_merge: pd.DataFrame, date):
+    data_merge = data_merge.iloc[:, [0, 1, -1]]
+    finale_day:pd.DataFrame = data_merge[data_merge['date'] == date]
     return finale_day
+
+# def get_test_respiration(date='2021-04-11'):
+#     finale_data = prepare_data_epidemic_situation_in_regions(
+#         'data/data_input/COVID-19 w Polsce - Sytuacja epidemiczna w województwach od 05.11 do 05.05.2021.csv')
+#
+#     finale_data = finale_data.drop(columns=[finale_data.columns[-2]])
+#     finale_day = finale_data[finale_data['date'] == date]
+#
+#     return finale_day
 
 
 def to_columns_type_numeric(data):

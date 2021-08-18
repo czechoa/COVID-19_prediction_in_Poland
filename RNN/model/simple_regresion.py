@@ -45,9 +45,9 @@ def compline_model():
 
 def make_submission_cvs(train: pd.DataFrame, target, sub_name):
     prediction = NN_model.predict(train)
-    my_submission = pd.DataFrame({'Id': train.index[:].to_list(),
-                                  'Target': target,
-                                  'Prediction': prediction[:, 0]})
+    my_submission = pd.DataFrame({'region': train.index[:].to_list(),
+                                  'date': target,
+                                  'prediction': prediction[:, 0]})
     # my_submission.index[:] = train.index[:]
     my_submission.to_csv('{}.csv'.format(sub_name), index=False)
     print('A submission file has been made ', sub_name)
@@ -57,6 +57,16 @@ def make_submission(test: pd.DataFrame, days_ahead):
     prediction = NN_model.predict(test)
     name = 'prediction ' + str(days_ahead) + ' ahead'
     my_submission = pd.DataFrame(index=test.index, data={name: list(prediction[:, 0])})
+    return my_submission
+
+def make_future_submission(test: pd.DataFrame, day):
+    prediction = NN_model.predict(test)
+    # name = 'prediction ' + str(days_ahead) + ' ahead'
+    # name = 'prediction'
+    my_submission = pd.DataFrame({'region': test.index.get_level_values(0),
+                                  'date': day,
+                                  'prediction': prediction[:, 0]})
+    # my_submission = pd.DataFrame(index=test.index, data={name: list(prediction[:, 0])})
     return my_submission
 
 
