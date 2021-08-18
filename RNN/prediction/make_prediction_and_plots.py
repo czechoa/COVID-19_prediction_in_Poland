@@ -15,12 +15,10 @@ def make_prediction_and_subplot_for_all_regions(last_day_train='2021-03-20', day
     results = make_prediction_n_days_ahead(data_all_days, day_ahead=day_ahead,
                                            period_of_time=period_of_time_learning, last_day_train=last_day_train)
     if subplot_for_regions:
-        results.to_csv('results/csv/prediction_for_region.csv', index=False)
-
-        data_merge_from_to = get_all_merge_data_from_to(last_day_train)
+        data_merge_from_to = get_all_merge_data_from_to(data= data_all_days, last_day= last_day_train)
         subplot_prediction_for_all_region([results], ['prediction'], data_merge_from_to)
-    results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
 
+    results['region'] = results['region'].replace('ŚŚ_average', 'POLSKA')
     results.loc[results['region'] == 'POLSKA', 'prediction'] = results.loc[
                                                                    results['region'] == 'POLSKA', 'prediction'] * 16
     plot_prediction_to_poland_from_results([results], ['prediction'], data_all_days_org)
