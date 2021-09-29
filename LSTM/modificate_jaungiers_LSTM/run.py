@@ -15,15 +15,12 @@ import plotly.graph_objects as go
 
 
 def normalised_data_min_max(df):
-    # df = pd.read_csv(path)
     data_df = df.iloc[:, 3:]
-    # data_desc = data_df.describe()
     data_org = data_df.values
     scaler = MinMaxScaler(feature_range=(0, 1))
     data_nor = scaler.fit_transform(data_org)
 
     df.iloc[:, 3:] = data_nor
-    # df.to_csv(path[:-4] + '_ns.csv', index=False)
     return df
 
 
@@ -32,13 +29,10 @@ def read_data_and_reorder(path = "data/data_lstm/data_all_with_one_hot_encode.cs
     data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
     data_merge_org = data_merge.sort_values(by=['region', 'date'])
     data_merge = data_merge_org[data_merge['region'] != 'POLSKA']
-    # data_merge.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv', index=False)
     return data_merge
 
 data_merge = read_data_and_reorder()
 data_merge = normalised_data_min_max(data_merge)
-# data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode_ns.csv')
-# %%
 first = True
 for region in data_merge.loc[:, 'region'].unique():
 
@@ -83,48 +77,38 @@ model.train(
 predictions_full: list = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
 
 date_train = data_region['date'].iloc[:int(data_region.shape[0] * configs['data']['train_test_split'])]
+date_test = data_region['date'].iloc[int(data_region.shape[0] * configs['data']['train_test_split']):]
+
 y_train_org = data_region['Engaged_respirator'].iloc[:int(data_region.shape[0] * configs['data']['train_test_split'])]
 y_test_org = data_region['Engaged_respirator'].iloc[int(data_region.shape[0] * configs['data']['train_test_split']):]
-date_test = data_region['date'].iloc[int(data_region.shape[0] * configs['data']['train_test_split']):]
 
 predictions_train = model.predict_point_by_point(x)
 
-trace1 = go.Scatter(
-    x=date_train,
-    y=y_train_org,
-    mode='lines',
-    name='Data'
-)
+
 trace2 = go.Scatter(
     x=date_train,
     y=y[:, 0],
     mode='lines',
-    name='Prediction'
+    name='train'
 )
 trace3 = go.Scatter(
     x=date_test,
     y=y_test[:, 0],
     mode='lines',
-    name='Ground Truth'
+    name='ground Truth'
 )
 trace4 = go.Scatter(
     x=date_test,
     y=predictions_full,
     mode='lines',
-    name='futere'
+    name='future prediction'
 )
 
-trace5 = go.Scatter(
-    x=date_test,
-    y=y_test_org,
-    mode='lines',
-    name='futere'
-)
 trace6 = go.Scatter(
     x=date_train,
     y=predictions_train,
     mode='lines',
-    name='futere'
+    name='train prediction'
 )
 layout = go.Layout(
     title="Google Stock",
@@ -133,7 +117,6 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=[trace2,trace3, trace4,trace6], layout=layout)
-# fig = go.Figure(data=[trace1,trace5], layout=layout)
 
 fig.show()
 # %%

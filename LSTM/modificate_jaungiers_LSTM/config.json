@@ -43,7 +43,7 @@
       "Engaged_respirator"
     ],
     "sequence_length": 15,
-    "train_test_split": 0.85,
+    "train_test_split": 0.75,
     "normalise": false
   },
   "training": {

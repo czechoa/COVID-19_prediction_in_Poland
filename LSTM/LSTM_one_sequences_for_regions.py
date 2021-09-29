@@ -172,6 +172,7 @@ for region_name in data_merge['region'].unique()[0:]:
     trainX, trainY = create_dataset(train)
     testX, testY = create_dataset(test)
     trainX, trainY = reshape_train_to_one_sample(trainX, trainY)
+
     if first:
         x_full = trainX
         y_full = trainY
@@ -240,12 +241,12 @@ trace5 = go.Scatter(
     mode='lines',
     name='Ground true'
 )
-trace6 = go.Scatter(
-    x=date_train,
-    y=predictions_train,
-    mode='lines',
-    name='futere'
-)
+# trace6 = go.Scatter(
+#     x=date_train,
+#     y=predictions_train,
+#     mode='lines',
+#     name='futere'
+# )
 layout = go.Layout(
     title="Google Stock",
     xaxis={'title': "Date"},
