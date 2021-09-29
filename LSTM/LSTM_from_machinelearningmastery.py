@@ -8,7 +8,6 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
-# %%
 
 # convert an array of values into a dataset matrix
 def create_dataset(dataset, look_back=1):

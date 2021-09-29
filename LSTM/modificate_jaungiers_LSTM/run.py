@@ -14,41 +14,33 @@ from LSTM.modificate_jaungiers_LSTM.core.model import Model
 import plotly.graph_objects as go
 
 
-def normalised_data_min_max(path='data/data_lstm/data_Poland_to_2021_05.csv'):
-    df = pd.read_csv(path)
+def normalised_data_min_max(df):
+    # df = pd.read_csv(path)
     data_df = df.iloc[:, 3:]
-    data_desc = data_df.describe()
+    # data_desc = data_df.describe()
     data_org = data_df.values
     scaler = MinMaxScaler(feature_range=(0, 1))
     data_nor = scaler.fit_transform(data_org)
 
     df.iloc[:, 3:] = data_nor
-    df.to_csv(path[:-4] + '_ns.csv', index=False)
-    return data_desc,df
+    # df.to_csv(path[:-4] + '_ns.csv', index=False)
+    return df
 
 
-# data_desc = normalised_data_min_max('LSTM/data/data_all_with_one_hot_encode.csv')
-def main():
-    _
+def read_data_and_reorder(path = "data/data_lstm/data_all_with_one_hot_encode.csv"):
+    data_merge = pd.read_csv(path)
+    data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
+    data_merge_org = data_merge.sort_values(by=['region', 'date'])
+    data_merge = data_merge_org[data_merge['region'] != 'POLSKA']
+    # data_merge.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv', index=False)
+    return data_merge
 
-data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
-data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
-data_merge_org = data_merge.sort_values(by=['region', 'date'])
-data_merge = data_merge_org[data_merge['region'] != 'POLSKA']
-data_merge.to_csv('data/data_lstm/data_all_with_one_hot_encode.csv', index=False)
-data_desc = normalised_data_min_max('data/data_lstm/data_all_with_one_hot_encode.csv')
-data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode_ns.csv')
-
+data_merge = read_data_and_reorder()
+data_merge = normalised_data_min_max(data_merge)
+# data_merge = pd.read_csv('data/data_lstm/data_all_with_one_hot_encode_ns.csv')
+# %%
 first = True
-i = 0
 for region in data_merge.loc[:, 'region'].unique():
-
-    # if region == 'POLSKA:
-    #     continue
-
-    if 'ŚŚ' not in region:
-        continue
-    print(region)
 
     data_region = data_merge[data_merge['region'] == region]
     data_region.to_csv('data/data_lstm/region.csv', index=False)
@@ -78,7 +70,6 @@ x_test, y_test = data.get_test_data(
     seq_len=configs['data']['sequence_length'],
     normalise=configs['data']['normalise']
 )
-
 model = Model()
 model.build_model(configs)
 model.train(
@@ -88,7 +79,6 @@ model.train(
     batch_size=configs['training']['batch_size']
     , save_dir=configs['model']['save_dir']
 )
-
 
 predictions_full: list = model.predict_sequence_full(x_test, configs['data']['sequence_length'])
 
@@ -148,10 +138,5 @@ fig = go.Figure(data=[trace2,trace3, trace4,trace6], layout=layout)
 fig.show()
 # %%
 model.predict_single(x_test,configs['data']['sequence_length'])
-# %%
 
-
-# %%
-for _ in range(10):
-    main()
 
