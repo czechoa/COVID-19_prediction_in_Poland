@@ -1,4 +1,4 @@
-import  numpy as np
+import numpy as np
 from pandas import read_csv
 from sklearn.preprocessing import MinMaxScaler
 
@@ -37,17 +37,21 @@ def reshape_train_to_one_sample(trainX, trainY):
     trainY = np.reshape(trainY, (1, trainY.shape[0], trainY.shape[1]))
     return trainX, trainY
 
+
 def read_data_regions():
     data_merge = read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
     data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
     data_merge = data_merge.sort_values(by=['region', 'date'])
     return data_merge
 
+
 def read_data_only_Poland():
     data_merge = read_csv('data/data_lstm/merge_data_Poland.csv')
-    data_merge["region"].replace({ "POLSKA":"ŚŚŚ_Poland"}, inplace=True)
+    data_merge["region"].replace({"POLSKA": "ŚŚŚ_Poland"}, inplace=True)
     data_merge = data_merge.sort_values(by=['region', 'date'])
     return data_merge
+
+
 def inverse_transform_train(scaler, predictions, trainY):
     trainPredict = scaler.inverse_transform(reshape_back(predictions))
     trainY = scaler.inverse_transform(reshape_back(trainY))
@@ -59,11 +63,13 @@ def inverse_transform_test(scaler, future_array, testY):
     testY = scaler.inverse_transform(testY)
     return testPredict, testY
 
+
 def reshape_back(train_f: np.array):
     train_f = train_f[0, :, :]
     return train_f
 
-def make_trainX_trainY(data,split):
+
+def make_trainX_trainY(data, split):
     first = True
     x_full = np.array
     y_full = np.array
@@ -76,7 +82,7 @@ def make_trainX_trainY(data,split):
         dataset = load_dataset(region, columns_index)
         dataset, scaler = normalise_dataset(dataset)
 
-        train, test = split_into_train_and_test_sets(dataset,split=split)
+        train, test = split_into_train_and_test_sets(dataset, split=split)
         trainX, trainY = create_dataset(train)
         testX, testY = create_dataset(test)
         trainX, trainY = reshape_train_to_one_sample(trainX, trainY)
@@ -89,6 +95,4 @@ def make_trainX_trainY(data,split):
             x_full = np.concatenate((x_full, trainX), axis=0)
             y_full = np.concatenate((y_full, trainY), axis=0)
 
-    return train, test, x_full,y_full, region, scaler
-
-
+    return train, test, x_full, y_full, region, scaler

@@ -5,7 +5,7 @@ from tensorflow.keras.models import Sequential
 
 from LSTM.LSTM_one_sequences.data_processor import read_data_only_Poland, make_trainX_trainY, inverse_transform_train, \
     inverse_transform_test
-from LSTM.LSTM_one_sequences.plot import get_org_data_from_region_make_plot
+from LSTM.LSTM_one_sequences.plot import Plot
 
 
 def create_and_fit_model(_trainX, _trainY):
@@ -59,5 +59,6 @@ trainY = trainY[-1:, :, :]
 future_array, predictions_train = make_prediction_future(model, train, trainY, test)
 trainPredict, trainY = inverse_transform_train(scaler, predictions_train, trainY)
 testPredict, testY = inverse_transform_test(scaler, future_array, test)
-get_org_data_from_region_make_plot(_region, trainPredict, testPredict, split)
+plot = Plot(_region,trainPredict,testPredict,split)
+plot.get_org_data_from_region_make_plot()
 

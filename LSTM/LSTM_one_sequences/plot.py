@@ -1,48 +1,56 @@
 import plotly.graph_objects as go
 
-def get_org_data_from_region(region,split):
-    date_train = region['date'].iloc[:int(region.shape[0] * split)]
-    y_train_org = region['Engaged_respirator'].iloc[:int(region.shape[0] * split)]
-    y_test_org = region['Engaged_respirator'].iloc[int(region.shape[0] * split):]
-    date_test = region['date'].iloc[int(region.shape[0] * split):]
-    return date_train, y_train_org, y_test_org, date_test
 
-def get_org_data_from_region_make_plot(_region, _trainPredict, _testPredict, split):
-    date_train, y_train_org, y_test_org, date_test = get_org_data_from_region(_region, split)
-    trace1 = go.Scatter(
-        x=date_train,
-        y=y_train_org * 16,
-        mode='lines',
-        name='Data train'
-    )
-    trace2 = go.Scatter(
-        # x=date_train[1:],
-        x=date_train,
-        y=_trainPredict[:, 0] * 16,
-        mode='lines',
-        name='Prediction train'
-    )
-    trace3 = go.Scatter(
-        x=date_test,
-        y=_testPredict[:, 0] * 16,
-        # y=testPredict*16,
-        mode='lines',
-        name='Prediction future'
-    )
+class Plot:
+    def __init__(self, region, trainPredict, testPredict, split):
+        self.split = split
+        self.trainPredict = trainPredict
+        self.region = region
+        self.testPredict = testPredict
 
-    trace5 = go.Scatter(
-        x=date_test,
-        y=y_test_org * 16,
-        mode='lines',
-        name='Ground true'
-    )
+    def _get_org_data_from_region(self):
+        n_rows = self.region.shape[0]
+        last_index_train = int(n_rows * self.split)
+        date_train = self.region['date'].iloc[:last_index_train]
+        y_train_org = self.region['Engaged_respirator'].iloc[:last_index_train]
+        y_test_org = self.region['Engaged_respirator'].iloc[last_index_train:]
+        date_test = self.region['date'].iloc[last_index_train:]
+        return date_train, y_train_org, y_test_org, date_test
 
-    layout = go.Layout(
-        title="Poland covid-19",
-        xaxis={'title': "Date"},
-        yaxis={'title': "Engaged respirator"}
-    )
+    def get_org_data_from_region_make_plot(self):
+        date_train, y_train_org, y_test_org, date_test = self._get_org_data_from_region()
+        trace1 = go.Scatter(
+            x=date_train,
+            y=y_train_org * 16,
+            mode='lines',
+            name='Data train'
+        )
+        trace2 = go.Scatter(
+            x=date_train,
+            y=self.trainPredict[:, 0] * 16,
+            mode='lines',
+            name='Prediction train'
+        )
+        trace3 = go.Scatter(
+            x=date_test,
+            y=self.testPredict[:, 0] * 16,
+            mode='lines',
+            name='Prediction future'
+        )
 
-    fig = go.Figure(data=[trace1, trace2, trace3, trace5], layout=layout)
+        trace5 = go.Scatter(
+            x=date_test,
+            y=y_test_org * 16,
+            mode='lines',
+            name='Ground true'
+        )
 
-    fig.show()
+        layout = go.Layout(
+            title="Poland covid-19",
+            xaxis={'title': "Date"},
+            yaxis={'title': "Engaged respirator"}
+        )
+
+        fig = go.Figure(data=[trace1, trace2, trace3, trace5], layout=layout)
+
+        fig.show()
