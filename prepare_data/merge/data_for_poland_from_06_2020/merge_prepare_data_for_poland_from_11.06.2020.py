@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pandas as pd
 
 from prepare_data.merge.data_mobillity.prepare_data_mobility import get_prepared_data_mobility
@@ -6,7 +8,7 @@ from prepare_data.augmentation.data_augmentation import adding_Gaussian_Noise_to
 from prepare_data.test_train.make_train_test_from_merge_data import one_hot_encode
 
 
-def merge_data_for_Poland_from_06_2020(last_day='2021-03-20'):
+def merge_data_for_Poland_from_06_2020(last_day='2021-03-20',first_day = None):
     poland_resp_from_06_2020 = pd.read_csv("data/data_input/polska_respiration_from_11.06.2020.csv", delimiter=';')
     data_mobility: pd.DataFrame = get_prepared_data_mobility()
     data_mobility_pl = data_mobility[data_mobility['sub_region_1'] == 'Poland']
@@ -23,11 +25,15 @@ def merge_data_for_Poland_from_06_2020(last_day='2021-03-20'):
                          inplace=True)
     data_merge_from_to_pl = data_merge_from_to_pl.append(data_merge_pl, ignore_index=True)
     data_merge_from_to_pl = data_merge_from_to_pl.sort_values(by='date')
+    if first_day is not None:
+        data_merge_from_to_pl = data_merge_from_to_pl[data_merge_from_to_pl['date'] >= datetime.strptime(first_day, "%Y-%m-%d").date()]
     return data_merge_from_to_pl
 
-def save_merge_data_for_Poland_from_06_2020_with_augumetation():
-    data_Poland = merge_data_for_Poland_from_06_2020(last_day='2021-05-05')
+def save_merge_data_for_Poland_from_06_2020_with_augumetation(last_day='2021-05-05', first_day = None):
+    data_Poland = merge_data_for_Poland_from_06_2020(last_day,first_day)
     for i in range(10):
         data_Poland:pd.DataFrame = data_Poland.append(adding_Gaussian_Noise_to_data_Poland(data_Poland, i))
     data_Poland, number_desc = one_hot_encode(data_Poland, 'region', 3)
     data_Poland.to_csv('data/data_lstm/merge_data_Poland.csv',index=False)
+# %%
+save_merge_data_for_Poland_from_06_2020_with_augumetation(first_day='2020-10-01')

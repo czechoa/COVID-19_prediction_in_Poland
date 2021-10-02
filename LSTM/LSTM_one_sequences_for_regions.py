@@ -22,17 +22,7 @@ def create_dataset(_dataset, _look_back=1):
 
 
 def load_dataset(_region, _columns_index=[-2, -1]):
-    #  fix random seed for reproducibility
-    # load the dataset
-    # data_merge = read_csv('LSTM/data/data_all_with_one_hot_encode.csv')
-    # dataframe = data_merge[data_merge['region'] == data_merge['region'].unique()[0]].iloc[:,-1]
-
-    # data_merge = read_csv('LSTM/data/data_Poland_to_2021_05.csv')
     dataframe = _region.iloc[:, _columns_index]
-
-    # dataframe = read_csv('LSTM/data/region.csv',  engine='python')
-    # data = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv',c)
-    # dataset = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv', usecols=[1], engine='python')
     dataset = dataframe.values
     dataset = dataset.astype('float32')
     return dataset
@@ -147,13 +137,17 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
         plt.show()
 
 
-def read_data():
+def read_data_regions():
     data_merge = read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
     data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
     data_merge = data_merge.sort_values(by=['region', 'date'])
     return data_merge
 
-
+def read_data_only_Poland():
+    data_merge = read_csv('data/data_lstm/merge_data_Poland.csv')
+    data_merge["region"].replace({ "POLSKA":"ŚŚŚ_Poland"}, inplace=True)
+    data_merge = data_merge.sort_values(by=['region', 'date'])
+    return data_merge
 
 def make_trainX_trainY():
     first = True
@@ -234,10 +228,10 @@ def get_org_data_from_region_make_plot(_region, _trainPredict, _testPredict):
 
 # numpy.random.seed(7)
 
-data_merge =read_data()
+data_merge =read_data_only_Poland()
 
-look_back = 1
-split = 0.78
+# look_back = 1
+split = 0.83
 
 
 train, test, trainX,trainY, _region, scaler = make_trainX_trainY()
@@ -245,6 +239,7 @@ train, test, trainX,trainY, _region, scaler = make_trainX_trainY()
 model = create_and_fit_model(trainX, trainY)
 trainX = trainX[-1:, :, :]
 trainY = trainY[-1:, :, :]
+# %%
 future_array, predictions_train = make_prediction_future(model, train,trainY, test)
 trainPredict, trainY = inverse_transform_train(scaler, predictions_train, trainY)
 testPredict, testY = inverse_transform_test(scaler, future_array, test)
