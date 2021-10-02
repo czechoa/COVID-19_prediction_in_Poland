@@ -1,34 +1,34 @@
-import plotly.graph_objects as go
+import math
 
 import matplotlib.pyplot as plt
+import numpy as np
+import plotly.graph_objects as go
 from pandas import read_csv
-import math
-from tensorflow.keras.models import Sequential
+from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import LSTM
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error
-import numpy as np
+from tensorflow.keras.models import Sequential
 
 
 # convert an array of values into a dataset matrix
-def create_dataset(dataset, look_back=1):
+def create_dataset(_dataset, _look_back=1):
     dataX, dataY = [], []
-    for i in range(len(dataset) - look_back - 1):
-        a = dataset[i:(i + look_back), :]
+    for i in range(len(_dataset) - _look_back):
+        a = _dataset[i:(i + _look_back), :]
         dataX.append(a)
-        dataY.append(dataset[i + look_back, :])
+        dataY.append(_dataset[i + _look_back, :])
     return np.array(dataX), np.array(dataY)
 
 
-def load_dataset(region, columns_index=[-2, -1]):
+def load_dataset(_region, _columns_index=[-2, -1]):
     #  fix random seed for reproducibility
     # load the dataset
     # data_merge = read_csv('LSTM/data/data_all_with_one_hot_encode.csv')
     # dataframe = data_merge[data_merge['region'] == data_merge['region'].unique()[0]].iloc[:,-1]
 
     # data_merge = read_csv('LSTM/data/data_Poland_to_2021_05.csv')
-    dataframe = region.iloc[:, columns_index]
+    dataframe = _region.iloc[:, _columns_index]
 
     # dataframe = read_csv('LSTM/data/region.csv',  engine='python')
     # data = read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv',c)
@@ -38,13 +38,13 @@ def load_dataset(region, columns_index=[-2, -1]):
     return dataset
 
 
-def normalise_dataset(dataset):
+def normalise_dataset(_dataset):
     scaler = MinMaxScaler(feature_range=(0, 1))
-    dataset = scaler.fit_transform(dataset.reshape(len(dataset), dataset.shape[1]))
-    return dataset, scaler
+    _dataset = scaler.fit_transform(_dataset.reshape(len(_dataset), _dataset.shape[1]))
+    return _dataset, scaler
 
 
-def split_into_train_and_test_sets(split=0.85):
+def split_into_train_and_test_sets(dataset, split=0.85):
     train_size = int(len(dataset) * split)
     test_size = len(dataset) - train_size
     train, test = dataset[0:train_size, :], dataset[train_size:len(dataset), :]
@@ -72,18 +72,17 @@ def create_and_fit_model(trainX, trainY):
     return model
 
 
-def make_prediction_future(model, trainX, testY):
+def make_prediction_future(model, train,trainY, test):
     model.reset_states()
-    # make predictions
-    predictions = model.predict(trainX)
-    # testPredict = model.predict(testX)
-    # invert predictions
-    # predictions = model.predict(trainX)
+
+    train = train[np.newaxis,:, :]
+    predictions_train = model.predict(train)
+
     future = []
-    currentStep = predictions[:, -1:, :]
+    # currentStep = predictions[:, -1:, :]
     currentStep = trainY[:,-1:,:]
     # for i in range(testY.shape[0]):
-    for i in range(testY.shape[0]):
+    for i in range(test.shape[0]):
 
         currentStep = model.predict(currentStep)  # get the next step
         # currentStep = currentStep.reshape(1,1,)
@@ -94,9 +93,9 @@ def make_prediction_future(model, trainX, testY):
     future_array = np.array(future)
     future_array = future_array[:, 0, 0, :]
 
-    features = trainX.shape[2]
+    features = train.shape[2]
     future_array = future_array.reshape(future_array.shape[0], features)
-    return future_array, predictions
+    return future_array, predictions_train
 
 
 def reshape_back(train_f: np.array):
@@ -147,113 +146,118 @@ def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
         plt.legend()
         plt.show()
 
+
+def read_data():
+    data_merge = read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
+    data_merge["region"].replace({"ŚŚ_average": "ŚŚŚ_average"}, inplace=True)
+    data_merge = data_merge.sort_values(by=['region', 'date'])
+    return data_merge
+
+
+
+def make_trainX_trainY():
+    first = True
+    x_full = np.array
+    y_full = np.array
+    columns_index = [-1]
+
+    for region_name in data_merge['region'].unique()[0:]:
+        if region_name == 'POLSKA':
+            continue
+        region = data_merge[data_merge['region'] == region_name]
+        dataset = load_dataset(region, columns_index)
+        dataset, scaler = normalise_dataset(dataset)
+
+        train, test = split_into_train_and_test_sets(dataset,split=split)
+        trainX, trainY = create_dataset(train)
+        testX, testY = create_dataset(test)
+        trainX, trainY = reshape_train_to_one_sample(trainX, trainY)
+
+        if first:
+            x_full = trainX
+            y_full = trainY
+            first = False
+        else:
+            x_full = np.concatenate((x_full, trainX), axis=0)
+            y_full = np.concatenate((y_full, trainY), axis=0)
+
+    return train, test, x_full,y_full, region, scaler
+
+
+def get_org_data_from_region(region):
+    date_train = region['date'].iloc[:int(region.shape[0] * split)]
+    y_train_org = region['Engaged_respirator'].iloc[:int(region.shape[0] * split)]
+    y_test_org = region['Engaged_respirator'].iloc[int(region.shape[0] * split):]
+    date_test = region['date'].iloc[int(region.shape[0] * split):]
+    return date_train, y_train_org, y_test_org, date_test
+
+
+def get_org_data_from_region_make_plot(_region, _trainPredict, _testPredict):
+    date_train, y_train_org, y_test_org, date_test = get_org_data_from_region(_region)
+    trace1 = go.Scatter(
+        x=date_train,
+        y=y_train_org * 16,
+        mode='lines',
+        name='Data train'
+    )
+    trace2 = go.Scatter(
+        # x=date_train[1:],
+        x=date_train,
+        y=_trainPredict[:, 0] * 16,
+        mode='lines',
+        name='Prediction train'
+    )
+    trace3 = go.Scatter(
+        x=date_test,
+        y=_testPredict[:, 0] * 16,
+        # y=testPredict*16,
+        mode='lines',
+        name='Prediction future'
+    )
+
+    trace5 = go.Scatter(
+        x=date_test,
+        y=y_test_org * 16,
+        mode='lines',
+        name='Ground true'
+    )
+
+    layout = go.Layout(
+        title="Poland covid-19",
+        xaxis={'title': "Date"},
+        yaxis={'title': "Engaged respirator"}
+    )
+
+    fig = go.Figure(data=[trace1, trace2, trace3, trace5], layout=layout)
+
+    fig.show()
+
 # numpy.random.seed(7)
+
+data_merge =read_data()
 
 look_back = 1
 split = 0.78
-data_merge = read_csv('data/data_lstm/data_all_with_one_hot_encode.csv')
-data_merge["region"].replace({"ŚŚ_average":"ŚŚŚ_average"}, inplace=True)
-data_merge = data_merge.sort_values(by=['region', 'date'])
-columns_index=[-1]
-# columns_index= range(data_merge.shape[1]-1,data_merge.shape[1])
 
-first = True
-x_full = np.array
-y_full = np.array
 
-for region_name in data_merge['region'].unique()[0:]:
-    if region_name == 'POLSKA':
-        continue
-    region = data_merge[data_merge['region'] == region_name]
-    dataset = load_dataset(region, columns_index)
-    dataset, scaler = normalise_dataset(dataset)
-    train, test = split_into_train_and_test_sets(split=split)
-
-    trainX, trainY = create_dataset(train)
-    testX, testY = create_dataset(test)
-    trainX, trainY = reshape_train_to_one_sample(trainX, trainY)
-
-    if first:
-        x_full = trainX
-        y_full = trainY
-        first = False
-    else:
-        x_full = np.concatenate((x_full, trainX), axis=0)
-        y_full = np.concatenate((y_full, trainY), axis=0)
-
-trainX = x_full
-trainY = y_full
+train, test, trainX,trainY, _region, scaler = make_trainX_trainY()
 
 model = create_and_fit_model(trainX, trainY)
 trainX = trainX[-1:, :, :]
 trainY = trainY[-1:, :, :]
-
-# trainX = trainX.reshape(1,len(trainX),trainX.shape[1])
-future_array, predictions_train = make_prediction_future(model, trainX, testY)
-
+future_array, predictions_train = make_prediction_future(model, train,trainY, test)
 trainPredict, trainY = inverse_transform_train(scaler, predictions_train, trainY)
-testPredict, testY = inverse_transform_test(scaler, future_array, testY)
-
-dataset = scaler.inverse_transform(dataset)
-
-trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting(dataset, trainPredict, testPredict, look_back)
-# plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot)
-
-region = data_merge[data_merge['region'] == 'POLSKA']
-
-dataset = load_dataset(region,columns_index)
-plot_baseline_and_predictions(dataset, trainPredictPlot * 16, testPredictPlot * 16)
-
-date_train = region['date'].iloc[:int(region.shape[0] * split)]
-y_train_org = region['Engaged_respirator'].iloc[:int(region.shape[0] * split)]
-y_test_org = region['Engaged_respirator'].iloc[int(region.shape[0] *split):]
-date_test = region['date'].iloc[int(region.shape[0] * split):]
+testPredict, testY = inverse_transform_test(scaler, future_array, test)
+get_org_data_from_region_make_plot(_region, trainPredict, testPredict)
 
 
-trace1 = go.Scatter(
-    x=date_train,
-    y=y_train_org,
-    mode='lines',
-    name='Data'
-)
-trace2 = go.Scatter(
-    x=date_train,
-    y=trainPredict[:,0]*16,
-    mode='lines',
-    name='Prediction train'
-)
-trace3 = go.Scatter(
-    x=date_test,
-    y=testPredict[:,0]*16,
-    mode='lines',
-    name='Prediction future'
-)
-# trace4 = go.Scatter(
-#     x=date_test,
-#     y=predictions_full,
-#     mode='lines',
-#     name='futere'
-# )
 
-trace5 = go.Scatter(
-    x=date_test,
-    y=y_test_org,
-    mode='lines',
-    name='Ground true'
-)
-# trace6 = go.Scatter(
-#     x=date_train,
-#     y=predictions_train,
-#     mode='lines',
-#     name='futere'
-# )
-layout = go.Layout(
-    title="Google Stock",
-    xaxis={'title': "Date"},
-    yaxis={'title': "Close"}
-)
+#
+# # dataset = scaler.inverse_transform(dataset)
+# trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting(dataset, trainPredict, testPredict, look_back)
+# # plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot)
+# # region = data_merge[data_merge['region'] == 'POLSKA']
+#
+# dataset = load_dataset(region,columns_index)
+# plot_baseline_and_predictions(dataset*16, trainPredictPlot * 16, testPredictPlot * 16)
 
-fig = go.Figure(data=[trace1,trace2,trace3,trace5], layout=layout)
-# fig = go.Figure(data=[trace1,trace5], layout=layout)
-
-fig.show()
