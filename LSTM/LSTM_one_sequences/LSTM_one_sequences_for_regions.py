@@ -47,39 +47,6 @@ def make_prediction_future(model, train, trainY, test):
     future_array = future_array.reshape(future_array.shape[0], features)
     return future_array, predictions_train
 
-
-# def calculate_root_mean_squared_error(trainY, trainPredict, testY, testPredict):
-#     trainScore = math.sqrt(mean_squared_error(trainY[:, -1], trainPredict[:, -1]))
-#     print('Train Score: %.2f RMSE' % (trainScore))
-#     testScore = math.sqrt(mean_squared_error(testY[:, -1], testPredict[:, -1]))
-#     print('Test Score: %.2f RMSE' % (testScore))
-#
-#
-# def shift_train_predictions_for_plotting(dataset, trainPredict, testPredict, look_back):
-#     trainPredictPlot = np.empty_like(dataset)
-#     trainPredictPlot[:, :] = np.nan
-#     trainPredictPlot[look_back:len(trainPredict) + look_back, :] = trainPredict
-#     # shift test predictions for plotting
-#     testPredictPlot = np.empty_like(dataset)
-#     testPredictPlot[:, :] = np.nan
-#     testPredictPlot[len(trainPredict) + (look_back * 2) + 1:len(dataset) - 1, :] = testPredict
-#     return trainPredictPlot, testPredictPlot
-#
-#
-# def plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot):
-#     for i in range(dataset.shape[1]):
-#         plt.plot(dataset[:, i],label= 'true data')
-#         plt.plot(trainPredictPlot[:, i], label= 'train prediction')
-#         plt.plot(testPredictPlot[:, i], label= 'prediction (future)')
-#         # plt.xlabel(xlabel="Date")
-#         # plt.ylabel(ylabel= )
-#         plt.title(i)
-#         plt.grid()
-#         plt.legend()
-#         plt.show()
-
-# numpy.random.seed(7)
-
 data_merge = read_data_only_Poland()
 split = 0.83
 
@@ -94,11 +61,3 @@ trainPredict, trainY = inverse_transform_train(scaler, predictions_train, trainY
 testPredict, testY = inverse_transform_test(scaler, future_array, test)
 get_org_data_from_region_make_plot(_region, trainPredict, testPredict, split)
 
-#
-# # dataset = scaler.inverse_transform(dataset)
-# trainPredictPlot, testPredictPlot = shift_train_predictions_for_plotting(dataset, trainPredict, testPredict, look_back)
-# # plot_baseline_and_predictions(dataset, trainPredictPlot, testPredictPlot)
-# # region = data_merge[data_merge['region'] == 'POLSKA']
-#
-# dataset = load_dataset(region,columns_index)
-# plot_baseline_and_predictions(dataset*16, trainPredictPlot * 16, testPredictPlot * 16)
