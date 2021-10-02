@@ -1,6 +1,7 @@
 import pandas as pd
+
+from prepare_data.merge.data_mobillity.prepare_data_mobility import get_prepared_data_mobility
 from prepare_data.merge.merge_data_mobility_epidemic_situation import get_merge_data_from_to
-from prepare_data.merge.data_mobillity import get_prepared_data_mobility
 from prepare_data.augmentation.data_augmentation import adding_Gaussian_Noise_to_data_Poland
 from prepare_data.test_train.make_train_test_from_merge_data import one_hot_encode
 
@@ -30,5 +31,3 @@ def save_merge_data_for_Poland_from_06_2020_with_augumetation():
         data_Poland:pd.DataFrame = data_Poland.append(adding_Gaussian_Noise_to_data_Poland(data_Poland, i))
     data_Poland, number_desc = one_hot_encode(data_Poland, 'region', 3)
     data_Poland.to_csv('data/data_lstm/merge_data_Poland.csv',index=False)
-
-
