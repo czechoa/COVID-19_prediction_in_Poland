@@ -112,34 +112,34 @@ Monthly anticipation as the last training day on 03/20/2021.
 For provinces
 --------------
 
-![image](data/region_prediction_4.png){width="8cm"}
+![image](results/readme_data/region_prediction_4.png){width="8cm"}
 
-![image](data/region_prediction_8.png){width="10cm"}
+![image](results/readme_data/region_prediction_8.png){width="10cm"}
 
-![image](data/region_prediction_12.png){width="10cm"}
+![image](results/readme_data/region_prediction_12.png){width="10cm"}
 
-![image](data/region_prediction_16.png){width="10cm"}
+![image](results/readme_data/region_prediction_16.png){width="10cm"}
 
-![image](data/region_prediction_20.png){width="10cm"}
+![image](results/readme_data/region_prediction_20.png){width="10cm"}
 
 Relative error charts
 ------------------------
 
-![image](data/regions_prediction_relative_error_1.png){width="10cm"}
+![image](results/readme_data/regions_prediction_relative_error_1.png){width="10cm"}
 
-![image](data/regions_prediction_relative_error_averaged.png){width="8cm"}
+![image](results/readme_data/regions_prediction_relative_error_averaged.png){width="8cm"}
 
 For Poland
 ----------
 
 The results for Poland were the average for the region, which I multiplied by number of provinces.
 
-![image](data/Poland engaged respiration.png){width="10cm"}
+![image](results/readme_data/Poland engaged respiration.png){width="10cm"}
 
 Wykres błędu względnego dla Polski
 ----------------------------------
 
-![image](data/Poland_prediction_relative_error.png){width="8cm"}
+![image](results/readme_data/Poland_prediction_relative_error.png){width="8cm"}
 
 
 Conclusions from the graphs
@@ -169,7 +169,7 @@ Conclusions from the graphs
   after two weeks, is caused by a small amount of data (which reduces dependencies on prediction), therefore predicting
   more than two weeks ahead it is unstable.
 
-![Poland engaged respiration 1.png](data/Poland engaged respiration 1.png){width=".8\linewidth"}
+![Poland engaged respiration 1.png](results/readme_data/Poland engaged respiration 1.png){width=".8\linewidth"}
 
 
 Źródła
