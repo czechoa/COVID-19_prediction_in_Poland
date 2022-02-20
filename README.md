@@ -133,7 +133,7 @@ For Poland
 
 The results for Poland were the average for the region, which I multiplied by number of provinces.
 
-![image](results/readme_data/Poland engaged respiration.png)
+![image](results/readme_data/Poland_engaged_respiration.png)
 
 Wykres błędu względnego dla Polski
 ----------------------------------
@@ -168,7 +168,7 @@ Conclusions from the graphs
   after two weeks, is caused by a small amount of data (which reduces dependencies on prediction), therefore predicting
   more than two weeks ahead it is unstable.
 
-![Poland engaged respiration 1.png](results/readme_data/Poland engaged respiration 1.png){width=".8\linewidth"}
+![Poland engaged respiration 1.png](results/readme_data/Poland_engaged_respiration_1.png)
 
 
 Źródła
