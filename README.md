@@ -1,12 +1,11 @@
 About
 =========
-This is my first big project that I did on 03.2021 - 09.2021.
+This is my first big machine learning project that I did on 03.2021 - 09.2021.
 
 Purpose of the project
 =============
 
 Predicting the occupied covid repairers for voivodeships and Poland.
-
 
 Run
 =============
