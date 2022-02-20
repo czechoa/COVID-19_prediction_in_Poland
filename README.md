@@ -168,7 +168,7 @@ Conclusions from the graphs
   after two weeks, is caused by a small amount of data (which reduces dependencies on prediction), therefore predicting
   more than two weeks ahead it is unstable.
 
-![Poland engaged respiration 1.png](results/readme_data/Poland_engaged_respiration_1.png)
+![image](results/readme_data/Poland_engaged_respiration_1.png)
 
 
 Źródła
