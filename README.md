@@ -111,34 +111,34 @@ Monthly anticipation as the last training day on 03/20/2021.
 For provinces
 --------------
 
-![image](results/readme_data/region_prediction_4.png){width="8cm"}
+![image](results/readme_data/region_prediction_4.png)
 
-![image](results/readme_data/region_prediction_8.png){width="10cm"}
+![image](results/readme_data/region_prediction_8.png)
 
-![image](results/readme_data/region_prediction_12.png){width="10cm"}
+![image](results/readme_data/region_prediction_12.png)
 
-![image](results/readme_data/region_prediction_16.png){width="10cm"}
+![image](results/readme_data/region_prediction_16.png)
 
-![image](results/readme_data/region_prediction_20.png){width="10cm"}
+![image](results/readme_data/region_prediction_20.png)
 
 Relative error charts
 ------------------------
 
-![image](results/readme_data/regions_prediction_relative_error_1.png){width="10cm"}
+![image](results/readme_data/regions_prediction_relative_error_1.png)
 
-![image](results/readme_data/regions_prediction_relative_error_averaged.png){width="8cm"}
+![image](results/readme_data/regions_prediction_relative_error_averaged.png)
 
 For Poland
 ----------
 
 The results for Poland were the average for the region, which I multiplied by number of provinces.
 
-![image](results/readme_data/Poland engaged respiration.png){width="10cm"}
+![image](results/readme_data/Poland engaged respiration.png)
 
 Wykres błędu względnego dla Polski
 ----------------------------------
 
-![image](results/readme_data/Poland_prediction_relative_error.png){width="8cm"}
+![image](results/readme_data/Poland_prediction_relative_error.png)
 
 
 Conclusions from the graphs
