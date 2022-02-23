@@ -176,13 +176,10 @@ Sources
 
 - Mobility data - https://www.google.com/covid19/mobility/
 
-- Data on the pandemic situation- -https://docs.google.com/spreadsheets
-  /u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E/ htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n
-  \_kuhtI214dqN5Ho
+- Data on the pandemic situation- -https://docs.google.com/spreadsheets/u/1/d/1ierEhD6gcq51HAm433knjnVwey4ZE5DCnu1bW7PRG3E\htmlview?fbclid=IwAR0oqN4ikk1flMvFbb0ecLOKGpkHo7LCYj75N6Z1vc4n\_kuhtI214dqN5Ho
 
 - GUS data on the area and population of voivodeships-
-  https://stat.gov.pl/obszary-tematyczne/ludnosc/ludnosc
-  /powierzchnia-i-ludnosc-w-przekroju-terytorialnym-w-2020-roku,7,17.html
+  https://stat.gov.pl/obszary-tematyczne/ludnosc/ludnosc/powierzchnia-i-ludnosc-w-przekroju-terytorialnym-w-2020-roku,7,17.html
 
 - Model inspiration -
   https://towardsdatascience.com/deep-neural-networks-for-regression-problems-81321897ca33
