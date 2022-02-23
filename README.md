@@ -135,7 +135,7 @@ The results for Poland were the average for the region, which I multiplied by nu
 
 ![image](results/readme_data/Poland_engaged_respiration.png)
 
-Wykres błędu względnego dla Polski
+Relative error graph for Poland
 ----------------------------------
 
 ![image](results/readme_data/Poland_prediction_relative_error.png)
