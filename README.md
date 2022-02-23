@@ -171,7 +171,7 @@ Conclusions from the graphs
 ![image](results/readme_data/Poland_engaged_respiration_1.png)
 
 
-Źródła
+Sources
 ======
 
 - Mobility data - https://www.google.com/covid19/mobility/
